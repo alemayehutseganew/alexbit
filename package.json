@@ -3,10 +3,9 @@
   "private": true,
   "packageManager": "npm@11.19.1",
   "scripts": {
-    "postinstall": "npm run prisma:generate",
     "prisma:generate": "npm exec --workspace=@primehorizon/domain -- prisma generate --schema prisma/schema.prisma",
     "prisma:migrate:deploy": "npm exec --workspace=@primehorizon/domain -- prisma migrate deploy --schema prisma/schema.prisma",
-    "build": "npm run build --workspace=api",
+    "build": "npm run prisma:generate && npm run build --workspace=api",
     "start": "npm run start:prod --workspace=api",
     "dev": "turbo run dev",
     "lint": "turbo run lint",
