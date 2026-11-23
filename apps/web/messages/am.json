@@ -1,0 +1,410 @@
+{
+  "Brand": {
+    "nameEn": "PrimeHorizon Group Trading PLC",
+    "nameAm": "ፕራይም ሆራይዘን ግሩፕ ትሬዲንግ ኃ/የተ/የግ/ማህበር",
+    "phone": "0914230500"
+  },
+  "Nav": {
+    "clientPortal": "የደንበኛ ፖርታል",
+    "shareholderPortal": "የባለአክሲዮን ፖርታል",
+    "home": "መነሻ",
+    "about": "ስለ እኛ",
+    "expertise": "ልምዳችን",
+    "investors": "ኢንቨስተሮች",
+    "contact": "ያግኙን",
+    "menu": "የአሰሳ ምናሌን ክፈት",
+    "close": "የአሰሳ ምናሌን ዝጋ",
+    "language": "ቋንቋ",
+    "english": "EN",
+    "amharic": "አማ",
+    "darkMode": "ጨለማ ገጽታን ይጠቀሙ",
+    "lightMode": "ብርሃን ገጽታን ይጠቀሙ"
+  },
+  "Footer": {
+    "tagline": "ለኢትዮጵያ እና ለቀጣናው አስተማማኝ የዲጂታል እና የመሠረተ ልማት መፍትሄዎችን እንገነባለን።",
+    "quickLinksTitle": "ፈጣን አገናኞች",
+    "contactTitle": "ያግኙን",
+    "legalTitle": "ሕጋዊ መረጃ",
+    "emailLabel": "ኢሜይል",
+    "privacy": "ግላዊነት",
+    "terms": "የአገልግሎት ውሎች",
+    "email": "info@primehorizon.com"
+  },
+  "Home": {
+    "eyebrow": "ቴክኖሎጂ · መሠረተ ልማት · አፈጻጸም",
+    "headline": "የኢትዮጵያን",
+    "headlineAccent": "ዲጂታል የወደፊት ዕጣ እንገነባለን።",
+    "description": "ከ20 በላይ ባለሙያዎችን ያቀፈ ቡድን፤ የአካባቢ መሠረተ ልማት ልምድን፣ ዓለም አቀፍ ትምህርትን እና በኢትዮጵያ እድገት ላይ ተግባራዊ ሥራን ያገናኛል።",
+    "partnerCta": "አጋር ይሁኑ",
+    "expertiseCta": "ልምዳችንን ይመልከቱ",
+    "heroExpertiseLine": "ትምህርት • አይቲ • ሶፍትዌር • ቴሌኮም • ሶላር • ኃይል",
+    "orbitLabel": "ለተግባራዊ ውጤት",
+    "trustedBy": "የሚተማመኑብን",
+    "stats": {
+      "experts": "የቴክኖሎጂ ባለሙያዎች",
+      "sectors": "ዋና ዋና ዘርፎች",
+      "institutions": "ዋና ተቋማት",
+      "commitment": "ለሥራ ቁርጠኝነት"
+    },
+    "credibilityEyebrow": "ልዩ ጥንካሬያችን",
+    "credibilityTitle": "የአካባቢ እውቀት። ዓለም አቀፍ አመለካከት። ተለዋዋጭ ቡድን።",
+    "credibility": {
+      "localRoots": {
+        "title": "ከአካባቢው ጋር የተያያዘ",
+        "description": "ቡድናችን የኢትዮጵያን ተቋማዊ፣ የመሠረተ ልማት እና የቴክኖሎጂ ሁኔታዎች በጥልቀት ያውቃል።"
+      },
+      "globalEducation": {
+        "title": "ዓለም አቀፍ ትምህርት",
+        "description": "ዓለም አቀፍ የትምህርት ልምድን ከዘመናዊ የቴክኒክ ልምምድ ጋር በማጣመር የተረጋገጡ ሀሳቦችን ወደ አገር እናመጣለን።"
+      },
+      "agileTeam": {
+        "title": "ተለዋዋጭ የባለሙያዎች ቡድን",
+        "description": "ከ20 በላይ መሐንዲሶች፣ ገንቢዎች እና የአይቲ ባለሙያዎች የተለያዩ ክህሎቶችን በማጣመር ውስብስብ የሥራ ፈተናዎችን ይፈታሉ።"
+      }
+    },
+    "sectorsEyebrow": "አገልግሎታችን",
+    "sectorsTitle": "በስድስት የተገናኙ ዘርፎች የተሟላ እውቀት",
+    "allExpertise": "ሁሉንም እውቀት ይመልከቱ",
+    "sectors": {
+      "education": {
+        "title": "ትምህርት እና ሥልጠና",
+        "description": "ለቡድኖች እና ተቋማት ተግባራዊ የቴክኖሎጂ ትምህርት እና የክህሎት ልማት።"
+      },
+      "itSupport": {
+        "title": "የአይቲ ድጋፍ እና ኔትወርክ",
+        "description": "አስተማማኝ የቴክኒክ ድጋፍ፣ የኔትወርክ ንድፍ እና የመሠረተ ልማት አስተዳደር።"
+      },
+      "software": {
+        "title": "ድረ-ገጾች እና ሶፍትዌር",
+        "description": "ለአፈጻጸም እና ለዕድገት የተዘጋጁ የንግድ ሶፍትዌሮች እና ዲጂታል መድረኮች።"
+      },
+      "telecom": {
+        "title": "የቴሌኮም መሠረተ ልማት",
+        "description": "ለወሳኝ የቴሌኮም ኔትወርኮች ተከላ፣ ጥገና እና ድጋፍ።"
+      },
+      "solar": {
+        "title": "ሶላር እና ኤሌክትሪክ",
+        "description": "ዘላቂ የኃይል መፍትሄዎች እና አስተማማኝ የኤሌክትሪክ ምህንድስና።"
+      },
+      "power": {
+        "title": "የኃይል ማመንጫ",
+        "description": "ለኃይል ማመንጫ መሠረተ ልማት የረጅም ጊዜ ቴክኒካዊ ድጋፍ።"
+      }
+    },
+    "closingTitle": "ከኢትዮጵያ ምርጥ የቴክኖሎጂ ቡድን ጋር ለመገንባት ዝግጁ ነዎት?",
+    "closingCta": "ውይይት ይጀምሩ"
+  },
+  "About": {
+    "eyebrow": "ማን ነን",
+    "title": "አዲሱ የኢትዮጵያ የቴክኖሎጂ አመራር ትውልድ።",
+    "description": "ጥልቅ የአካባቢ ግንዛቤን እና ዓለም አቀፍ ትምህርትን ወደ ትርጉም ያላቸው የቴክኖሎጂ እና የመሠረተ ልማት ውጤቶች የሚቀይሩ ባለሙያዎች ስብስብ።",
+    "mission": {
+      "eyebrow": "ተልዕኮአችን",
+      "title": "ወሳኝ ስርዓቶችን በተሻለ ሁኔታ እንዲሠሩ ማድረግ።",
+      "description": "ኢትዮጵያን እየቀረጹ ላሉ የቴክኖሎጂ እና የመሠረተ ልማት ፈተናዎች ተግባራዊ እውቀት፣ ታማኝ ትብብር እና ተግባራዊ ምህንድስና እናቀርባለን።"
+    },
+    "vision": {
+      "eyebrow": "ራዕያችን",
+      "title": "በተገናኘ የአካባቢ ችሎታ የሚገነባ የወደፊት ዕጣ።",
+      "description": "ብቁ ቡድኖች ወሳኝ ስርዓቶችን በአገር ውስጥ እንዲያበለጽጉ፣ እንዲያስተዳድሩ እና በዓለም አቀፍ እውቀት ደረጃ እንዲያሳድጉ እንመኛለን።"
+    },
+    "syndicateEyebrow": "የጋራ ጥንካሬ",
+    "syndicateTitle": "ከ20 በላይ ባለሙያዎች። አንድ የጋራ ዓላማ።",
+    "syndicateDescription": "በኢትዮጵያ ከፍተኛ ተቋማት የሚሠሩ መሐንዲሶች፣ ገንቢዎች እና የአይቲ ባለሙያዎች ስንሆን በተመሳሳይ ጊዜ በዓለም አቀፍ ዩኒቨርሲቲዎች ትምህርታችንን እናሳድጋለን። ይህን እውቀት በአንድ ተለዋዋጭ እና ብዙ ዘርፍ ባካተተ ቡድን እናጣምራለን።",
+    "teamSize": "ከ20 በላይ መሐንዲሶች፣ ገንቢዎች እና የአይቲ ባለሙያዎች",
+    "valuesEyebrow": "የሥራ አቀራረባችን",
+    "valuesTitle": "ዋና እሴቶቻችን",
+    "values": {
+      "local": {
+        "title": "የአካባቢ ልቀት",
+        "description": "በጥሞና እናዳምጣለን፣ አካባቢያዊ ሁኔታን እንረዳለን እና ውጤቱን ከሚጠቀሙ ሰዎች ጋር እንገነባለን።"
+      },
+      "global": {
+        "title": "ዓለም አቀፍ ደረጃዎች",
+        "description": "በእያንዳንዱ ሥራ ጥብቅ የምህንድስና እና ዓለም አቀፍ ልምድን የሚከተሉ ዘዴዎችን እንጠቀማለን።"
+      },
+      "innovation": {
+        "title": "የወጣቶች ፈጠራ",
+        "description": "ጉጉት፣ ትብብር እና ጠቃሚ መሻሻል ላይ ያለ ቁርጠኝነት ሥራችንን ወደፊት ያንቀሳቅሳሉ።"
+      }
+    },
+    "timelineEyebrow": "ጉዞአችን",
+    "timelineTitle": "በእውቀት እና በጋራ ዓላማ የተቀረጸ ጉዞ።",
+    "journey": {
+      "foundation": {
+        "title": "ጠንካራ መሠረት",
+        "description": "ለአካባቢያዊ ሁኔታ፣ ለአስተማማኝ ስርዓቶች እና ለተግባራዊ ምህንድስና ያለ ቁርጠኝነት።"
+      },
+      "collective": {
+        "title": "ብዙ ዘርፎችን ያቀፈ ቡድን",
+        "description": "ከ20 በላይ ባለሙያዎች በቴክኖሎጂ፣ በመሠረተ ልማት እና በኃይል ያላቸውን ልምድ ያገናኛሉ።"
+      },
+      "horizon": {
+        "title": "ስድስት የተገናኙ ችሎታዎች",
+        "description": "የእውቀት ዘርፎቻችን የኢትዮጵያን እየተለወጡ ያሉ ፍላጎቶች ለመደገፍ ይጣመራሉ።"
+      }
+    }
+  },
+  "Expertise": {
+    "eyebrow": "ችሎታዎቻችን",
+    "title": "ለተግባራዊ ውጤት የተዘጋጀ የቴክኖሎጂ እውቀት።",
+    "description": "ከዲጂታል መድረኮች እስከ ወሳኝ መሠረተ ልማት፣ ቡድኖቻችን በስድስት የተገናኙ ዘርፎች ተግባራዊ ልምድ አላቸው።",
+    "sectorLabel": "ዘርፍ {number}",
+    "sectors": {
+      "education": {
+        "title": "ትምህርት እና ሥልጠና",
+        "description": "ተግባራዊ፣ ለሥራ ሚና የተስማማ ትምህርት እና የሥልጠና ፕሮግራሞች በመስጠት ቡድኖችን በዘመናዊ የአይቲ እና ሶፍትዌር ክህሎቶች እናበቃለን።"
+      },
+      "itSupport": {
+        "title": "የአይቲ ድጋፍ እና ኔትወርክ",
+        "description": "ለዕለታዊ ሥራ አስተማማኝ አፈጻጸም የሚያስችል የድርጅት ደረጃ ድጋፍ እና ጠንካራ የኔትወርክ መሠረተ ልማት።"
+      },
+      "software": {
+        "title": "ድረ-ገጾች እና ሶፍትዌር",
+        "description": "ለድርጅቶች ፍላጎት የተዘጋጁ ብጁ የንግድ መተግበሪያዎች እና ከፍተኛ አፈጻጸም ያላቸው የድር መድረኮች።"
+      },
+      "telecom": {
+        "title": "የቴሌኮም መሠረተ ልማት",
+        "description": "በተግባራዊ የመስክ እና የቴክኒክ ድጋፍ የወሳኝ የቴሌኮም ኔትወርኮችን እንተክላለን እና እንጠግናለን።"
+      },
+      "solar": {
+        "title": "ሶላር እና ኤሌክትሪክ",
+        "description": "ዘላቂ የኃይል መፍትሄዎችን እና ውጤታማ አሠራርን የሚደግፍ የኤሌክትሪክ ምህንድስና እናቀርባለን።"
+      },
+      "power": {
+        "title": "የኃይል ማመንጫ",
+        "description": "ለኃይል ማመንጫ መሠረተ ልማት እና አስተማማኝነቱን ለሚያረጋግጡ ስርዓቶች የረጅም ጊዜ ስትራቴጂካዊ ድጋፍ።"
+      }
+    }
+  },
+  "Contact": {
+    "eyebrow": "ያግኙን",
+    "title": "ጠቃሚ ነገር አብረን እንገንባ።",
+    "description": "በምን ላይ እየሠሩ እንደሆነ ይንገሩን። ቡድናችን መልዕክትዎን አይቶ ምላሽ ይሰጣል።",
+    "companyLabel": "የድርጅቱ ሕጋዊ ስም",
+    "phone": "ስልክ",
+    "email": "ኢሜይል",
+    "stampTitle": "የድርጅቱ ማህተም",
+    "authorizedPartner": "የተፈቀደ የድርጅት አጋር",
+    "mapLocation": "አዲስ አበባ፣ ኢትዮጵያ",
+    "mapCaption": "ፕራይም ሆራይዘን ግሩፕ ትሬዲንግ ኃ/የተ/የግ/ማህበር",
+    "formTitle": "መልዕክት ይላኩልን",
+    "formDescription": "ጥቂት ዝርዝሮችን ያጋሩን፤ እንመልስልዎታለን።",
+    "fullName": "ሙሉ ስም",
+    "subject": "ርዕስ",
+    "message": "መልዕክት",
+    "subjects": {
+      "general": "አጠቃላይ ጥያቄ",
+      "partnership": "አጋርነት",
+      "support": "የቴክኒክ ድጋፍ",
+      "media": "የሚዲያ ጥያቄ"
+    },
+    "submit": "መልዕክት ይላኩ",
+    "submitting": "በመላክ ላይ...",
+    "success": "እናመሰግናለን! መልዕክትዎ ለቡድናችን ተልኳል።",
+    "apiUnavailable": "የመገናኛ አገልግሎቱ አሁን አይገኝም። እባክዎ ቆይተው እንደገና ይሞክሩ።",
+    "sendError": "መልዕክትዎን መላክ አልተቻለም። እባክዎ እንደገና ይሞክሩ።",
+    "invalidName": "ቢያንስ 2 ፊደላት ያሉትን ስም ያስገቡ።",
+    "invalidEmail": "ትክክለኛ የኢሜይል አድራሻ ያስገቡ።",
+    "invalidPhone": "ትክክለኛ ስልክ ቁጥር ያስገቡ።",
+    "invalidMessage": "መልዕክትዎ ቢያንስ 20 ፊደላት መያዝ አለበት።"
+  },
+  "Login": {
+    "eyebrow": "የተጠበቀ የፖርታል መግቢያ",
+    "title": "ወደ ፕራይም ሆራይዘን እንኳን በደህና መጡ",
+    "description": "ወደ ደህንነቱ ወደተጠበቀው የፕራይም ሆራይዘን ፖርታል ይግቡ።",
+    "clientTitle": "የደንበኛ ፖርታል",
+    "clientDescription": "ፕሮጀክቶችን፣ ፕሮፖዛሎችን፣ ደረሰኞችን እና የድጋፍ ጥያቄዎችን ይከታተሉ።",
+    "clientButton": "የደንበኛ መግቢያ",
+    "shareholderTitle": "የባለአክሲዮን ፖርታል",
+    "shareholderDescription": "የአክሲዮን ሰንጠረዡን እና የጋራ ሰነዶችን ለማየት በባለአክሲዮን መለያዎ ይግቡ።",
+    "shareholderButton": "ወደ ባለአክሲዮን ፖርታል ይቀጥሉ",
+    "secureNote": "በአካባቢያዊ ሙከራ ለሁለቱም ፖርታሎች የመግቢያ መረጃ ይጠቀሙ። በምርት አካባቢ የባለአክሲዮን መግቢያ በተለየው Keycloak ሬልም ይቀጥላል።",
+    "notConfigured": "የመግቢያ ስርዓት አልተዋቀረም። እባክዎ አስተዳዳሪውን ያነጋግሩ።",
+    "loginError": "መግባት አልተሳካም። መረጃዎን ያረጋግጡና እንደገና ይሞክሩ።",
+    "serverConnectionError": "ከሰርቨሩ ጋር መገናኘት አልተቻለም። እባክዎ ባክኤንዱ መስራቱን ያረጋግጡ።",
+    "signInTitle": "ወደ {portal} ይግቡ",
+    "clientPortal": "የደንበኛ ፖርታል",
+    "shareholderPortal": "የባለአክሲዮን ፖርታል",
+    "registerTitle": "መለያ ይፍጠሩ",
+    "forgotTitle": "የይለፍ ቃል ዳግም ማስጀመር",
+    "emailLabel": "ኢሜይል",
+    "passwordLabel": "የይለፍ ቃል",
+    "firstNameLabel": "የመጀመሪያ ስም",
+    "lastNameLabel": "የአባት ስም",
+    "organizationLabel": "ድርጅት",
+    "confirmPasswordLabel": "የይለፍ ቃሉን ያረጋግጡ",
+    "acceptTermsLabel": "ውሎችን እና ሁኔታዎችን እቀበላለሁ።",
+    "forgotLink": "የይለፍ ቃል ረሱ?",
+    "signInButton": "ግባ",
+    "noAccount": "መለያ የለዎትም?",
+    "signUpLink": "ይመዝገቡ",
+    "registerButton": "ይመዝገቡ",
+    "haveAccount": "ቀድሞውኑ መለያ አለዎት?",
+    "signInLink": "ግባ",
+    "forgotDescription": "ኢሜይል አድራሻዎን ያስገቡ፤ መለያ ካለ የዳግም ማስጀመሪያ ሊንክ እንልካለን።",
+    "sendResetButton": "የዳግም ማስጀመሪያ ሊንክ ላክ",
+    "backToLogin": "ወደ መግቢያ ተመለስ",
+    "resetSuccess": "መለያ ካለ፣ የዳግም ማስጀመሪያ ሊንክ ተልኳል።",
+    "registerError": "ምዝገባው አልተሳካም። እባክዎ እንደገና ይሞክሩ።",
+    "emailAlreadyRegistered": "በዚህ ኢሜይል መለያ አስቀድሞ አለ።",
+    "accountCreatedSignInError": "መለያዎ ተፈጥሯል፣ ግን መግባት አልተሳካም። እባክዎ ይግቡ።",
+    "resetError": "የዳግም ማስጀመሪያ ጥያቄው አልተሳካም። እባክዎ እንደገና ይሞክሩ።"
+  },
+  "ClientPortal": {
+    "portalName": "የደንበኛ ፖርታል",
+    "dashboard": "ዳሽቦርድ",
+    "myProjects": "ፕሮጀክቶቼ",
+    "documents": "ሰነዶች",
+    "invoices": "ደረሰኞች",
+    "support": "ድጋፍ",
+    "documentVault": "የሰነድ ማከማቻ",
+    "noDocuments": "እስካሁን ምንም ሰነዶች አልተጫኑም።",
+    "dragDrop": "ለመጫን ፋይሎችን እዚህ ይጎትቱ እና ይጣሉ።",
+    "noInvoices": "ምንም ደረሰኞች አልተገኙም።",
+    "createTicket": "የድጋፍ ትኬት ይፍጠሩ",
+    "signOut": "ውጣ",
+    "workspace": "የደንበኛ የስራ ቦታ",
+    "welcome": "እንኳን ደህና መጡ፣ {name}",
+    "welcomeDescription": "የፕሮጀክቶችዎን እና የቅርብ እንቅስቃሴዎችን አጠቃላይ እይታ እነሆ።",
+    "activeProjects": "ፕሮጀክቶቼ",
+    "startDate": "የመጀመሪያ ቀን",
+    "endDate": "የማጠናቀቂያ ቀን",
+    "statusPlanning": "በእቅድ ላይ",
+    "statusInProgress": "በሂደት ላይ",
+    "statusCompleted": "ተጠናቋል",
+    "noProjects": "ለዚህ መለያ የሚታይ ፕሮጀክት የለም።",
+    "clientFallback": "ደንበኛ",
+    "projectsLoadError": "ፕሮጀክቶቹን መጫን አልተቻለም። እባክዎ ይድገሙ።",
+    "retry": "እንደገና ሞክር",
+    "startDate": "የመጀመሪያ ቀን",
+    "endDate": "የማጠናቀቂያ ቀን",
+    "statusPlanning": "በእቅድ ላይ",
+    "statusInProgress": "በሂደት ላይ",
+    "statusCompleted": "ተጠናቋል"
+  },
+  "ShareholderPortal": {
+    "portalName": "የባለአክሲዮን ፖርታል",
+    "secureAccount": "የተጠበቀ መለያ",
+    "overview": "አጠቃላይ እይታ",
+    "holdings": "የአክሲዮን ይዞታዎቼ",
+    "capTable": "የአክሲዮን ዝርዝር",
+    "governance": "አስተዳደር",
+    "kycDocuments": "የKYC ሰነዶች",
+    "kycPending": "ማረጋገጫ በሂደት ላይ",
+    "signOut": "ውጣ",
+    "shareholderFallback": "ባለአክሲዮን",
+    "welcome": "እንኳን ደህና መጡ፣ {name}",
+    "description": "የአክሲዮን ይዞታዎን እና የኩባንያ አስተዳደር ዜናዎችን በደህንነት ይመልከቱ።",
+    "totalSharesOwned": "ጠቅላላ የተያዙ አክሲዮኖች",
+    "currentValuation": "የአሁኑ ግምታዊ ዋጋ",
+    "illustrativeValue": "ለማሳያ ብቻ የቀረበ ግምት",
+    "sampleDataNotice": "ይህ ለገጹ ማሳያ ብቻ የተጠቀሰ ምሳሌ ነው፤ ቁጥሮቹ ትክክለኛ የባለአክሲዮን መዝገቦች አይደሉም።",
+    "equityDistribution": "የአክሲዮን ስርጭት",
+    "distributionDescription": "በአሁኑ የባለአክሲዮን መዝገብ የተሰጡ አክሲዮኖች ስርጭት።",
+    "ordinaryShares": "መደበኛ",
+    "preferredShares": "ቅድሚያ ያለው",
+    "governanceUpdates": "የአስተዳደር ዜናዎች",
+    "updateDate": "ቀን",
+    "updateType": "ዜና",
+    "updateDetails": "ዝርዝሮች",
+    "annualMeeting": "ዓመታዊ ጠቅላላ ጉባኤ",
+    "annualMeetingDate": "21 ኖቬምበር 2026",
+    "annualMeetingDetails": "የስብሰባ ማሳሰቢያ እና አጀንዳ ለባለአክሲዮኖች ቀርቧል።",
+    "kycReview": "የKYC ግምገማ",
+    "kycReviewDate": "04 ኖቬምበር 2026",
+    "kycReviewDetails": "ስለ ባለአክሲዮን ማንነት ማረጋገጫ ሂደት መረጃ።",
+    "documentsTitle": "የጋራ ሰነድ ማከማቻ",
+    "documentsDescription": "በካፒታል ሰንጠረዡ ውስጥ ከእያንዳንዱ ባለአክሲዮን ጋር የተያያዙ ሰነዶችን ይመልከቱ። ባለአክሲዮኖች በራሳቸው መገለጫ ላይ ሰነዶችን ማከል ይችላሉ።",
+    "capTableMetrics": "የባለአክሲዮን መዝገብ ድምሮች",
+    "totalShareholders": "ጠቅላላ ባለአክሲዮኖች",
+    "totalSharesIssued": "የተሰጡ አክሲዮኖች ድምር",
+    "totalCapitalRaised": "ጠቅላላ የተሰበሰበ ካፒታል",
+    "capTableEyebrow": "የባለቤትነት መዝገብ",
+    "capTableHeading": "የባለአክሲዮኖች ሰንጠረዥ",
+    "capTableDescription": "ለሁሉም ባለአክሲዮኖች የሚታይ ንብረት፣ አስተዋጽኦ እና የKYC መረጃ።",
+    "shareholderCount": "{count, plural, one {# ባለአክሲዮን} other {# ባለአክሲዮኖች}}",
+    "columnName": "ስም",
+    "columnTin": "TIN",
+    "columnShares": "አክሲዮኖች",
+    "columnContribution": "አስተዋጽኦ",
+    "columnDatePaid": "የተከፈለበት ቀን",
+    "columnKyc": "የKYC ሁኔታ",
+    "columnActions": "ሰነዶች",
+    "viewDocuments": "ሰነዶችን ይመልከቱ",
+    "viewDocumentsFor": "የ{name} ሰነዶችን ይመልከቱ",
+    "noShareholders": "ምንም የባለአክሲዮን መዝገብ የለም።",
+    "loadingRecords": "የባለአክሲዮን መዝገቦች በመጫን ላይ",
+    "apiNotConfigured": "የAPI አድራሻ አልተዋቀረም።",
+    "loadError": "የባለአክሲዮን መዝገቦችን መጫን አልተቻለም። እንደገና ይሞክሩ።",
+    "invalidResponse": "ከአገልጋዩ የተመለሰው የባለአክሲዮን መረጃ ትክክል አይደለም።",
+    "retry": "እንደገና ይሞክሩ",
+    "kycStatus": {
+      "PENDING": "በመጠባበቅ ላይ",
+      "UNDER_REVIEW": "በግምገማ ላይ",
+      "APPROVED": "ጸድቋል",
+      "REJECTED": "ውድቅ ተደርጓል"
+    },
+    "documentsFor": "የ{name} ሰነዶች",
+    "documentVaultDescription": "ሰነዶች ለተረጋገጡ ባለአክሲዮኖች ይታያሉ።",
+    "documentsListTitle": "ያሉ ሰነዶች",
+    "uploadedAt": "{date} ተጨምሯል",
+    "noDocuments": "በዚህ መገለጫ ላይ ምንም ሰነድ አልተጨመረም።",
+    "addDocument": "በመገለጫዎ ላይ ሰነድ ያክሉ",
+    "mockUploadDescription": "ይህ ሞክ ሰቀላ የሰነድ ስምና ነባር HTTPS/HTTP አድራሻ ብቻ ያስቀምጣል፤ የፋይሉን ይዘት አያስተላልፍም።",
+    "dropDocument": "ፋይል እዚህ ይጣሉ ወይም ይምረጡ",
+    "dropDocumentHint": "PDF፣ PNG ወይም JPG። የተቀመጠበትን አድራሻ ከታች ያስገቡ።",
+    "documentName": "የሰነድ ስም",
+    "documentUrl": "የሰነዱ አድራሻ",
+    "uploadDocument": "የሰነድ አድራሻ ያስቀምጡ",
+    "uploading": "በማስቀመጥ ላይ...",
+    "documentAdded": "የሰነድ አድራሻ ታክሏል።",
+    "uploadError": "የሰነድ አድራሻውን ማስቀመጥ አልተቻለም። እንደገና ይሞክሩ።",
+    "uploadOwnProfileOnly": "በዚህ ቦታ ሰነዶችን ማከል የሚችለው የመገለጫው ባለቤት ብቻ ነው።"
+  },
+  "Investors": {
+    "heroTitle": "በአፍሪካ ቀጣይ የቴክኖሎጂ አድማስ ላይ ይሳተፉ",
+    "heroSubtitle": "ፕራይም ሆራይዘን ግሩፕ ትሬዲንግ ኃ/የተ/የግ/ማህበር ዓለም አቀፍ የትምህርት ብቃትን ከጥልቅ የአካባቢ መሠረተ ልማት እውቀት ጋር እያገናኘ ነው። እያደግን ሲሄድ ይቀላቀሉን።",
+    "ctaButton": "የኢንቨስተር ፕሮስፔክተስ ይጠይቁ",
+    "metrics": {
+      "experts": "የቴክኖሎጂ ባለሙያዎች",
+      "sectors": "ዋና ዋና ዘርፎች",
+      "institutions": "ተቋማዊ አጋሮች"
+    },
+    "whyInvestTitle": "ለምን ፕራይም ሆራይዘን?",
+    "reasons": {
+      "market": "ከፍተኛ የእድገት ገበያ",
+      "marketDesc": "በፍጥነት ዲጂታላዊ እየሆኑ ወዳሉት የኢትዮጵያ ኃይል፣ ፋይናንስ እና ቴሌኮም ዘርፎች ቀጥተኛ መዳረሻ።",
+      "esx": "የESX እና ECMA ዝግጁነት",
+      "esxDesc": "የአስተዳደር፣ የባለአክሲዮን ዝርዝር እና የKYC ሂደቶች የካፒታል ገበያ አዋጅ ቁጥር 1248/2021ን በማገናዘብ እየተዋቀሩ ናቸው፤ ይህም ህጋዊ እና ቁጥጥራዊ ግምገማን ይጠይቃል።",
+      "team": "ልዩ ቡድን",
+      "teamDesc": "20+ መሐንዲሶች እና ገንቢዎች ብሔራዊ መሠረተ ልማትን በንቃት እየቀረጹ እና በዓለም አቀፍ ደረጃ እየተማሩ ናቸው።"
+    }
+  },
+  "Rfp": {
+    "title": "Partner With Us",
+    "titleAm": "ከእኛ ጋር ይተባበሩ",
+    "organization": "የድርጅት ስም",
+    "contactName": "የአድራሻ ሰው ስም",
+    "contactEmail": "ኢሜይል",
+    "phone": "ስልክ",
+    "sector": "ዘርፍ",
+    "projectDetails": "የፕሮጀክት ዝርዝሮች",
+    "budgetRange": "በጀት ክልል (አማራጭ)",
+    "timeline": "ጊዜ ሰሌዳ (አማራጭ)",
+    "submit": "RFP ያስገቡ",
+    "loading": "በመላክ ላይ...",
+    "success": "ጥያቄዎ በተሳካ ሁኔታ ቀርቧል። የማጣቀሻ ቁጥር: {id}",
+    "requestFailed": "ጥያቄዎን መላክ አልተቻለም። እባክዎ እንደገና ይሞክሩ።",
+    "serverError": "አገልጋዩ ጥያቄዎን ማስኬድ አልቻለም። እባክዎ እንደገና ይሞክሩ።",
+    "missingApiUrl": "የAPI አድራሻ አልተዋቀረም።",
+    "Sectors": {
+      "EDUCATION": "ትምህርት",
+      "IT_SUPPORT": "አይቲ ድጋፍ",
+      "WEB_SOFTWARE": "ድር እና ሶፍትዌር",
+      "TELECOM": "ቴሌኮም",
+      "SOLAR_ELECTRICAL": "ሶላር እና ኤሌክትሪካል",
+      "POWER_GEN": "የኃይል ማመንጨት"
+    }
+  }
+}

@@ -1,0 +1,10 @@
+User-agent: *
+Allow: /
+Disallow: /en/admin/
+Disallow: /am/admin/
+Disallow: /en/client/
+Disallow: /am/client/
+Disallow: /en/shareholder/
+Disallow: /am/shareholder/
+Disallow: /en/login
+Disallow: /am/login

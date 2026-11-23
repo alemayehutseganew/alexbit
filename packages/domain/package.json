@@ -1,0 +1,28 @@
+{
+  "name": "@primehorizon/domain",
+  "version": "0.0.0",
+  "type": "module",
+  "private": true,
+  "exports": {
+    ".": "./src/index.ts",
+    "./prisma": "./src/prisma.ts",
+    "./auth-schema": "./src/schemas/auth.schema.ts",
+    "./rfp-schema": "./src/schemas/rfp.schema.ts",
+    "./rfp-status-schema": "./src/schemas/rfp-status.schema.ts",
+    "./contact-schema": "./src/schemas/contact.schema.ts"
+  },
+  "scripts": {
+    "check-types": "tsc --noEmit"
+  },
+  "devDependencies": {
+    "@repo/typescript-config": "*",
+    "dotenv": "^16.6.1",
+    "typescript": "^5.9.3"
+  },
+  "dependencies": {
+    "@prisma/client": "^6.19.0",
+    "bcrypt": "^6.0.0",
+    "prisma": "^6.19.0",
+    "zod": "^3.25.76"
+  }
+}

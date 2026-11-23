@@ -1,0 +1,411 @@
+{
+  "Brand": {
+    "nameEn": "PrimeHorizon Group Trading PLC",
+    "nameAm": "ፕራይም ሆራይዘን ግሩፕ ትሬዲንግ ኃ/የተ/የግ/ማህበር",
+    "phone": "0914230500"
+  },
+  "Nav": {
+    "clientPortal": "Client Portal",
+    "shareholderPortal": "Shareholder Portal",
+    "home": "Home",
+    "about": "About Us",
+    "expertise": "Expertise",
+    "investors": "Investors",
+    "contact": "Contact",
+    "menu": "Open navigation menu",
+    "close": "Close navigation menu",
+    "language": "Language",
+    "english": "EN",
+    "amharic": "አማ",
+    "darkMode": "Use dark mode",
+    "lightMode": "Use light mode"
+  },
+  "Footer": {
+    "tagline": "Building dependable digital and infrastructure solutions for Ethiopia and the wider region.",
+    "quickLinksTitle": "Quick links",
+    "contactTitle": "Contact",
+    "legalTitle": "Legal",
+    "emailLabel": "Email",
+    "privacy": "Privacy",
+    "terms": "Terms of service",
+    "email": "info@primehorizon.com"
+  },
+  "Home": {
+    "eyebrow": "Technology · Infrastructure · Delivery",
+    "headline": "Engineering Ethiopia's",
+    "headlineAccent": "Digital Future.",
+    "description": "A 20+ expert syndicate bringing together local infrastructure experience, global education, and practical delivery across the systems that move Ethiopia forward.",
+    "partnerCta": "Partner With Us",
+    "expertiseCta": "Explore Our Expertise",
+    "heroExpertiseLine": "Education • IT • Software • Telecom • Solar • Power",
+    "orbitLabel": "Built to deliver",
+    "trustedBy": "Trusted By",
+    "stats": {
+      "experts": "Technology experts",
+      "sectors": "Core sectors",
+      "institutions": "Major institutions",
+      "commitment": "Commitment to delivery"
+    },
+    "credibilityEyebrow": "A distinctive advantage",
+    "credibilityTitle": "Local context. Global perspective. One agile team.",
+    "credibility": {
+      "localRoots": {
+        "title": "Local Roots",
+        "description": "Our team understands the operating realities of Ethiopia's institutions, infrastructure, and evolving technology landscape."
+      },
+      "globalEducation": {
+        "title": "Global Education",
+        "description": "International academic experience and current technical practice help us bring proven ideas home."
+      },
+      "agileTeam": {
+        "title": "An Agile Expert Team",
+        "description": "More than 20 engineers, developers, and IT specialists combine complementary skills to solve complex delivery challenges."
+      }
+    },
+    "sectorsEyebrow": "What we do",
+    "sectorsTitle": "Expertise across six connected sectors",
+    "allExpertise": "View all expertise",
+    "sectors": {
+      "education": {
+        "title": "Education & Training",
+        "description": "Practical technology education and skills development for teams and institutions."
+      },
+      "itSupport": {
+        "title": "IT Support & Networking",
+        "description": "Reliable support, network design, and infrastructure operations."
+      },
+      "software": {
+        "title": "Websites & Software",
+        "description": "Business software and digital platforms designed for performance and scale."
+      },
+      "telecom": {
+        "title": "Telecom Infrastructure",
+        "description": "Installation, maintenance, and support for critical telecom networks."
+      },
+      "solar": {
+        "title": "Solar & Electrical",
+        "description": "Sustainable energy solutions and dependable electrical engineering."
+      },
+      "power": {
+        "title": "Power Generation",
+        "description": "Long-term technical support for power generation infrastructure."
+      }
+    },
+    "closingTitle": "Ready to build with Ethiopia's elite tech syndicate?",
+    "closingCta": "Start a Conversation"
+  },
+  "About": {
+    "eyebrow": "Who we are",
+    "title": "The New Wave of Ethiopian Tech Leadership.",
+    "description": "A collective of practitioners turning deep local understanding and global learning into meaningful technology and infrastructure outcomes.",
+    "mission": {
+      "eyebrow": "Our mission",
+      "title": "Make important systems work better.",
+      "description": "We bring disciplined engineering, trusted collaboration, and hands-on expertise to the technology and infrastructure challenges shaping Ethiopia."
+    },
+    "vision": {
+      "eyebrow": "Our vision",
+      "title": "A future built by connected local talent.",
+      "description": "We envision an Ethiopia where skilled teams develop, operate, and advance critical systems to globally informed standards."
+    },
+    "syndicateEyebrow": "Collective strength",
+    "syndicateTitle": "More than 20 experts. One shared purpose.",
+    "syndicateDescription": "We are active engineers, developers, and IT specialists working within Ethiopia's top institutions, while simultaneously advancing our education at global universities. We bring that knowledge together as one agile, multidisciplinary team.",
+    "teamSize": "20+ engineers, developers & IT specialists",
+    "valuesEyebrow": "How we work",
+    "valuesTitle": "Our Core Values",
+    "values": {
+      "local": {
+        "title": "Local Excellence",
+        "description": "We listen closely, understand the local context, and build with the people who depend on the result."
+      },
+      "global": {
+        "title": "Global Standards",
+        "description": "We apply rigorous engineering and internationally informed practices to every engagement."
+      },
+      "innovation": {
+        "title": "Youthful Innovation",
+        "description": "Curiosity, collaboration, and a bias for useful progress keep our work moving forward."
+      }
+    },
+    "timelineEyebrow": "Our journey",
+    "timelineTitle": "A path shaped by expertise and shared purpose.",
+    "journey": {
+      "foundation": {
+        "title": "Strong foundations",
+        "description": "A commitment to local context, reliable systems, and practical engineering."
+      },
+      "collective": {
+        "title": "A multidisciplinary collective",
+        "description": "More than 20 experts connect experience across technology, infrastructure, and energy."
+      },
+      "horizon": {
+        "title": "Six connected capabilities",
+        "description": "Our expertise areas come together to support Ethiopia’s evolving needs."
+      }
+    }
+  },
+  "Expertise": {
+    "eyebrow": "Our capabilities",
+    "title": "Technology expertise built for real-world delivery.",
+    "description": "From digital platforms to essential infrastructure, our teams bring practical experience across six connected sectors.",
+    "sectorLabel": "Sector {number}",
+    "sectors": {
+      "education": {
+        "title": "Education & Training",
+        "description": "Empowering teams with modern IT and software skills through practical, role-focused learning and training programs."
+      },
+      "itSupport": {
+        "title": "IT Support & Networking",
+        "description": "Enterprise-grade support and robust network infrastructure, designed for reliable day-to-day operations."
+      },
+      "software": {
+        "title": "Websites & Software",
+        "description": "Custom business applications and high-performance web platforms tailored to organizational needs."
+      },
+      "telecom": {
+        "title": "Telecom Infrastructure",
+        "description": "Installation and maintenance of critical telecom networks, backed by disciplined field and technical support."
+      },
+      "solar": {
+        "title": "Solar & Electrical",
+        "description": "Sustainable energy solutions and electrical engineering that support resilient, efficient operations."
+      },
+      "power": {
+        "title": "Power Generation",
+        "description": "Long-term strategic support for power generation infrastructure and the systems that keep it dependable."
+      }
+    }
+  },
+  "Contact": {
+    "eyebrow": "Get in touch",
+    "title": "Let's build something that matters.",
+    "description": "Tell us what you are working on. Our team will review your message and follow up with you.",
+    "companyLabel": "Official company name",
+    "phone": "Phone",
+    "email": "Email",
+    "stampTitle": "Company stamp",
+    "authorizedPartner": "Authorized Enterprise Partner",
+    "mapLocation": "Addis Ababa, Ethiopia",
+    "mapCaption": "PrimeHorizon Group Trading PLC",
+    "formTitle": "Send us a message",
+    "formDescription": "Share a few details and we will get back to you.",
+    "fullName": "Full name",
+    "subject": "Subject",
+    "message": "Message",
+    "subjects": {
+      "general": "General inquiry",
+      "partnership": "Partnership",
+      "support": "Technical support",
+      "media": "Media inquiry"
+    },
+    "submit": "Send message",
+    "submitting": "Sending...",
+    "success": "Thank you! Your message has been sent to our team.",
+    "apiUnavailable": "The contact service is currently unavailable. Please try again later.",
+    "sendError": "Unable to send your message. Please try again.",
+    "invalidName": "Enter a name with at least 2 characters.",
+    "invalidEmail": "Enter a valid email address.",
+    "invalidPhone": "Enter a valid phone number.",
+    "invalidMessage": "Your message should contain at least 20 characters."
+  },
+  "Login": {
+    "eyebrow": "Secure portal access",
+    "title": "Welcome to PrimeHorizon",
+    "description": "Sign in to your secure PrimeHorizon portal.",
+    "clientTitle": "Client Portal",
+    "clientDescription": "Track projects, proposals, invoices, and support requests.",
+    "clientButton": "Client Login",
+    "shareholderTitle": "Shareholder Portal",
+    "shareholderDescription": "Sign in with your shareholder account to access the cap table and shared documents.",
+    "shareholderButton": "Continue to Shareholder Portal",
+    "secureNote": "Local testing uses credentials for both portals. Production shareholder sign-in remains in its dedicated Keycloak realm.",
+    "notConfigured": "Sign-in is not configured. Contact the administrator.",
+    "loginError": "Sign-in failed. Check your credentials and try again.",
+    "serverConnectionError": "Could not connect to the server. Please check if the backend is running.",
+    "signInTitle": "Sign In to {portal}",
+    "clientPortal": "Client Portal",
+    "shareholderPortal": "Shareholder Portal",
+    "registerTitle": "Create an Account",
+    "forgotTitle": "Reset Password",
+    "emailLabel": "Email",
+    "passwordLabel": "Password",
+    "firstNameLabel": "First Name",
+    "lastNameLabel": "Last Name",
+    "organizationLabel": "Organization",
+    "confirmPasswordLabel": "Confirm Password",
+    "acceptTermsLabel": "I accept the terms and conditions.",
+    "forgotLink": "Forgot Password?",
+    "signInButton": "Sign In",
+    "noAccount": "Don't have an account?",
+    "signUpLink": "Sign Up",
+    "registerButton": "Register",
+    "haveAccount": "Already have an account?",
+    "signInLink": "Sign In",
+    "forgotDescription": "Enter your email address and we will send a reset link if an account exists.",
+    "sendResetButton": "Send Reset Link",
+    "backToLogin": "Back to Login",
+    "resetSuccess": "If an account exists, a reset link was sent.",
+    "registerError": "Registration could not be completed. Please try again.",
+    "emailAlreadyRegistered": "An account with this email already exists.",
+    "accountCreatedSignInError": "Your account was created, but sign-in failed. Please sign in.",
+    "resetError": "The reset request could not be completed. Please try again."
+  },
+  "ClientPortal": {
+    "portalName": "Client Portal",
+    "dashboard": "Dashboard",
+    "myProjects": "My Projects",
+    "documents": "Documents",
+    "invoices": "Invoices",
+    "support": "Support",
+    "documentVault": "Document Vault",
+    "dragDrop": "Drag and drop files here to upload.",
+    "noInvoices": "No invoices available.",
+    "createTicket": "Create Support Ticket",
+    "signOut": "Sign Out",
+    "workspace": "Client workspace",
+    "welcome": "Welcome back, {name}",
+    "welcomeDescription": "Here is an overview of your projects and recent activity.",
+    "activeProjects": "My Projects",
+    "startDate": "Start date",
+    "endDate": "End date",
+    "statusPlanning": "Planning",
+    "statusInProgress": "In progress",
+    "statusCompleted": "Completed",
+    "noProjects": "No projects are available for this account.",
+    "projectsDescription": "Manage and track the progress of your active projects.",
+    "signOut": "Sign Out",
+    "clientFallback": "Client",
+    "projectsLoadError": "Projects could not be loaded. Please try again.",
+    "retry": "Retry",
+    "startDate": "Start date",
+    "endDate": "End date",
+    "statusPlanning": "Planning",
+    "statusInProgress": "In progress",
+    "statusCompleted": "Completed"
+  },
+  "ShareholderPortal": {
+    "portalName": "Shareholder Portal",
+    "secureAccount": "Secure account",
+    "overview": "Overview",
+    "holdings": "My Holdings",
+    "capTable": "Cap Table",
+    "governance": "Governance",
+    "kycDocuments": "KYC Documents",
+    "kycPending": "Verification in progress",
+    "signOut": "Sign Out",
+    "shareholderFallback": "Shareholder",
+    "welcome": "Welcome, {name}",
+    "description": "A secure overview of your shareholding and company governance updates.",
+    "totalSharesOwned": "Total Shares Owned",
+    "currentValuation": "Current Valuation",
+    "illustrativeValue": "Illustrative value only",
+    "sampleDataNotice": "Sample data for interface preview only; these figures are not actual shareholder records.",
+    "equityDistribution": "Equity Distribution",
+    "distributionDescription": "Issued share distribution for the current shareholder register.",
+    "ordinaryShares": "Ordinary",
+    "preferredShares": "Preferred",
+    "governanceUpdates": "Governance Updates",
+    "updateDate": "Date",
+    "updateType": "Update",
+    "updateDetails": "Details",
+    "annualMeeting": "Annual General Meeting",
+    "annualMeetingDate": "21 Nov 2026",
+    "annualMeetingDetails": "Meeting notice and agenda published for shareholder review.",
+    "kycReview": "KYC Review",
+    "kycReviewDate": "04 Nov 2026",
+    "kycReviewDetails": "Shareholder identity verification process information.",
+    "documentsTitle": "Shared Document Vault",
+    "documentsDescription": "View documents associated with each shareholder from the cap table. Shareholders can add documents to their own profile.",
+    "capTableMetrics": "Shareholder register totals",
+    "totalShareholders": "Total Shareholders",
+    "totalSharesIssued": "Total Shares Issued",
+    "totalCapitalRaised": "Total Capital Raised",
+    "capTableEyebrow": "Ownership register",
+    "capTableHeading": "Shareholder Cap Table",
+    "capTableDescription": "Read-only ownership, contribution, and KYC details for all shareholders.",
+    "shareholderCount": "{count, plural, one {# shareholder} other {# shareholders}}",
+    "columnName": "Name",
+    "columnTin": "TIN",
+    "columnShares": "Shares",
+    "columnContribution": "Contribution",
+    "columnDatePaid": "Date Paid",
+    "columnKyc": "KYC Status",
+    "columnActions": "Documents",
+    "viewDocuments": "View Documents",
+    "viewDocumentsFor": "View documents for {name}",
+    "noShareholders": "No shareholder records are available.",
+    "loadingRecords": "Loading shareholder records",
+    "apiNotConfigured": "The API URL is not configured.",
+    "loadError": "Shareholder records could not be loaded. Please try again.",
+    "invalidResponse": "The server returned invalid shareholder data.",
+    "retry": "Retry",
+    "kycStatus": {
+      "PENDING": "Pending",
+      "UNDER_REVIEW": "Under review",
+      "APPROVED": "Approved",
+      "REJECTED": "Rejected"
+    },
+    "documentsFor": "Documents for {name}",
+    "documentVaultDescription": "Shareholder documents are visible to authenticated shareholders.",
+    "documentsListTitle": "Available documents",
+    "uploadedAt": "Added {date}",
+    "noDocuments": "No documents have been added to this profile.",
+    "addDocument": "Add a document to your profile",
+    "mockUploadDescription": "This mock uploader saves a document name and an existing HTTPS/HTTP URL; it does not transfer file contents.",
+    "dropDocument": "Drop a file here or choose a file",
+    "dropDocumentHint": "PDF, PNG, or JPG. Add the file's hosted URL below.",
+    "documentName": "Document name",
+    "documentUrl": "Hosted document URL",
+    "uploadDocument": "Save document link",
+    "uploading": "Saving...",
+    "documentAdded": "Document link added.",
+    "uploadError": "The document link could not be saved. Please try again.",
+    "uploadOwnProfileOnly": "Only the profile owner can add documents here."
+  },
+  "Investors": {
+    "heroTitle": "Invest in Africa's Next Tech Horizon",
+    "heroSubtitle": "PrimeHorizon Group Trading PLC is bridging global academic excellence with deep local infrastructure expertise. Join us as we scale.",
+    "ctaButton": "Request Investor Prospectus",
+    "metrics": {
+      "experts": "Tech Experts",
+      "sectors": "Core Sectors",
+      "institutions": "Institutional Partners"
+    },
+    "whyInvestTitle": "Why PrimeHorizon?",
+    "reasons": {
+      "market": "High-Growth Market",
+      "marketDesc": "Direct access to Ethiopia's rapidly digitizing energy, finance, and telecom sectors.",
+      "esx": "ESX & ECMA Readiness",
+      "esxDesc": "Governance, cap-table, and KYC workflows are being structured with Capital Market Proclamation No. 1248/2021 in mind, subject to legal and regulatory review.",
+      "team": "Elite Syndicate",
+      "teamDesc": "20+ engineers and developers actively shaping national infrastructure and studying globally."
+    }
+  },
+  "Rfp": {
+    "title": "Partner With Us",
+    "titleAm": "ከእኛ ጋር ይተባበሩ",
+    "organization": "Organization Name",
+    "contactName": "Contact Name",
+    "contactEmail": "Email",
+    "phone": "Phone",
+    "sector": "Sector",
+    "projectDetails": "Project Details",
+    "budgetRange": "Budget Range (Optional)",
+    "timeline": "Timeline (Optional)",
+    "submit": "Submit RFP",
+    "loading": "Submitting...",
+    "success": "Your request has been submitted successfully. Reference ID: {id}",
+    "requestFailed": "Unable to submit your request. Please try again.",
+    "serverError": "The server could not process your request. Please try again.",
+    "missingApiUrl": "The API URL is not configured.",
+    "Sectors": {
+      "EDUCATION": "Education",
+      "IT_SUPPORT": "IT Support",
+      "WEB_SOFTWARE": "Web & Software",
+      "TELECOM": "Telecom",
+      "SOLAR_ELECTRICAL": "Solar & Electrical",
+      "POWER_GEN": "Power Generation"
+    }
+  }
+}

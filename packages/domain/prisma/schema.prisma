@@ -1,0 +1,151 @@
+generator client {
+  provider        = "prisma-client-js"
+  previewFeatures = ["postgresqlExtensions"]
+}
+
+datasource db {
+  provider   = "postgresql"
+  url        = env("DATABASE_URL")
+}
+
+model Tenant {
+  id        String     @id @default(uuid())
+  name      String
+  type      TenantType
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
+
+  users              User[]
+  rfps               RfpRequest[]
+  projects           Project[]
+  shareholderProfile ShareholderProfile?
+  documentEmbeddings DocumentEmbedding[]
+}
+
+enum TenantType {
+  CLIENT
+  SHAREHOLDER
+  INTERNAL
+}
+
+model User {
+  id               String    @id @default(uuid())
+  tenantId         String
+  email            String    @unique
+  firstName        String
+  lastName         String
+  passwordHash     String?
+  resetToken       String?   @unique
+  resetTokenExpiry DateTime?
+  role             UserRole
+  createdAt        DateTime  @default(now())
+
+  tenant Tenant @relation(fields: [tenantId], references: [id])
+}
+
+enum UserRole {
+  SUPER_ADMIN
+  ADMIN
+  PROJECT_MANAGER
+  CLIENT_ADMIN
+  CLIENT
+  SHAREHOLDER
+}
+
+model RfpRequest {
+  id             String    @id @default(uuid())
+  tenantId       String
+  organization   String
+  contactName    String
+  contactEmail   String
+  phone          String
+  sector         String
+  projectDetails String    @db.Text
+  budgetRange    String?
+  timeline       String?
+  status         RfpStatus @default(PENDING)
+  createdAt      DateTime  @default(now())
+
+  tenant Tenant @relation(fields: [tenantId], references: [id])
+}
+
+enum RfpStatus {
+  PENDING
+  UNDER_REVIEW
+  PROPOSAL_SENT
+  ACCEPTED
+  REJECTED
+}
+
+model Project {
+  id          String    @id @default(uuid())
+  tenantId    String
+  title       String
+  description String    @db.Text
+  status      String    @default("PLANNING")
+  startDate   DateTime?
+  endDate     DateTime?
+  createdAt   DateTime  @default(now())
+
+  tenant Tenant @relation(fields: [tenantId], references: [id])
+}
+
+model ContactMessage {
+  id        String   @id @default(uuid())
+  name      String
+  email     String
+  phone     String
+  subject   String
+  message   String   @db.Text
+  status    String   @default("UNREAD")
+  createdAt DateTime @default(now())
+}
+
+model ShareholderProfile {
+  id                String    @id @default(uuid())
+  tenantId          String    @unique
+  contactNo         String?
+  tinNumber         String?
+  numberOfShares    Int       @default(0)
+  shareValue        Decimal   @default(1000.00) @db.Decimal(10, 2)
+  totalContribution Decimal   @default(0.00) @db.Decimal(12, 2)
+  datePaid          DateTime?
+  remarks           String?
+  shareClass        String    @default("ORDINARY")
+  isAccredited      Boolean   @default(false)
+  kycStatus         KycStatus @default(PENDING)
+  createdAt         DateTime  @default(now())
+  updatedAt         DateTime  @updatedAt
+
+  tenant    Tenant                @relation(fields: [tenantId], references: [id])
+  documents ShareholderDocument[]
+}
+
+model ShareholderDocument {
+  id                   String   @id @default(uuid())
+  shareholderProfileId String
+  documentName         String
+  documentUrl          String?
+  uploadedAt           DateTime @default(now())
+
+  shareholderProfile ShareholderProfile @relation(fields: [shareholderProfileId], references: [id])
+}
+
+model DocumentEmbedding {
+  id        String                       @id @default(uuid())
+  tenantId  String
+  content   String                       @db.Text
+  embedding String
+  createdAt DateTime                     @default(now())
+
+  tenant Tenant @relation(fields: [tenantId], references: [id])
+
+  @@index([tenantId, createdAt])
+}
+
+enum KycStatus {
+  PENDING
+  UNDER_REVIEW
+  APPROVED
+  REJECTED
+}

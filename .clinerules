@@ -1,0 +1,15 @@
+# PrimeHorizon Core Expertise Matrix (Strictly Enforced)
+Replace previous sector definitions with this exact matrix:
+
+1. Education and Training - Level: High (ከፍተኛ)
+2. IT support and networking - Level: High (ከፍተኛ)
+3. Websites and business software - Level: High (ከፍተኛ)
+4. Telecom infrastructure services - Level: Medium (መካከለኛ)
+5. Solar and electrical engineering - Level: Medium (መካከለኛ)
+6. Power generation projects - Level: Long-term (የረጅም ጊዜ)
+
+# API & Prisma Rules
+- Import Prisma Client and Zod schemas from `@primehorizon/domain`.
+- NestJS controllers must use `nestjs-zod` for DTO validation.
+- Never expose raw database errors to the frontend. Catch them in the service layer and throw NestJS `HttpException`s.
+- The frontend API URL must be read from `process.env.NEXT_PUBLIC_API_URL`.
