@@ -12,6 +12,8 @@
     "./contact-schema": "./src/schemas/contact.schema.ts"
   },
   "scripts": {
+    "generate": "node node_modules/prisma/build/index.js generate --schema prisma/schema.prisma",
+    "migrate:deploy": "node node_modules/prisma/build/index.js migrate deploy --schema prisma/schema.prisma",
     "check-types": "tsc --noEmit"
   },
   "devDependencies": {
