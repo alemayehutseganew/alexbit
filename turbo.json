@@ -9,7 +9,17 @@
         "DATABASE_URL",
         "DATABASE_URL_POOLED",
         "POSTGRES_URL",
-        "PRISMA_DATABASE_URL"
+        "PRISMA_DATABASE_URL",
+        "NODE_ENV",
+        "CORS_ORIGINS",
+        "JWT_SECRET",
+        "JWT_ISSUER",
+        "JWT_AUDIENCE",
+        "NEXT_PUBLIC_SITE_URL",
+        "AUTH_KEYCLOAK_CLIENT_ISSUER",
+        "AUTH_KEYCLOAK_SHAREHOLDER_ISSUER",
+        "KEYCLOAK_API_AUDIENCE",
+        "OPENAI_API_KEY"
       ],
       "inputs": ["$TURBO_DEFAULT$", ".env*"],
       "outputs": [".next/**", "!.next/cache/**", "!.next/dev/**", "dist/**"]
