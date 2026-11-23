@@ -101,6 +101,9 @@ function portalRole(role: CredentialRole): PortalRole {
 }
 
 const nextAuth: NextAuthResult = NextAuth({
+  trustHost: true,
+  secret: process.env.AUTH_SECRET,
+  basePath: "/api/auth",
   providers: [
     ...(keycloakProvidersEnabled && clientKeycloakConfigured
       ? [

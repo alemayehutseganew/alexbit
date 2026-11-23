@@ -83,7 +83,9 @@ export default function middleware(
 ) {
   const portal = portalForPath(request.nextUrl.pathname);
   if (portal) {
-    const credentialsEnabled = process.env.NODE_ENV !== "production";
+    const credentialsEnabled =
+      process.env.NODE_ENV !== "production" ||
+      Boolean(process.env.AUTH_SECRET);
     const providerConfigured =
       portal === "admin" ||
       portal === "client" ||

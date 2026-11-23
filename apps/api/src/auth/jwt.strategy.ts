@@ -43,10 +43,10 @@ function jwtStrategyOptions() {
   const issuers = configuredIssuers();
   const audience = process.env.KEYCLOAK_API_AUDIENCE;
   if (process.env.NODE_ENV === 'production') {
-    if (issuers.length < 2) {
+    if (!localSecret && issuers.length < 2) {
       throw new Error('Both Keycloak realm issuers must be configured');
     }
-    if (!audience) {
+    if (!audience && !localSecret) {
       throw new Error('KEYCLOAK_API_AUDIENCE must be configured');
     }
   }
