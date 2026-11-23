@@ -18,14 +18,25 @@ async function bootstrap() {
       files: 1,
     },
   });
+  const corsOrigins = [
+    process.env.NEXT_PUBLIC_SITE_URL,
+    process.env.CORS_ORIGINS,
+  ]
+    .filter((value): value is string => Boolean(value))
+    .flatMap((value) => value.split(','))
+    .map((value) => value.trim())
+    .filter(Boolean);
   app.enableCors({
-    origin: 'http://localhost:3000',
+    origin:
+      process.env.NODE_ENV === 'production'
+        ? corsOrigins
+        : ['http://localhost:3000', ...corsOrigins],
     credentials: true,
     allowedHeaders: ['Content-Type', 'Authorization'],
     methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
   });
   app.useGlobalPipes(new ValidationPipe());
-  await app.listen(process.env.PORT ?? 3001);
+  await app.listen(process.env.PORT ?? 3001, '0.0.0.0');
 }
 void bootstrap().catch((error: unknown) => {
   console.error('Failed to start API', error);
