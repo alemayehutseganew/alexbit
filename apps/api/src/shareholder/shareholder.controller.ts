@@ -1,4 +1,5 @@
 import {
+  BadRequestException,
   Body,
   Controller,
   Delete,
@@ -7,10 +8,12 @@ import {
   Patch,
   Post,
   Req,
+  Res,
   UseGuards,
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import type { FastifyRequest } from 'fastify';
+import type { FastifyReply } from 'fastify';
 import type { AuthenticatedUser } from '../auth/authenticated-user';
 import { Roles } from '../auth/roles.decorator';
 import { RolesGuard } from '../auth/roles.guard';
@@ -54,6 +57,75 @@ export class ShareholderController {
     @Req() request: AuthenticatedRequest,
   ) {
     return this.shareholderService.addDocument(id, data, request.user);
+  }
+
+  @Post(':id/documents/upload')
+  @Roles('SHAREHOLDER', 'ADMIN', 'SUPER_ADMIN')
+  async addUploadedDocument(
+    @Param('id') id: string,
+    @Req() request: AuthenticatedRequest,
+  ) {
+    const upload = await request.file();
+    if (!upload) {
+      throw new BadRequestException('A document file is required');
+    }
+    return this.shareholderService.addUploadedDocument(id, upload, request.user);
+  }
+
+  @Get(':profileId/documents/:documentId/file')
+  @Roles('SHAREHOLDER', 'ADMIN', 'SUPER_ADMIN', 'PROJECT_MANAGER')
+  async downloadDocument(
+    @Param('profileId') profileId: string,
+    @Param('documentId') documentId: string,
+    @Req() request: AuthenticatedRequest,
+    @Res() reply: FastifyReply,
+  ) {
+    const file = await this.shareholderService.getDocumentFile(
+      profileId,
+      documentId,
+      request.user,
+    );
+    return reply
+      .type(file.mimeType)
+      .header(
+        'Content-Disposition',
+        `inline; filename="${file.fileName.replaceAll('"', '')}"`,
+      )
+      .send(file.buffer);
+  }
+
+  @Get('company-documents')
+  @Roles('SHAREHOLDER', 'ADMIN', 'SUPER_ADMIN', 'PROJECT_MANAGER')
+  getCompanyDocuments() {
+    return this.shareholderService.getCompanyDocuments();
+  }
+
+  @Post('company-documents/upload')
+  @Roles('ADMIN', 'SUPER_ADMIN', 'SHAREHOLDER')
+  async addCompanyDocument(@Req() request: AuthenticatedRequest) {
+    const upload = await request.file();
+    if (!upload) {
+      throw new BadRequestException('A document file is required');
+    }
+    return this.shareholderService.addCompanyDocument(upload, request.user);
+  }
+
+  @Get('company-documents/:documentId/file')
+  @Roles('SHAREHOLDER', 'ADMIN', 'SUPER_ADMIN', 'PROJECT_MANAGER')
+  async downloadCompanyDocument(
+    @Param('documentId') documentId: string,
+    @Req() request: AuthenticatedRequest,
+    @Res() reply: FastifyReply,
+  ) {
+    const file =
+      await this.shareholderService.getCompanyDocumentFile(documentId);
+    return reply
+      .type(file.mimeType)
+      .header(
+        'Content-Disposition',
+        `inline; filename="${file.fileName.replaceAll('"', '')}"`,
+      )
+      .send(file.buffer);
   }
 
   @Delete(':profileId/documents/:documentId')

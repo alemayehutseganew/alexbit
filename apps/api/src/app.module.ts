@@ -9,6 +9,7 @@ import { DocumentsModule } from './documents/documents.module';
 import { ProjectsModule } from './projects/projects.module';
 import { RfpModule } from './rfp/rfp.module';
 import { ShareholderModule } from './shareholder/shareholder.module';
+import { ClientModule } from './client/client.module';
 
 @Module({
   imports: [
@@ -20,6 +21,7 @@ import { ShareholderModule } from './shareholder/shareholder.module';
     RfpModule,
     ProjectsModule,
     ShareholderModule,
+    ClientModule,
   ],
   controllers: [AppController],
   providers: [AppService],

@@ -20,6 +20,9 @@ model Tenant {
   projects           Project[]
   shareholderProfile ShareholderProfile?
   documentEmbeddings DocumentEmbedding[]
+  clientDocuments   ClientDocument[]
+  clientInvoices    ClientInvoice[]
+  supportTickets    SupportTicket[]
 }
 
 enum TenantType {
@@ -129,6 +132,71 @@ model ShareholderDocument {
   uploadedAt           DateTime @default(now())
 
   shareholderProfile ShareholderProfile @relation(fields: [shareholderProfileId], references: [id])
+}
+
+model CompanyDocument {
+  id                String   @id @default(uuid())
+  documentName      String
+  documentUrl       String
+  uploadedByTenantId String
+  uploadedAt        DateTime @default(now())
+}
+
+model ClientDocument {
+  id          String   @id @default(uuid())
+  tenantId    String
+  documentName String
+  documentUrl String
+  uploadedAt  DateTime @default(now())
+
+  tenant Tenant @relation(fields: [tenantId], references: [id])
+}
+
+model ClientInvoice {
+  id          String   @id @default(uuid())
+  tenantId    String
+  invoiceNumber String
+  issueDate   DateTime
+  dueDate     DateTime?
+  amount      Decimal  @db.Decimal(12, 2)
+  status      InvoiceStatus @default(PENDING)
+  documentUrl String?
+  createdAt   DateTime @default(now())
+
+  tenant Tenant @relation(fields: [tenantId], references: [id])
+}
+
+enum InvoiceStatus {
+  PENDING
+  PAID
+  OVERDUE
+  CANCELLED
+}
+
+model SupportTicket {
+  id        String   @id @default(uuid())
+  tenantId  String
+  subject   String
+  message   String   @db.Text
+  priority  TicketPriority @default(NORMAL)
+  status    TicketStatus @default(OPEN)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  tenant Tenant @relation(fields: [tenantId], references: [id])
+}
+
+enum TicketPriority {
+  LOW
+  NORMAL
+  HIGH
+}
+
+enum TicketStatus {
+  OPEN
+  IN_PROGRESS
+  RESOLVED
+  CLOSED
 }
 
 model DocumentEmbedding {

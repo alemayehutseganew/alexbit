@@ -34,6 +34,9 @@ async function main() {
   await prisma.$transaction(async (transaction) => {
     // 🛑 PROPER WIPE ORDER (Children first, Parents last) 🛑
     console.log("Wiping old data...");
+    await transaction.supportTicket.deleteMany();
+    await transaction.clientInvoice.deleteMany();
+    await transaction.clientDocument.deleteMany();
     await transaction.project.deleteMany();
     await transaction.rfpRequest.deleteMany();
     await transaction.shareholderDocument.deleteMany();
@@ -137,6 +140,27 @@ async function main() {
         status: "IN_PROGRESS",
         startDate: new Date("2026-11-01T00:00:00.000Z"),
         endDate: new Date("2027-04-30T00:00:00.000Z"),
+      },
+    });
+
+    await transaction.clientInvoice.create({
+      data: {
+        tenantId: clientTenant.id,
+        invoiceNumber: "INV-2026-001",
+        issueDate: new Date("2026-11-15T00:00:00.000Z"),
+        dueDate: new Date("2026-12-15T00:00:00.000Z"),
+        amount: 2500,
+        status: "PENDING",
+      },
+    });
+
+    await transaction.supportTicket.create({
+      data: {
+        tenantId: clientTenant.id,
+        subject: "Project network upgrade",
+        message: "Please provide an update on the branch office network installation timeline.",
+        priority: "NORMAL",
+        status: "OPEN",
       },
     });
   });

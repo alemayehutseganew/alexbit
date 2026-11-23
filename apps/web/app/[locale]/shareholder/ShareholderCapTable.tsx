@@ -172,6 +172,17 @@ function safeDocumentUrl(value: string | null): string | null {
   }
 }
 
+function shareholderDocumentUrl(
+  document: ShareholderDocument,
+  selectedShareholder: ShareholderRecord,
+  apiUrl: string,
+): string | null {
+  if (document.documentUrl?.startsWith("local://")) {
+    return `${apiUrl}/api/shareholder/${selectedShareholder.id}/documents/${document.id}/file`;
+  }
+  return safeDocumentUrl(document.documentUrl);
+}
+
 async function getResponseError(
   response: Response,
   fallback: string,
@@ -221,6 +232,21 @@ export function ShareholderCapTable({
   const [documentName, setDocumentName] = useState("");
   const [documentUrl, setDocumentUrl] = useState("");
   const [selectedFileName, setSelectedFileName] = useState("");
+  const [selectedDocumentFile, setSelectedDocumentFile] =
+    useState<File | null>(null);
+  const [companyDocuments, setCompanyDocuments] = useState<
+    Array<{
+      id: string;
+      documentName: string;
+      documentUrl: string;
+      uploadedAt: string;
+    }>
+  >([]);
+  const [companyFile, setCompanyFile] = useState<File | null>(null);
+  const [companyUploadError, setCompanyUploadError] = useState<string | null>(
+    null,
+  );
+  const [companyUploading, setCompanyUploading] = useState(false);
   const [isDragging, setIsDragging] = useState(false);
   const [isUploading, setIsUploading] = useState(false);
   const [uploadError, setUploadError] = useState<string | null>(null);
@@ -290,6 +316,43 @@ export function ShareholderCapTable({
     void loadShareholders(controller.signal);
     return () => controller.abort();
   }, [loadShareholders, refreshKey]);
+
+  useEffect(() => {
+    const apiUrl = process.env.NEXT_PUBLIC_API_URL?.replace(/\/$/, "");
+    if (!apiUrl) return;
+
+    const controller = new AbortController();
+    void fetch(`${apiUrl}/api/shareholder/company-documents`, {
+      headers: { Authorization: `Bearer ${accessToken}` },
+      signal: controller.signal,
+    })
+      .then((response) => (response.ok ? response.json() : []))
+      .then((result: unknown) => {
+        if (
+          Array.isArray(result) &&
+          result.every(
+            (item) =>
+              isRecord(item) &&
+              typeof item.id === "string" &&
+              typeof item.documentName === "string" &&
+              typeof item.documentUrl === "string" &&
+              typeof item.uploadedAt === "string",
+          )
+        ) {
+          setCompanyDocuments(
+            result as Array<{
+              id: string;
+              documentName: string;
+              documentUrl: string;
+              uploadedAt: string;
+            }>,
+          );
+        }
+      })
+      .catch(() => undefined);
+
+    return () => controller.abort();
+  }, [accessToken, refreshKey]);
 
   const selectedShareholder =
     shareholders.find((item) => item.id === selectedShareholderId) ?? null;
@@ -415,6 +478,7 @@ export function ShareholderCapTable({
     }
 
     setSelectedFileName(file.name);
+    setSelectedDocumentFile(file);
     setDocumentName(file.name);
     setUploadError(null);
     setUploadSuccess(false);
@@ -537,20 +601,37 @@ export function ShareholderCapTable({
     setUploadError(null);
     setUploadSuccess(false);
     try {
-      const response = await fetch(
-        `${apiUrl}/api/shareholder/${selectedShareholder.id}/documents`,
-        {
-          method: "POST",
-          headers: {
-            Authorization: `Bearer ${accessToken}`,
-            "Content-Type": "application/json",
+      let response: Response;
+      if (selectedDocumentFile) {
+        const formData = new FormData();
+        formData.append("file", selectedDocumentFile);
+        formData.append("documentName", documentName.trim());
+        response = await fetch(
+          `${apiUrl}/api/shareholder/${selectedShareholder.id}/documents/upload`,
+          {
+            method: "POST",
+            headers: { Authorization: `Bearer ${accessToken}` },
+            body: formData,
           },
-          body: JSON.stringify({
-            documentName: documentName.trim(),
-            ...(documentUrl.trim() ? { documentUrl: documentUrl.trim() } : {}),
-          }),
-        },
-      );
+        );
+      } else {
+        response = await fetch(
+          `${apiUrl}/api/shareholder/${selectedShareholder.id}/documents`,
+          {
+            method: "POST",
+            headers: {
+              Authorization: `Bearer ${accessToken}`,
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              documentName: documentName.trim(),
+              ...(documentUrl.trim()
+                ? { documentUrl: documentUrl.trim() }
+                : {}),
+            }),
+          },
+        );
+      }
       if (!response.ok) {
         throw new Error(await getResponseError(response, t("uploadError")));
       }
@@ -559,6 +640,7 @@ export function ShareholderCapTable({
       setDocumentName("");
       setDocumentUrl("");
       setSelectedFileName("");
+      setSelectedDocumentFile(null);
       setRefreshKey((key) => key + 1);
     } catch (uploadFailure) {
       setUploadError(
@@ -568,6 +650,50 @@ export function ShareholderCapTable({
       );
     } finally {
       setIsUploading(false);
+    }
+  };
+
+  const submitCompanyDocument = async (
+    event: FormEvent<HTMLFormElement>,
+  ) => {
+    event.preventDefault();
+    if (!companyFile) {
+      setCompanyUploadError("Choose a company document first.");
+      return;
+    }
+
+    const apiUrl = process.env.NEXT_PUBLIC_API_URL?.replace(/\/$/, "");
+    if (!apiUrl) {
+      setCompanyUploadError(t("apiNotConfigured"));
+      return;
+    }
+
+    const formData = new FormData();
+    formData.append("file", companyFile);
+    setCompanyUploading(true);
+    setCompanyUploadError(null);
+    try {
+      const response = await fetch(
+        `${apiUrl}/api/shareholder/company-documents/upload`,
+        {
+          method: "POST",
+          headers: { Authorization: `Bearer ${accessToken}` },
+          body: formData,
+        },
+      );
+      if (!response.ok) {
+        throw new Error(await getResponseError(response, t("uploadError")));
+      }
+      setCompanyFile(null);
+      setRefreshKey((key) => key + 1);
+    } catch (uploadFailure) {
+      setCompanyUploadError(
+        uploadFailure instanceof Error
+          ? uploadFailure.message
+          : t("uploadError"),
+      );
+    } finally {
+      setCompanyUploading(false);
     }
   };
 
@@ -593,6 +719,104 @@ export function ShareholderCapTable({
 
   return (
     <>
+      <section className="rounded-2xl border border-white/[0.08] bg-white/[0.035] p-5 sm:p-6">
+        <div className="flex flex-wrap items-start justify-between gap-4">
+          <div>
+            <p className="text-xs font-semibold uppercase tracking-[0.16em] text-blue-300">
+              Company documents
+            </p>
+            <h2 className="mt-1 text-lg font-semibold text-white">
+              Receipts and shared records
+            </h2>
+          </div>
+          {canManage && (
+            <form
+              onSubmit={(event) => void submitCompanyDocument(event)}
+              className="flex flex-wrap items-center gap-2"
+            >
+              <input
+                type="file"
+                accept=".pdf,.png,.jpg,.jpeg"
+                onChange={(event) =>
+                  setCompanyFile(event.target.files?.[0] ?? null)
+                }
+                className="block max-w-[220px] text-xs text-slate-300 file:mr-3 file:min-h-10 file:rounded-lg file:border-0 file:bg-brand-600 file:px-3 file:text-xs file:font-semibold file:text-white"
+              />
+              <Button
+                type="submit"
+                disabled={companyUploading || !companyFile}
+                className="min-h-10 bg-brand-600 text-white hover:bg-brand-500"
+              >
+                <UploadCloud aria-hidden="true" size={15} />
+                {companyUploading ? "Uploading..." : "Upload"}
+              </Button>
+            </form>
+          )}
+        </div>
+        {companyUploadError && (
+          <p role="alert" className="mt-3 text-sm text-red-300">
+            {companyUploadError}
+          </p>
+        )}
+        {companyDocuments.length > 0 ? (
+          <ul className="mt-4 divide-y divide-white/10 overflow-hidden rounded-xl border border-white/10 bg-slate-950/20">
+            {companyDocuments.map((document) => {
+              const apiUrl =
+                process.env.NEXT_PUBLIC_API_URL?.replace(/\/$/, "") ?? "";
+              const href = `${apiUrl}/api/shareholder/company-documents/${document.id}/file`;
+              return (
+                <li
+                  key={document.id}
+                  className="flex flex-wrap items-center justify-between gap-3 px-4 py-3"
+                >
+                  <div className="flex min-w-0 items-center gap-3">
+                    <FileText
+                      aria-hidden="true"
+                      className="shrink-0 text-blue-300"
+                      size={18}
+                    />
+                    <div className="min-w-0">
+                      <p className="break-all text-sm font-semibold text-white">
+                        {document.documentName}
+                      </p>
+                      <p className="mt-1 text-xs text-slate-400">
+                        {t("uploadedAt", {
+                          date: formatDate(document.uploadedAt, locale),
+                        })}
+                      </p>
+                    </div>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={async () => {
+                      const response = await fetch(href, {
+                        headers: { Authorization: `Bearer ${accessToken}` },
+                      });
+                      if (!response.ok) return;
+                      const blob = await response.blob();
+                      const objectUrl = URL.createObjectURL(blob);
+                      const anchor = window.document.createElement("a");
+                      anchor.href = objectUrl;
+                      anchor.download = document.documentName;
+                      anchor.click();
+                      URL.revokeObjectURL(objectUrl);
+                    }}
+                    className="inline-flex min-h-9 items-center gap-2 rounded-lg border border-white/15 px-3 text-xs font-semibold text-slate-200 hover:bg-white/10"
+                  >
+                    <Download aria-hidden="true" size={14} />
+                    Download
+                  </button>
+                </li>
+              );
+            })}
+          </ul>
+        ) : (
+          <p className="mt-4 rounded-xl border border-dashed border-white/10 px-4 py-6 text-center text-sm text-slate-400">
+            No company documents have been uploaded.
+          </p>
+        )}
+      </section>
+
       <section
         aria-label={t("capTableMetrics")}
         className="grid gap-4 sm:grid-cols-3"
@@ -755,7 +979,12 @@ export function ShareholderCapTable({
                 {selectedShareholder.documents.length > 0 ? (
                   <ul className="divide-y divide-slate-200 overflow-hidden rounded-xl border border-slate-200 bg-white">
                     {selectedShareholder.documents.map((document) => {
-                      const href = safeDocumentUrl(document.documentUrl);
+                      const href = shareholderDocumentUrl(
+                        document,
+                        selectedShareholder,
+                        process.env.NEXT_PUBLIC_API_URL?.replace(/\/$/, "") ??
+                          "",
+                      );
                       return (
                         <li
                           key={document.id}

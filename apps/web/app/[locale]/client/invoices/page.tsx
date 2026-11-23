@@ -39,6 +39,40 @@ export default async function ClientInvoicesPage({
     throw new Error("An API access token is not available in this session");
   }
 
+  let invoices: Array<{
+    id: string;
+    invoiceNumber: string;
+    issueDate: string;
+    amount: string | number;
+    status: "PENDING" | "PAID" | "OVERDUE" | "CANCELLED";
+  }> = [];
+  try {
+    const response = await fetch(`${apiUrl.replace(/\/$/, "")}/api/client/invoices`, {
+      headers: { Authorization: `Bearer ${accessToken}` },
+      cache: "no-store",
+    });
+    if (response.ok) {
+      const value: unknown = await response.json();
+      if (
+        Array.isArray(value) &&
+        value.every(
+          (item) =>
+            typeof item === "object" &&
+            item !== null &&
+            "id" in item &&
+            "invoiceNumber" in item &&
+            "issueDate" in item &&
+            "amount" in item &&
+            "status" in item,
+        )
+      ) {
+        invoices = value as typeof invoices;
+      }
+    }
+  } catch {
+    invoices = [];
+  }
+
   return (
     <div className="min-h-screen p-6">
       <section className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
@@ -68,31 +102,54 @@ export default async function ClientInvoicesPage({
               </tr>
             </thead>
             <tbody>
-              <tr className="bg-white border-b border-slate-200">
-                <td className="p-6 whitespace-nowrap">
-                  <p className="text-sm font-medium text-slate-900">
-                    INV-2026-001
-                  </p>
-                </td>
-                <td className="p-6 whitespace-nowrap">
-                  <p className="text-sm text-slate-500">Nov 15, 2026</p>
-                </td>
-                <td className="p-6 whitespace-nowrap">
-                  <p className="text-xl font-semibold text-brand-600">
-                    $2,500.00
-                  </p>
-                </td>
-                <td className="p-6 whitespace-nowrap">
-                  <span className="px-2 py-1 text-xs font-medium bg-blue-100 text-blue-800 rounded">
-                    Pending
-                  </span>
-                </td>
-                <td className="p-6 whitespace-nowrap">
-                  <button className="text-sm font-medium text-brand-600 hover:underline">
-                    {t("viewDetails")}
-                  </button>
-                </td>
-              </tr>
+              {invoices.map((invoice) => (
+                <tr
+                  key={invoice.id}
+                  className="bg-white border-b border-slate-200"
+                >
+                  <td className="p-6 whitespace-nowrap">
+                    <p className="text-sm font-medium text-slate-900">
+                      {invoice.invoiceNumber}
+                    </p>
+                  </td>
+                  <td className="p-6 whitespace-nowrap">
+                    <p className="text-sm text-slate-500">
+                      {new Intl.DateTimeFormat(
+                        locale === "am" ? "am-ET" : "en-ET",
+                        { dateStyle: "medium" },
+                      ).format(new Date(invoice.issueDate))}
+                    </p>
+                  </td>
+                  <td className="p-6 whitespace-nowrap">
+                    <p className="text-xl font-semibold text-brand-600">
+                      ETB {Number(invoice.amount).toLocaleString(
+                        locale === "am" ? "am-ET" : "en-ET",
+                        { minimumFractionDigits: 2, maximumFractionDigits: 2 },
+                      )}
+                    </p>
+                  </td>
+                  <td className="p-6 whitespace-nowrap">
+                    <span className="rounded px-2 py-1 text-xs font-medium bg-blue-100 text-blue-800">
+                      {t(`invoiceStatus.${invoice.status}`)}
+                    </span>
+                  </td>
+                  <td className="p-6 whitespace-nowrap">
+                    <span className="text-sm text-slate-500">
+                      {t("viewDetails")}
+                    </span>
+                  </td>
+                </tr>
+              ))}
+              {invoices.length === 0 && (
+                <tr>
+                  <td
+                    colSpan={5}
+                    className="px-6 py-10 text-center text-sm text-slate-500"
+                  >
+                    {t("noInvoicesText")}
+                  </td>
+                </tr>
+              )}
             </tbody>
           </table>
         </div>
