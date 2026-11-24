@@ -47,11 +47,12 @@ server.use(async (_request, response, next) => {
 
 export default server;
 
-if (process.env.NODE_ENV !== 'production' && !process.env.VERCEL) {
+if (!process.env.VERCEL) {
   void initializationPromise
     .then(() => {
-      server.listen(process.env.PORT ?? 3001, () => {
-        console.log('Server running on port ' + (process.env.PORT ?? 3001));
+      const port = Number(process.env.PORT ?? 3001);
+      server.listen(port, '0.0.0.0', () => {
+        console.log(`Server running on port ${port}`);
       });
     })
     .catch((error: unknown) => {
