@@ -10,6 +10,7 @@ import { ProjectsModule } from './projects/projects.module';
 import { RfpModule } from './rfp/rfp.module';
 import { ShareholderModule } from './shareholder/shareholder.module';
 import { ClientModule } from './client/client.module';
+import { HealthController } from './health/health.controller';
 
 @Module({
   imports: [
@@ -23,7 +24,7 @@ import { ClientModule } from './client/client.module';
     ShareholderModule,
     ClientModule,
   ],
-  controllers: [AppController],
+  controllers: [AppController, HealthController],
   providers: [AppService],
 })
 export class AppModule {}
