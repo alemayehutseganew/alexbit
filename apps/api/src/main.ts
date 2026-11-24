@@ -25,29 +25,16 @@ async function createApp(): Promise<NestFastifyApplication> {
       files: 1,
     },
   });
-  const corsOrigins = [
-    'https://alexbit-wine.vercel.app',
-    process.env.NEXT_PUBLIC_SITE_URL,
-    process.env.CORS_ORIGINS,
-  ]
-    .filter((value): value is string => Boolean(value))
-    .flatMap((value) => value.split(','))
-    .map((value) => value.trim())
-    .filter(Boolean);
   app.enableCors({
-    origin: (origin, callback) => {
-      if (
-        !origin ||
-        process.env.NODE_ENV !== 'production' ||
-        corsOrigins.includes(origin)
-      ) {
-        callback(null, true);
-        return;
-      }
-      callback(new Error(`Origin not allowed: ${origin}`), false);
-    },
+    origin: process.env.FRONTEND_URL,
     credentials: true,
-    allowedHeaders: ['Content-Type', 'Authorization'],
+    allowedHeaders: [
+      'Content-Type',
+      'Authorization',
+      'Accept',
+      'X-CSRF-Token',
+      'X-Requested-With',
+    ],
     methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
   });
   app.useGlobalPipes(new ValidationPipe());
@@ -61,13 +48,7 @@ export async function handler(request: Request): Promise<Response> {
   const fastify = app.getHttpAdapter().getInstance();
   const url = new URL(request.url);
   const method = request.method.toUpperCase() as
-    | 'DELETE'
-    | 'GET'
-    | 'HEAD'
-    | 'OPTIONS'
-    | 'PATCH'
-    | 'POST'
-    | 'PUT';
+    'DELETE' | 'GET' | 'HEAD' | 'OPTIONS' | 'PATCH' | 'POST' | 'PUT';
   const result = (await fastify.inject({
     method,
     url: url.pathname + url.search,
@@ -82,15 +63,18 @@ export async function handler(request: Request): Promise<Response> {
 
 async function bootstrap() {
   const app = await createApp();
-  await app.getHttpAdapter().getInstance().listen({
-    port: Number(process.env.PORT ?? 3001),
-    host: '0.0.0.0',
-  });
+  await app
+    .getHttpAdapter()
+    .getInstance()
+    .listen({
+      port: Number(process.env.PORT ?? 3001),
+      host: '0.0.0.0',
+    });
 }
 
 if (!process.env.VERCEL) {
   void bootstrap().catch((error: unknown) => {
-  console.error('Failed to start API', error);
-  process.exitCode = 1;
+    console.error('Failed to start API', error);
+    process.exitCode = 1;
   });
 }

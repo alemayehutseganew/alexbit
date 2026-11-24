@@ -1,9 +1,6 @@
 import Keycloak from "next-auth/providers/keycloak";
 import Credentials from "next-auth/providers/credentials";
-import NextAuth, {
-  CredentialsSignin,
-  type NextAuthResult,
-} from "next-auth";
+import NextAuth, { CredentialsSignin, type NextAuthResult } from "next-auth";
 
 class CustomAuthError extends CredentialsSignin {
   constructor(message: string) {
@@ -102,7 +99,7 @@ function portalRole(role: CredentialRole): PortalRole {
 
 const nextAuth: NextAuthResult = NextAuth({
   trustHost: true,
-  secret: process.env.AUTH_SECRET,
+  secret: process.env.NEXTAUTH_SECRET,
   basePath: "/api/auth",
   providers: [
     ...(keycloakProvidersEnabled && clientKeycloakConfigured
@@ -135,16 +132,17 @@ const nextAuth: NextAuthResult = NextAuth({
         }
 
         try {
-          const apiUrl =
-            process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:3001";
-          const res = await fetch(`${apiUrl}/api/auth/login`, {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({
-              email: credentials.email,
-              password: credentials.password,
-            }),
-          });
+          const res = await fetch(
+            `${process.env.NEXT_PUBLIC_API_URL}/api/auth/login`,
+            {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({
+                email: credentials.email,
+                password: credentials.password,
+              }),
+            },
+          );
 
           if (!res.ok) {
             return null;
@@ -172,10 +170,7 @@ const nextAuth: NextAuthResult = NextAuth({
             ) {
               throw new CustomAuthError("Please use the Shareholder Portal.");
             }
-            if (
-              realm === "shareholder" &&
-              user.role !== "SHAREHOLDER"
-            ) {
+            if (realm === "shareholder" && user.role !== "SHAREHOLDER") {
               throw new CustomAuthError("Please use the Client Portal.");
             }
           }

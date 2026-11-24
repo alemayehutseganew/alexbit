@@ -2,6 +2,22 @@
   "$schema": "https://turborepo.dev/schema.json",
   "ui": "tui",
   "agentGuidance": true,
+  "globalEnv": [
+    "DATABASE_URL",
+    "DATABASE_URL_POOLED",
+    "NEXT_PUBLIC_API_URL",
+    "NEXTAUTH_URL",
+    "NEXTAUTH_SECRET",
+    "FRONTEND_URL"
+  ],
+  "globalPassThroughEnv": [
+    "DATABASE_URL",
+    "DATABASE_URL_POOLED",
+    "NEXT_PUBLIC_API_URL",
+    "NEXTAUTH_URL",
+    "NEXTAUTH_SECRET",
+    "FRONTEND_URL"
+  ],
   "tasks": {
     "build": {
       "dependsOn": ["^build"],
