@@ -1,13 +1,11 @@
 {
-  "version": 2,
   "buildCommand": "cd ../.. && npx turbo run build --filter=api",
   "outputDirectory": "dist",
-  "builds": [
-    {
-      "src": "dist/main.js",
-      "use": "@vercel/node"
+  "functions": {
+    "dist/main.js": {
+      "runtime": "@vercel/node@3"
     }
-  ],
+  },
   "routes": [
     {
       "src": "/(.*)",
