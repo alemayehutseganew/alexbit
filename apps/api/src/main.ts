@@ -61,7 +61,7 @@ export async function handler(request: Request): Promise<Response> {
   });
 }
 
-async function bootstrap() {
+export async function bootstrap() {
   const app = await createApp();
   await app
     .getHttpAdapter()
