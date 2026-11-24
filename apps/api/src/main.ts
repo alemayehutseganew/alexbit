@@ -18,10 +18,10 @@ export async function bootstrap() {
 
 void bootstrap();
 
-if (!process.env.VERCEL) {
-  server.listen(3001, () => {
-    console.log('Server is listening on http://localhost:3001');
+export default server;
+
+if (process.env.NODE_ENV !== 'production' && !process.env.VERCEL) {
+  server.listen(process.env.PORT ?? 3001, () => {
+    console.log('Server running on port ' + (process.env.PORT ?? 3001));
   });
 }
-
-export default server;
