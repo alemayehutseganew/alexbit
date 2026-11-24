@@ -3,13 +3,23 @@
   "ui": "tui",
   "agentGuidance": true,
   "globalEnv": [
+    "NODE_ENV",
     "DATABASE_URL",
     "DATABASE_URL_POOLED",
+    "JWT_SECRET",
+    "JWT_ISSUER",
+    "JWT_AUDIENCE",
+    "CORS_ORIGINS",
+    "FRONTEND_URL",
+    "PORT",
     "NEXT_PUBLIC_API_URL",
     "NEXTAUTH_URL",
     "NEXTAUTH_SECRET",
-    "FRONTEND_URL",
-    "PORT"
+    "NEXT_PUBLIC_SITE_URL",
+    "AUTH_KEYCLOAK_CLIENT_ISSUER",
+    "AUTH_KEYCLOAK_SHAREHOLDER_ISSUER",
+    "KEYCLOAK_API_AUDIENCE",
+    "OPENAI_API_KEY"
   ],
   "globalPassThroughEnv": [
     "DATABASE_URL",

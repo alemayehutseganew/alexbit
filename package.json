@@ -3,6 +3,7 @@
   "private": true,
   "packageManager": "npm@11.19.1",
   "scripts": {
+    "postinstall": "prisma generate --schema=packages/domain/prisma/schema.prisma",
     "prisma:generate": "npm run generate --workspace=@primehorizon/domain",
     "prisma:migrate:deploy": "npm run migrate:deploy --workspace=@primehorizon/domain",
     "build": "npm run prisma:generate && npm run build --workspace=api",
@@ -14,6 +15,7 @@
   },
   "devDependencies": {
     "prettier": "3.9.6",
+    "prisma": "^6.19.0",
     "turbo": "^2.11.13",
     "typescript": "5.9.3"
   },
@@ -23,5 +25,8 @@
   "workspaces": [
     "apps/*",
     "packages/*"
-  ]
+  ],
+  "dependencies": {
+    "@prisma/client": "^6.19.3"
+  }
 }
