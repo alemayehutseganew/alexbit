@@ -1,3 +1,3 @@
 @echo off
-cd /d "C:\Users\alexo\Desktop\PrimeHorizonGroupPlc\alexbit\apps\api"
+cd /d "%~dp0backend"
 npm run dev
