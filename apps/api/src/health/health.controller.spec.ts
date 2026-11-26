@@ -23,6 +23,10 @@ describe('HealthController', () => {
     await request(app.getHttpServer())
       .get('/health')
       .expect(200)
-      .expect({ status: 'ok' });
+      .expect((response) => {
+        expect(response.text).toMatch(
+          /^\{"status":"ok","timestamp":"\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d{3}Z"\}$/,
+        );
+      });
   });
 });

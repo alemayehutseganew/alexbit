@@ -1,11 +1,8 @@
-import { Injectable, OnModuleDestroy, OnModuleInit } from '@nestjs/common';
+import { Injectable, OnModuleDestroy } from '@nestjs/common';
 import { PrismaClient } from '@primehorizon/domain/prisma';
 
 @Injectable()
-export class PrismaService
-  extends PrismaClient
-  implements OnModuleInit, OnModuleDestroy
-{
+export class PrismaService extends PrismaClient implements OnModuleDestroy {
   constructor() {
     const databaseUrl =
       process.env.DATABASE_URL_POOLED ??
@@ -22,10 +19,6 @@ export class PrismaService
           }
         : undefined,
     );
-  }
-
-  async onModuleInit(): Promise<void> {
-    await this.$connect();
   }
 
   async onModuleDestroy(): Promise<void> {

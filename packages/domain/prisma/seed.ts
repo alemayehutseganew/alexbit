@@ -163,7 +163,7 @@ async function main() {
         status: "OPEN",
       },
     });
-  });
+  }, { maxWait: 10_000, timeout: 120_000 });
   console.log("Seed completed successfully!");
 }
 
