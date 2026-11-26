@@ -20,9 +20,9 @@ async function bootstrap() {
   });
   app.useGlobalPipes(new ValidationPipe());
 
-  const port = Number(process.env.PORT ?? 3001);
+  const port = process.env.PORT || 3000;
   await app.listen(port, '0.0.0.0');
-  console.log(`Application is running on port ${port}`);
+  console.log(`🚀 Application is running on port ${port}`);
 }
 
 void bootstrap().catch((error: unknown) => {

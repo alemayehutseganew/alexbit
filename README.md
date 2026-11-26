@@ -29,6 +29,6 @@ npm install
 npm run start:dev
 ```
 
-The API listens on port `3001` by default. `npm install` generates Prisma Client from `prisma/schema.prisma`. Run `npm run build` to compile the API and `npm start` to run the compiled application.
+The API listens on port `3000` by default and binds to `0.0.0.0`; `PORT` overrides the default. The health endpoint is `GET /health`. `npm install` generates Prisma Client from `prisma/schema.prisma`. Run `npm run build` to compile the API and `npm run start` to run the compiled application.
 
 Configure `DATABASE_URL`, `JWT_SECRET`, `FRONTEND_URL`, and any required Keycloak credentials in the deployment environment. The local `.env` is not committed.
