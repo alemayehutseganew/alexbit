@@ -1,4 +1,5 @@
 import {
+  CURRENT_PRODUCTION_FRONTEND_ORIGIN,
   PRODUCTION_FRONTEND_ORIGIN,
   createCorsOriginCallback,
   getAllowedCorsOrigins,
@@ -13,6 +14,7 @@ describe('CORS configuration', () => {
 
     expect(origins).toEqual([
       PRODUCTION_FRONTEND_ORIGIN,
+      CURRENT_PRODUCTION_FRONTEND_ORIGIN,
       'https://example.com',
       'https://second.example.com',
     ]);
@@ -25,6 +27,15 @@ describe('CORS configuration', () => {
     const allow = jest.fn();
 
     callback(PRODUCTION_FRONTEND_ORIGIN, allow);
+
+    expect(allow).toHaveBeenCalledWith(null, true);
+  });
+
+  it('allows the current Vercel frontend origin', () => {
+    const callback = createCorsOriginCallback({});
+    const allow = jest.fn();
+
+    callback(CURRENT_PRODUCTION_FRONTEND_ORIGIN, allow);
 
     expect(allow).toHaveBeenCalledWith(null, true);
   });
@@ -43,7 +54,10 @@ describe('CORS configuration', () => {
   it('does not allow every origin when CORS_ORIGINS is missing', () => {
     const origins = getAllowedCorsOrigins({});
 
-    expect(origins).toEqual([PRODUCTION_FRONTEND_ORIGIN]);
+    expect(origins).toEqual([
+      PRODUCTION_FRONTEND_ORIGIN,
+      CURRENT_PRODUCTION_FRONTEND_ORIGIN,
+    ]);
   });
 
   it('allows requests without an Origin header', () => {

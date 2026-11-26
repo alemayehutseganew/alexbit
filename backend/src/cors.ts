@@ -1,4 +1,11 @@
 export const PRODUCTION_FRONTEND_ORIGIN = 'https://alexbit-wine.vercel.app';
+export const CURRENT_PRODUCTION_FRONTEND_ORIGIN =
+  'https://primehorizonplc.vercel.app';
+
+const productionFrontendOrigins = [
+  PRODUCTION_FRONTEND_ORIGIN,
+  CURRENT_PRODUCTION_FRONTEND_ORIGIN,
+];
 
 export function getAllowedCorsOrigins(
   env: NodeJS.ProcessEnv = process.env,
@@ -9,7 +16,7 @@ export function getAllowedCorsOrigins(
     .map((value) => value.trim())
     .filter(Boolean);
 
-  return [...new Set([PRODUCTION_FRONTEND_ORIGIN, ...configuredOrigins])];
+  return [...new Set([...productionFrontendOrigins, ...configuredOrigins])];
 }
 
 export function createCorsOriginCallback(env: NodeJS.ProcessEnv = process.env) {
