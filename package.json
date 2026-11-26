@@ -6,7 +6,7 @@
     "postinstall": "prisma generate --schema=packages/domain/prisma/schema.prisma",
     "prisma:generate": "npm run generate --workspace=@primehorizon/domain",
     "prisma:migrate:deploy": "npm run migrate:deploy --workspace=@primehorizon/domain",
-    "build": "npm run prisma:generate && npm run build --workspace=api",
+    "build": "npm run prisma:generate && npm run build --workspace=@primehorizon/domain && npm run build --workspace=api",
     "start": "npm run start:prod --workspace=api",
     "dev": "turbo run dev",
     "lint": "turbo run lint",

@@ -4,6 +4,7 @@ WORKDIR /workspace
 COPY . .
 RUN npm ci
 RUN npx prisma generate --schema=packages/domain/prisma/schema.prisma
+RUN npm run build --workspace=@primehorizon/domain
 RUN npm run build --workspace=api
 RUN mkdir -p apps/api/assets
 

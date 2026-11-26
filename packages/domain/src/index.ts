@@ -6,18 +6,18 @@ export {
   type ForgotPasswordInput,
   type LoginInput,
   type RegisterInput,
-} from "./schemas/auth.schema";
+} from "./schemas/auth.schema.js";
 export {
   RfpSchema,
   SectorEnum,
   type RfpInput,
-} from "@primehorizon/domain/rfp-schema";
+} from "./schemas/rfp.schema.js";
 export {
   RfpStatusSchema,
   UpdateRfpStatusSchema,
   type UpdateRfpStatusInput,
-} from "@primehorizon/domain/rfp-status-schema";
+} from "./schemas/rfp-status.schema.js";
 export {
   ContactSchema,
   type ContactInput,
-} from "@primehorizon/domain/contact-schema";
+} from "./schemas/contact.schema.js";
