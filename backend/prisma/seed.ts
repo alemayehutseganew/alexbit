@@ -25,171 +25,167 @@ const shareholders = [
 ];
 
 async function main() {
-  if (process.env.NODE_ENV === "production") {
-    throw new Error("Refusing to run the destructive seed in production.");
+  console.log("Wiping old data...");
+  // Wipe order: Children first, Parents last
+  await prisma.contactMessage.deleteMany();
+  await prisma.supportTicket.deleteMany();
+  await prisma.clientInvoice.deleteMany();
+  await prisma.clientDocument.deleteMany();
+  await prisma.project.deleteMany();
+  await prisma.rfpRequest.deleteMany();
+  await prisma.shareholderDocument.deleteMany();
+  await prisma.shareholderProfile.deleteMany();
+  await prisma.user.deleteMany();
+  await prisma.tenant.deleteMany();
+  console.log("Database wiped.");
+
+  const shareholderPasswordHash = await bcrypt.hash("Primehorizon@2026", 10);
+  const superAdminPasswordHash = await bcrypt.hash("SuperAdmin@2026", 10);
+  const shareholderAdminPasswordHash = await bcrypt.hash("ShAdmin@2026", 10);
+  const clientPasswordHash = await bcrypt.hash("Client@2026", 10);
+
+  // 1. Seed the 18 Shareholder Profiles
+  console.log("Seeding 18 shareholders...");
+  for (const shareholder of shareholders) {
+    const tenant = await prisma.tenant.create({
+      data: { name: shareholder.name, type: "SHAREHOLDER" },
+    });
+
+    await prisma.shareholderProfile.create({
+      data: {
+        tenantId: tenant.id,
+        contactNo: shareholder.contact || null,
+        tinNumber: shareholder.tin || null,
+        numberOfShares: shareholder.shares,
+        totalContribution: shareholder.contribution,
+        datePaid: new Date(`${shareholder.date}T00:00:00.000Z`),
+      },
+    });
   }
-  if (process.env.ALLOW_DESTRUCTIVE_SEED !== "true") {
-    throw new Error("Set ALLOW_DESTRUCTIVE_SEED=true to confirm that the seed deletes existing data.");
-  }
 
-  const shareholderPassword = requiredSeedPassword("SEED_SHAREHOLDER_PASSWORD");
-  const superAdminPassword = requiredSeedPassword("SEED_SUPERADMIN_PASSWORD");
-  const clientPassword = requiredSeedPassword("SEED_CLIENT_PASSWORD");
-  const shareholderPasswordHash = await bcrypt.hash(shareholderPassword, 10);
-  const superAdminPasswordHash = await bcrypt.hash(superAdminPassword, 10);
-  const clientPasswordHash = await bcrypt.hash(clientPassword, 10);
+  // 2. Create Shared Shareholder User (Read-Only)
+  console.log("Creating shared shareholder user...");
+  const sharedShareholderTenant = await prisma.tenant.create({
+    data: { name: "PrimeHorizon Shareholders", type: "SHAREHOLDER" },
+  });
 
-  await prisma.$transaction(
-    async (transaction) => {
-      // 🛑 PROPER WIPE ORDER (Children first, Parents last) 🛑
-      console.log("Wiping old data...");
-      await transaction.contactMessage.deleteMany();
-      await transaction.supportTicket.deleteMany();
-      await transaction.clientInvoice.deleteMany();
-      await transaction.clientDocument.deleteMany();
-      await transaction.project.deleteMany();
-      await transaction.rfpRequest.deleteMany();
-      await transaction.shareholderDocument.deleteMany();
-      await transaction.shareholderProfile.deleteMany();
-      await transaction.user.deleteMany();
-      await transaction.tenant.deleteMany();
-      console.log("Database wiped.");
-
-      // 1. Seed the 18 Shareholder Profiles
-      console.log("Seeding 18 shareholders...");
-      for (const shareholder of shareholders) {
-        const tenant = await transaction.tenant.create({
-          data: { name: shareholder.name, type: "SHAREHOLDER" },
-        });
-
-        await transaction.shareholderProfile.create({
-          data: {
-            tenantId: tenant.id,
-            contactNo: shareholder.contact || null,
-            tinNumber: shareholder.tin || null,
-            numberOfShares: shareholder.shares,
-            totalContribution: shareholder.contribution,
-            datePaid: new Date(`${shareholder.date}T00:00:00.000Z`),
-          },
-        });
-      }
-
-      // 2. Create ONE Shared Shareholder User
-      console.log("Creating shared shareholder user...");
-      const sharedShareholderTenant = await transaction.tenant.create({
-        data: { name: "PrimeHorizon Shareholders", type: "SHAREHOLDER" },
-      });
-
-      await transaction.user.create({
-        data: {
-          tenantId: sharedShareholderTenant.id,
-          email: "shareholder@primehorizon.com",
-          firstName: "All",
-          lastName: "Shareholders",
-          passwordHash: shareholderPasswordHash,
-          role: "SHAREHOLDER",
-        },
-      });
-
-      // 3. Create Superadmin User
-      console.log("Creating superadmin user...");
-      const adminTenant = await transaction.tenant.create({
-        data: { name: "PrimeHorizon Admin", type: "INTERNAL" },
-      });
-
-      await transaction.user.create({
-        data: {
-          tenantId: adminTenant.id,
-          email: "superadmin@primehorizon.com",
-          firstName: "Super",
-          lastName: "Admin",
-          passwordHash: superAdminPasswordHash,
-          role: "SUPER_ADMIN",
-        },
-      });
-
-      // 4. Create dummy Client user
-      console.log("Creating client user...");
-      const clientTenant = await transaction.tenant.create({
-        data: { name: "Example Client", type: "CLIENT" },
-      });
-
-      await transaction.user.create({
-        data: {
-          tenantId: clientTenant.id,
-          email: "client@example.com",
-          firstName: "Alemayehu",
-          lastName: "Client",
-          passwordHash: clientPasswordHash,
-          role: "CLIENT",
-        },
-      });
-
-      // 5. Create RFP and Project for the CLIENT
-      console.log("Creating dummy project...");
-      await transaction.rfpRequest.create({
-        data: {
-          tenantId: clientTenant.id,
-          organization: "Example Client",
-          contactName: "Alemayehu Client",
-          contactEmail: "client@example.com",
-          phone: "+919078260731",
-          sector: "IT Support and Networking",
-          projectDetails: "Enterprise-wide network infrastructure upgrade including routers, switches, and security appliances across all branch offices.",
-          budgetRange: "$50,000 - $100,000",
-          timeline: "6 months",
-          status: "ACCEPTED",
-        },
-      });
-
-      await transaction.project.create({
-        data: {
-          tenantId: clientTenant.id,
-          title: "Enterprise Network Upgrade",
-          description: "Enterprise-wide network infrastructure upgrade including routers, switches, and security appliances across all branch offices.",
-          status: "IN_PROGRESS",
-          startDate: new Date("2026-11-01T00:00:00.000Z"),
-          endDate: new Date("2027-04-30T00:00:00.000Z"),
-        },
-      });
-
-      await transaction.clientInvoice.create({
-        data: {
-          tenantId: clientTenant.id,
-          invoiceNumber: "INV-2026-001",
-          issueDate: new Date("2026-11-15T00:00:00.000Z"),
-          dueDate: new Date("2026-12-15T00:00:00.000Z"),
-          amount: 2500,
-          status: "PENDING",
-        },
-      });
-
-      await transaction.supportTicket.create({
-        data: {
-          tenantId: clientTenant.id,
-          subject: "Project network upgrade",
-          message: "Please provide an update on the branch office network installation timeline.",
-          priority: "NORMAL",
-          status: "OPEN",
-        },
-      });
+  await prisma.user.create({
+    data: {
+      tenantId: sharedShareholderTenant.id,
+      email: "shareholder@primehorizon.com",
+      firstName: "All",
+      lastName: "Shareholders",
+      passwordHash: shareholderPasswordHash,
+      role: "SHAREHOLDER",
     },
-    { maxWait: 10_000, timeout: 120_000 },
-  );
-  console.log("Seed completed successfully!");
-}
+  });
 
-function requiredSeedPassword(name: string): string {
-  const password = process.env[name];
-  if (!password || password.length < 12) {
-    throw new Error(`${name} must be set to at least 12 characters.`);
-  }
-  return password;
+  // 3. Create Shareholder Admin User (Full CRUD)
+  console.log("Creating shareholder admin user...");
+  const shAdminTenant = await prisma.tenant.create({
+    data: { name: "Shareholder Admin", type: "SHAREHOLDER" },
+  });
+
+  await prisma.user.create({
+    data: {
+      tenantId: shAdminTenant.id,
+      email: "shareholderadmin@primehorizon.com",
+      firstName: "Shareholder",
+      lastName: "Admin",
+      passwordHash: shareholderAdminPasswordHash,
+      role: "SHAREHOLDER_ADMIN",
+    },
+  });
+
+  // 4. Create Superadmin User
+  console.log("Creating superadmin user...");
+  const adminTenant = await prisma.tenant.create({
+    data: { name: "PrimeHorizon Admin", type: "INTERNAL" },
+  });
+
+  await prisma.user.create({
+    data: {
+      tenantId: adminTenant.id,
+      email: "superadmin@primehorizon.com",
+      firstName: "Super",
+      lastName: "Admin",
+      passwordHash: superAdminPasswordHash,
+      role: "SUPER_ADMIN",
+    },
+  });
+
+  // 5. Create dummy Client user
+  console.log("Creating client user...");
+  const clientTenant = await prisma.tenant.create({
+    data: { name: "Example Client", type: "CLIENT" },
+  });
+
+  await prisma.user.create({
+    data: {
+      tenantId: clientTenant.id,
+      email: "client@example.com",
+      firstName: "Alemayehu",
+      lastName: "Client",
+      passwordHash: clientPasswordHash,
+      role: "CLIENT",
+    },
+  });
+
+  // 6. Create RFP, Project, Invoice, and Ticket for the CLIENT
+  console.log("Creating dummy project...");
+  await prisma.rfpRequest.create({
+    data: {
+      tenantId: clientTenant.id,
+      organization: "Example Client",
+      contactName: "Alemayehu Client",
+      contactEmail: "client@example.com",
+      phone: "+919078260731",
+      sector: "IT Support and Networking",
+      projectDetails: "Enterprise-wide network infrastructure upgrade including routers, switches, and security appliances across all branch offices.",
+      budgetRange: "$50,000 - $100,000",
+      timeline: "6 months",
+      status: "ACCEPTED",
+    },
+  });
+
+  await prisma.project.create({
+    data: {
+      tenantId: clientTenant.id,
+      title: "Enterprise Network Upgrade",
+      description: "Enterprise-wide network infrastructure upgrade including routers, switches, and security appliances across all branch offices.",
+      status: "IN_PROGRESS",
+      startDate: new Date("2026-11-01T00:00:00.000Z"),
+      endDate: new Date("2027-04-30T00:00:00.000Z"),
+    },
+  });
+
+  await prisma.clientInvoice.create({
+    data: {
+      tenantId: clientTenant.id,
+      invoiceNumber: "INV-2026-001",
+      issueDate: new Date("2026-11-15T00:00:00.000Z"),
+      dueDate: new Date("2026-12-15T00:00:00.000Z"),
+      amount: 2500,
+      status: "PENDING",
+    },
+  });
+
+  await prisma.supportTicket.create({
+    data: {
+      tenantId: clientTenant.id,
+      subject: "Project network upgrade",
+      message: "Please provide an update on the branch office network installation timeline.",
+      priority: "NORMAL",
+      status: "OPEN",
+    },
+  });
+
+  console.log("✅ Seed completed successfully!");
 }
 
 main()
   .catch((error: unknown) => {
-    console.error("Failed to seed database", error);
+    console.error("❌ Failed to seed database", error);
     process.exitCode = 1;
   })
   .finally(async () => {

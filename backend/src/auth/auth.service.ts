@@ -86,6 +86,8 @@ export class AuthService {
       },
     });
 
+    console.log('Login attempt:', 'Role found:', user?.role ?? 'not-found');
+
     if (!user || !user.passwordHash) {
       throw new UnauthorizedException();
     }
