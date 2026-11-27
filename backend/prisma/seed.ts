@@ -104,7 +104,7 @@ async function main() {
           firstName: "Super",
           lastName: "Admin",
           passwordHash: superAdminPasswordHash,
-          role: "ADMIN",
+          role: "SUPER_ADMIN",
         },
       });
 
