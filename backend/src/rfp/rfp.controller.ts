@@ -36,7 +36,7 @@ export class RfpController {
   ) {}
 
   @Post()
-  @Roles('ADMIN')
+  @Roles('ADMIN', 'SUPER_ADMIN')
   @UsePipes(new ZodValidationPipe(RfpSchema))
   createRfp(@Body() data: RfpInput) {
     return this.rfpService.createRfp(data);
@@ -68,7 +68,7 @@ export class RfpController {
   }
 
   @Patch(':id/status')
-  @Roles('ADMIN')
+  @Roles('ADMIN', 'SUPER_ADMIN')
   @UsePipes(new ZodValidationPipe(UpdateRfpStatusSchema))
   updateStatus(
     @Param('id') id: string,

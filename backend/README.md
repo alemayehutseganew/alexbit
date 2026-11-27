@@ -90,6 +90,23 @@ Set these environment variables in the AletCloud app settings:
   `KEYCLOAK_API_AUDIENCE`: only when using the corresponding Keycloak flows.
 - `OPENAI_API_KEY` and `CHAPA_SECRET_KEY`: only when enabling those integrations.
 
+To provision the shared superadmin and shareholder accounts on the deployed
+database, temporarily add `BOOTSTRAP_SUPERADMIN_PASSWORD` and
+`BOOTSTRAP_SHAREHOLDER_PASSWORD` as private app environment secrets. Use the
+requested passwords (at least 12 characters), then run this one-time command
+from the backend app root with the deployment's database connection configured:
+
+```bash
+npm run provision:accounts
+```
+
+The command only creates or updates these two accounts; it does not wipe or
+modify other records. It hashes passwords before storing them. Running it again
+will reset both passwords to the configured values, so remove the two bootstrap
+secrets from the app settings after it succeeds. Do not commit the passwords to
+the repository. The command should be run against the deployed database, not
+just during the build, so it only changes the intended environment.
+
 Prisma connection attempts run in the background with logged exponential
 retries, so database unavailability does not delay opening the API port.
 `GET /health/live` checks process liveness; `GET /health` checks database

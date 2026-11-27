@@ -1,5 +1,11 @@
+import 'reflect-metadata';
 import { ExecutionContext } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
+jest.mock('../documents/documents.service', () => ({
+  DocumentService: class DocumentService {},
+}));
+import { RfpController } from '../rfp/rfp.controller';
+import { ShareholderController } from '../shareholder/shareholder.controller';
 import { RolesGuard } from './roles.guard';
 import { ROLES_KEY } from './roles.decorator';
 
@@ -36,5 +42,24 @@ describe('RolesGuard', () => {
     expect(guard.canActivate(executionContext('ADMIN'))).toBe(true);
     expect(guard.canActivate(executionContext('SHAREHOLDER'))).toBe(false);
     expect(guard.canActivate(executionContext())).toBe(false);
+  });
+
+  it('grants superadmins access to admin write routes', () => {
+    const writeRoutes = [
+      [RfpController.prototype, 'createRfp'],
+      [RfpController.prototype, 'updateStatus'],
+      [ShareholderController.prototype, 'updateShareholder'],
+      [ShareholderController.prototype, 'addDocument'],
+      [ShareholderController.prototype, 'addUploadedDocument'],
+      [ShareholderController.prototype, 'addCompanyDocument'],
+      [ShareholderController.prototype, 'deleteDocument'],
+    ] as const;
+
+    for (const [controller, method] of writeRoutes) {
+      expect(Reflect.getMetadata(ROLES_KEY, controller[method])).toEqual([
+        'ADMIN',
+        'SUPER_ADMIN',
+      ]);
+    }
   });
 });

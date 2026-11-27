@@ -39,7 +39,7 @@ export class ShareholderController {
   }
 
   @Patch(':id')
-  @Roles('ADMIN')
+  @Roles('ADMIN', 'SUPER_ADMIN')
   updateShareholder(
     @Param('id') id: string,
     @Body() data: UpdateShareholderDto,
@@ -48,7 +48,7 @@ export class ShareholderController {
   }
 
   @Post(':id/documents')
-  @Roles('ADMIN')
+  @Roles('ADMIN', 'SUPER_ADMIN')
   addDocument(
     @Param('id') id: string,
     @Body() data: CreateShareholderDocumentDto,
@@ -58,7 +58,7 @@ export class ShareholderController {
   }
 
   @Post(':id/documents/upload')
-  @Roles('ADMIN')
+  @Roles('ADMIN', 'SUPER_ADMIN')
   async addUploadedDocument(
     @Param('id') id: string,
     @Req() request: AuthenticatedRequest,
@@ -97,7 +97,7 @@ export class ShareholderController {
   }
 
   @Post('company-documents/upload')
-  @Roles('ADMIN')
+  @Roles('ADMIN', 'SUPER_ADMIN')
   async addCompanyDocument(@Req() request: AuthenticatedRequest) {
     const upload = await request.file();
     if (!upload) {
@@ -124,7 +124,7 @@ export class ShareholderController {
   }
 
   @Delete(':profileId/documents/:documentId')
-  @Roles('ADMIN')
+  @Roles('ADMIN', 'SUPER_ADMIN')
   deleteDocument(
     @Param('profileId') profileId: string,
     @Param('documentId') documentId: string,

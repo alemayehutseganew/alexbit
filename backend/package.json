@@ -9,6 +9,7 @@
     "build": "tsc -p tsconfig.build.json",
     "start": "node dist/main.js",
     "dev": "nest start --watch",
+    "provision:accounts": "ts-node prisma/provision-accounts.ts",
     "postinstall": "prisma generate"
   },
   "dependencies": {
