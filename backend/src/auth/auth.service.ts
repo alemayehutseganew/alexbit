@@ -73,8 +73,6 @@ export class AuthService {
   }
 
   async login(data: LoginInput) {
-    console.log('Backend: Login attempt for', data.email);
-
     const user = await this.prisma.user.findUnique({
       where: { email: data.email },
       select: {
@@ -87,8 +85,6 @@ export class AuthService {
         role: true,
       },
     });
-
-    console.log('Backend: User found?', !!user);
 
     if (!user || !user.passwordHash) {
       throw new UnauthorizedException();

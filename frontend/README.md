@@ -1,20 +1,37 @@
 This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/create-next-app).
 
-## Getting Started
+## Local development
 
-First, run the development server:
+From the repository root, start the backend in one PowerShell terminal:
 
-```bash
+```powershell
+Set-Location .\backend
+npm ci
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Start the frontend in a second terminal. The backend uses port `3000`, so the
+frontend runs on `3001`:
+
+```powershell
+Set-Location .\frontend
+npm ci
+$env:NEXT_PUBLIC_API_URL = "http://localhost:3000"
+$env:NEXTAUTH_URL = "http://localhost:3001"
+npm run dev -- --port 3001
+```
+
+Configure `backend/.env` with a local PostgreSQL `DATABASE_URL` and a
+`JWT_SECRET` of at least 32 characters. Keep `frontend/.env.local` configured
+with a local NextAuth secret.
+
+The local seed deletes existing database rows. Run it only against a disposable
+development database; it refuses production and requires
+`ALLOW_DESTRUCTIVE_SEED=true` plus `SEED_SUPERADMIN_PASSWORD`,
+`SEED_CLIENT_PASSWORD`, and `SEED_SHAREHOLDER_PASSWORD`.
+
+Open [http://localhost:3001/en](http://localhost:3001/en). The API liveness
+endpoint is [http://localhost:3000/health/live](http://localhost:3000/health/live).
 
 You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
 

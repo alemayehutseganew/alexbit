@@ -6,6 +6,7 @@ const productionFrontendOrigins = [
   PRODUCTION_FRONTEND_ORIGIN,
   CURRENT_PRODUCTION_FRONTEND_ORIGIN,
 ];
+const localFrontendOrigins = ['http://localhost:3001'];
 
 export function getAllowedCorsOrigins(
   env: NodeJS.ProcessEnv = process.env,
@@ -14,30 +15,16 @@ export function getAllowedCorsOrigins(
     .filter((value): value is string => Boolean(value))
     .flatMap((value) => value.split(','))
     .map((value) => value.trim())
-    .filter(Boolean);
+    .filter(Boolean)
+    .map((value) => new URL(value).origin);
+  const developmentOrigins =
+    env.NODE_ENV === 'production' ? [] : localFrontendOrigins;
 
-  return [...new Set([...productionFrontendOrigins, ...configuredOrigins])];
-}
-
-export function createCorsOriginCallback(env: NodeJS.ProcessEnv = process.env) {
-  const allowedOrigins = new Set(getAllowedCorsOrigins(env));
-
-  return (
-    origin: string | undefined,
-    callback: (error: Error | null, allow?: boolean) => void,
-  ) => {
-    if (!origin || allowedOrigins.has(origin)) {
-      callback(null, true);
-      return;
-    }
-
-    callback(null, false);
-  };
-}
-
-export function isCorsOriginAllowed(
-  origin: string | undefined,
-  env: NodeJS.ProcessEnv = process.env,
-): boolean {
-  return !origin || getAllowedCorsOrigins(env).includes(origin);
+  return [
+    ...new Set([
+      ...productionFrontendOrigins,
+      ...developmentOrigins,
+      ...configuredOrigins,
+    ]),
+  ];
 }

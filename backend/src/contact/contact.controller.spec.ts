@@ -4,7 +4,7 @@ import { PassportModule } from '@nestjs/passport';
 import { Reflector } from '@nestjs/core';
 import jwt from 'jsonwebtoken';
 import request from 'supertest';
-import { createCorsOriginCallback, isCorsOriginAllowed } from '../cors';
+import { getAllowedCorsOrigins } from '../cors';
 import { ContactController } from './contact.controller';
 import { ContactService } from './contact.service';
 import { JwtStrategy } from '../auth/jwt.strategy';
@@ -66,19 +66,21 @@ describe('ContactController', () => {
     }).compile();
 
     app = moduleFixture.createNestApplication();
+    const allowedOrigins = getAllowedCorsOrigins({
+      ...process.env,
+      CORS_ORIGINS: 'https://example.com',
+    });
     app.use((req, res, next) => {
       const origin =
         typeof req.headers.origin === 'string' ? req.headers.origin : undefined;
-      if (!isCorsOriginAllowed(origin, process.env)) {
+      if (origin && !allowedOrigins.includes(origin)) {
         res.status(403).json({ statusCode: 403, message: 'Origin forbidden' });
         return;
       }
       next();
     });
     app.enableCors({
-      origin: createCorsOriginCallback({
-        CORS_ORIGINS: 'https://example.com',
-      }),
+      origin: allowedOrigins,
       credentials: true,
       allowedHeaders: ['Content-Type', 'Authorization', 'Accept'],
       methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],

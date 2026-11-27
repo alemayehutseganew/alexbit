@@ -47,7 +47,7 @@ export default async function ClientDashboardPage({
     redirect(`/${locale}/login?realm=client`);
   }
 
-  const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3001";
+  const apiUrl = process.env.NEXT_PUBLIC_API_URL?.trim();
   if (!apiUrl) {
     throw new Error("NEXT_PUBLIC_API_URL is not configured");
   }

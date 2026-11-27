@@ -181,16 +181,19 @@ export function LoginActions({
 
   async function submitRegister(data: RegisterInput) {
     setFormError(null);
+    const apiUrl = process.env.NEXT_PUBLIC_API_URL?.replace(/\/$/, "");
+    if (!apiUrl) {
+      setFormError(t("serverConnectionError"));
+      return;
+    }
+
     let response: Response;
     try {
-      response = await fetch(
-        `${process.env.NEXT_PUBLIC_API_URL}/api/auth/register`,
-        {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(data),
-        },
-      );
+      response = await fetch(`${apiUrl}/api/auth/register`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(data),
+      });
     } catch (error) {
       console.error(
         "Fetch error cause:",
@@ -237,9 +240,15 @@ export function LoginActions({
   async function submitForgotPassword(data: ForgotPasswordInput) {
     setFormError(null);
     setResetSent(false);
+    const apiUrl = process.env.NEXT_PUBLIC_API_URL?.replace(/\/$/, "");
+    if (!apiUrl) {
+      setFormError(t("resetError"));
+      return;
+    }
+
     try {
       const response = await fetch(
-        "http://localhost:3001/api/auth/forgot-password",
+        `${apiUrl}/api/auth/forgot-password`,
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },

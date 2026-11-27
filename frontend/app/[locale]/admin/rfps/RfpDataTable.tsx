@@ -259,10 +259,13 @@ export function RfpDataTable({
   }
 
   async function downloadProposal(rfpId: string) {
-    const apiUrl =
-      process.env.NEXT_PUBLIC_API_URL?.replace(/\/$/, "") ??
-      "http://localhost:3001";
+    const apiUrl = process.env.NEXT_PUBLIC_API_URL?.replace(/\/$/, "");
     setDownloadError(null);
+    if (!apiUrl) {
+      setDownloadError("The API URL is not configured.");
+      return;
+    }
+
     try {
       const response = await fetch(
         `${apiUrl}/api/documents/proposal/${encodeURIComponent(rfpId)}`,

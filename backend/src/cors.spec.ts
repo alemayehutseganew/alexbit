@@ -1,15 +1,14 @@
 import {
   CURRENT_PRODUCTION_FRONTEND_ORIGIN,
   PRODUCTION_FRONTEND_ORIGIN,
-  createCorsOriginCallback,
   getAllowedCorsOrigins,
-  isCorsOriginAllowed,
 } from './cors';
 
 describe('CORS configuration', () => {
-  it('allows the production frontend and a trimmed CORS_ORIGINS entry', () => {
+  it('allows production frontends and normalized configured origins', () => {
     const origins = getAllowedCorsOrigins({
-      CORS_ORIGINS: ' https://example.com , https://second.example.com ',
+      NODE_ENV: 'production',
+      CORS_ORIGINS: ' https://example.com/path , https://second.example.com/ ',
     });
 
     expect(origins).toEqual([
@@ -20,39 +19,8 @@ describe('CORS configuration', () => {
     ]);
   });
 
-  it('allows the production origin', () => {
-    const callback = createCorsOriginCallback({
-      CORS_ORIGINS: 'https://example.com',
-    });
-    const allow = jest.fn();
-
-    callback(PRODUCTION_FRONTEND_ORIGIN, allow);
-
-    expect(allow).toHaveBeenCalledWith(null, true);
-  });
-
-  it('allows the current Vercel frontend origin', () => {
-    const callback = createCorsOriginCallback({});
-    const allow = jest.fn();
-
-    callback(CURRENT_PRODUCTION_FRONTEND_ORIGIN, allow);
-
-    expect(allow).toHaveBeenCalledWith(null, true);
-  });
-
-  it('rejects an unauthorized origin', () => {
-    const callback = createCorsOriginCallback({
-      CORS_ORIGINS: 'https://example.com',
-    });
-    const allow = jest.fn();
-
-    callback('https://unauthorized.example.com', allow);
-
-    expect(allow).toHaveBeenCalledWith(null, false);
-  });
-
   it('does not allow every origin when CORS_ORIGINS is missing', () => {
-    const origins = getAllowedCorsOrigins({});
+    const origins = getAllowedCorsOrigins({ NODE_ENV: 'production' });
 
     expect(origins).toEqual([
       PRODUCTION_FRONTEND_ORIGIN,
@@ -60,15 +28,24 @@ describe('CORS configuration', () => {
     ]);
   });
 
-  it('allows requests without an Origin header', () => {
-    expect(isCorsOriginAllowed(undefined, {})).toBe(true);
+  it('allows the local Next.js development origin outside production', () => {
+    expect(getAllowedCorsOrigins({ NODE_ENV: 'development' })).toContain(
+      'http://localhost:3001',
+    );
   });
 
-  it('rejects unauthorized Origin values explicitly', () => {
+  it('does not allow the local development origin in production', () => {
+    expect(getAllowedCorsOrigins({ NODE_ENV: 'production' })).not.toContain(
+      'http://localhost:3001',
+    );
+  });
+
+  it('does not include unconfigured origins', () => {
     expect(
-      isCorsOriginAllowed('https://unauthorized.example.com', {
+      getAllowedCorsOrigins({
+        NODE_ENV: 'production',
         CORS_ORIGINS: 'https://example.com',
       }),
-    ).toBe(false);
+    ).not.toContain('https://unauthorized.example.com');
   });
 });
