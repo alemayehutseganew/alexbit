@@ -4,12 +4,20 @@ import { AppModule } from './app.module';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
+  const allowedOrigins = Array.from(
+    new Set(
+      [
+        process.env.FRONTEND_URL,
+        'https://primehorizonplc.vercel.app',
+        'http://localhost:3000',
+      ]
+        .filter((origin): origin is string => Boolean(origin))
+        .map((origin) => new URL(origin).origin),
+    ),
+  );
 
   app.enableCors({
-    origin: [
-      'https://primehorizonplc.vercel.app',
-      'http://localhost:3000',
-    ],
+    origin: allowedOrigins,
     methods: ['GET', 'HEAD', 'PUT', 'PATCH', 'POST', 'DELETE', 'OPTIONS'],
     credentials: true,
     allowedHeaders: ['Content-Type', 'Authorization', 'Accept'],

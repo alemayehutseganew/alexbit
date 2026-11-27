@@ -1,4 +1,5 @@
 import { getTranslations, setRequestLocale } from 'next-intl/server';
+import { shareholderKeycloakConfigured } from '@/auth';
 import { LoginBranding } from './LoginBranding';
 import { LoginActions } from './LoginActions';
 
@@ -102,7 +103,7 @@ export default async function LoginPage({
             clientCallbackUrl={clientCallbackUrl}
             shareholderCallbackUrl={shareholderCallbackUrl}
             adminCallbackUrl={adminCallbackUrl}
-            shareholderConfigured={false}
+            shareholderConfigured={shareholderKeycloakConfigured}
             credentialsEnabled={credentialsEnabled}
             preferredRealm={preferredRealm}
           />

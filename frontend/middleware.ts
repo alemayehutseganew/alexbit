@@ -1,4 +1,7 @@
-import { auth, shareholderKeycloakConfigured } from "./auth";
+import {
+  auth,
+  shareholderKeycloakConfigured,
+} from "./auth";
 import createMiddleware from "next-intl/middleware";
 import {
   NextResponse,
@@ -85,13 +88,16 @@ export default function middleware(
   if (portal) {
     const credentialsEnabled =
       process.env.NODE_ENV !== "production" ||
-      Boolean(process.env.AUTH_SECRET);
+      Boolean(process.env.AUTH_SECRET ?? process.env.NEXTAUTH_SECRET);
     const providerConfigured =
       portal === "admin" ||
       portal === "client" ||
       shareholderKeycloakConfigured ||
       credentialsEnabled;
-    if (!process.env.AUTH_SECRET || !providerConfigured) {
+    if (
+      !(process.env.AUTH_SECRET ?? process.env.NEXTAUTH_SECRET) ||
+      !providerConfigured
+    ) {
       return redirectToLogin(request, portal);
     }
 
