@@ -25,6 +25,22 @@ Configure `backend/.env` with a local PostgreSQL `DATABASE_URL` and a
 `JWT_SECRET` of at least 32 characters. Keep `frontend/.env.local` configured
 with a local NextAuth secret.
 
+## Vercel environment variables
+
+Set these for the Vercel deployment:
+
+- `AUTH_SECRET` (preferred) or `NEXTAUTH_SECRET`; generate with `npx auth secret`.
+- `NEXT_PUBLIC_API_URL`, set to the AletCloud API origin, without `/api`.
+- `AUTH_KEYCLOAK_SHAREHOLDER_ID`, `AUTH_KEYCLOAK_SHAREHOLDER_SECRET`, and
+  `AUTH_KEYCLOAK_SHAREHOLDER_ISSUER` for production shareholder sign-in.
+- `AUTH_KEYCLOAK_CLIENT_ID`, `AUTH_KEYCLOAK_CLIENT_SECRET`, and
+  `AUTH_KEYCLOAK_CLIENT_ISSUER` only if client Keycloak sign-in is enabled.
+
+The Keycloak clients must allow the deployed callback URLs
+`/api/auth/callback/keycloak-shareholder` and, when enabled,
+`/api/auth/callback/keycloak-client`. Vercel supplies the request host; this
+app sets `trustHost: true`, so `NEXTAUTH_URL` is not required for this setup.
+
 The local seed deletes existing database rows. Run it only against a disposable
 development database; it refuses production and requires
 `ALLOW_DESTRUCTIVE_SEED=true` plus `SEED_SUPERADMIN_PASSWORD`,

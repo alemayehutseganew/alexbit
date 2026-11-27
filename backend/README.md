@@ -76,11 +76,15 @@ not a particular health-check URL.
 
 Set these environment variables in the AletCloud app settings:
 
-- `DATABASE_URL`: PostgreSQL connection URL from the managed database.
+- `DATABASE_URL`: direct PostgreSQL connection URL from the managed database;
+  use this for Prisma schema migrations.
+- `DATABASE_URL_POOLED`: optional pooled URL for runtime queries; when present,
+  the Prisma service prefers it over `DATABASE_URL`.
 - `JWT_SECRET`: a private random secret of at least 32 characters for API-issued
   tokens.
 - `PORT`: use AletCloud's injected value; do not hardcode it.
-- `FRONTEND_URL`: frontend origin if it is not already in the API CORS allowlist.
+- `FRONTEND_URL` or `CORS_ORIGINS`: optional frontend origin(s) if they are not
+  already in the API CORS allowlist.
 - `JWT_ISSUER` and `JWT_AUDIENCE`: optional; default to `primehorizon-api`.
 - `AUTH_KEYCLOAK_CLIENT_ISSUER`, `AUTH_KEYCLOAK_SHAREHOLDER_ISSUER`, and
   `KEYCLOAK_API_AUDIENCE`: only when using the corresponding Keycloak flows.

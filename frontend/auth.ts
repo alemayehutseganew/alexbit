@@ -63,6 +63,28 @@ const credentialsProvider = Credentials({
       );
 
       if (!res.ok) {
+        const responseBody: unknown = await res.json().catch(() => null);
+        const responseMessage =
+          typeof responseBody === 'object' &&
+          responseBody !== null &&
+          'message' in responseBody
+            ? responseBody.message
+            : undefined;
+        const message =
+          typeof responseMessage === 'string'
+            ? responseMessage
+            : Array.isArray(responseMessage) &&
+                responseMessage.every(
+                  (item): item is string => typeof item === 'string',
+                )
+              ? responseMessage.join('; ')
+              : undefined;
+
+        console.error('Backend login failed:', {
+          status: res.status,
+          statusText: res.statusText,
+          message: message?.slice(0, 500),
+        });
         return null;
       }
 
