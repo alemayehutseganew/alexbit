@@ -59,7 +59,49 @@ $ npm run test:cov
 
 ## Deployment
 
-When you're ready to deploy your NestJS application to production, there are some key steps you can take to ensure it runs as efficiently as possible. Check out the [deployment documentation](https://docs.nestjs.com/deployment) for more information.
+### AletCloud App Hosting
+
+Set the app root directory to `backend` when the repository contains both the
+frontend and backend. Configure:
+
+```text
+Build command: npm run build
+Start command: npm start
+```
+
+The package `postinstall` script runs `prisma generate`. AletCloud supplies
+`PORT`; the API binds to that port on `0.0.0.0`. Do not replace it with a
+fixed port or a localhost-only binding. AletCloud checks for a TCP listener,
+not a particular health-check URL.
+
+Set these environment variables in the AletCloud app settings:
+
+- `DATABASE_URL`: PostgreSQL connection URL from the managed database.
+- `JWT_SECRET`: a private random secret of at least 32 characters for API-issued
+  tokens.
+- `PORT`: use AletCloud's injected value; do not hardcode it.
+- `FRONTEND_URL`: frontend origin if it is not already in the API CORS allowlist.
+- `JWT_ISSUER` and `JWT_AUDIENCE`: optional; default to `primehorizon-api`.
+- `AUTH_KEYCLOAK_CLIENT_ISSUER`, `AUTH_KEYCLOAK_SHAREHOLDER_ISSUER`, and
+  `KEYCLOAK_API_AUDIENCE`: only when using the corresponding Keycloak flows.
+- `OPENAI_API_KEY` and `CHAPA_SECRET_KEY`: only when enabling those integrations.
+
+Prisma connection attempts run in the background with logged exponential
+retries, so database unavailability does not delay opening the API port.
+`GET /health/live` checks process liveness; `GET /health` checks database
+readiness and returns `503` while the database is unavailable.
+
+In the AletCloud console, open the app's deployment and select its **Runtime**
+or process log stream to see startup and `console.error` output. The **Build**
+log stream only covers image/build steps. See AletCloud's
+[app hosting](https://aletcloud.com/products/app-hosting) and
+[deployment lifecycle](https://aletcloud.com/docs/how-deploys-work) guides.
+
+When deploying from the repository root without a backend app-root setting,
+prefix the commands with `cd backend &&`.
+
+For general NestJS production guidance, see the [NestJS deployment
+documentation](https://docs.nestjs.com/deployment).
 
 If you are looking for a cloud-based platform to deploy your NestJS application, check out [Mau](https://mau.nestjs.com), our official platform for deploying NestJS applications on AWS. Mau makes deployment straightforward and fast, requiring just a few simple steps:
 

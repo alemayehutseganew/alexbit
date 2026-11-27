@@ -11,10 +11,12 @@ import { RfpModule } from './rfp/rfp.module';
 import { ShareholderModule } from './shareholder/shareholder.module';
 import { ClientModule } from './client/client.module';
 import { HealthModule } from './health/health.module';
+import { PrismaModule } from './prisma.module';
 
 @Module({
   imports: [
     ConfigModule.forRoot({ isGlobal: true }),
+    PrismaModule,
     AuthModule,
     AiModule,
     ContactModule,

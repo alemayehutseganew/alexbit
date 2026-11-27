@@ -1,10 +1,16 @@
-import { Injectable, InternalServerErrorException } from '@nestjs/common';
+import {
+  Injectable,
+  InternalServerErrorException,
+  Logger,
+} from '@nestjs/common';
 import { Prisma } from '@prisma/client';
 import type { ContactInput } from '../schemas/contact.schema';
 import { PrismaService } from '../prisma.service';
 
 @Injectable()
 export class ContactService {
+  private readonly logger = new Logger(ContactService.name);
+
   constructor(private readonly prisma: PrismaService) {}
 
   async createMessage(data: ContactInput) {
@@ -19,13 +25,13 @@ export class ContactService {
         },
       });
     } catch (error) {
-      if (error instanceof Prisma.PrismaClientKnownRequestError) {
-        throw new InternalServerErrorException(
-          'Unable to save contact message',
-        );
-      }
-
-      throw error;
+      this.logger.error(
+        'Failed to save contact message',
+        error instanceof Error ? error.stack : String(error),
+      );
+      throw new InternalServerErrorException(
+        'Unable to save contact message at this time.',
+      );
     }
   }
 
