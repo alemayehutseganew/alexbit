@@ -1,6 +1,7 @@
 "use client";
 
-import { FormEvent, useEffect, useState } from "react";
+import { FormEvent, useCallback, useEffect, useState } from "react";
+import { Skeleton } from "@/components/ui/skeleton";
 
 type SupportTicket = {
   id?: string;
@@ -25,7 +26,7 @@ export function SupportTickets({ apiUrl, accessToken }: SupportTicketsProps) {
   const [loadingTickets, setLoadingTickets] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  const loadTickets = async () => {
+  const loadTickets = useCallback(async () => {
     setLoadingTickets(true);
     setError(null);
     try {
@@ -42,11 +43,11 @@ export function SupportTickets({ apiUrl, accessToken }: SupportTicketsProps) {
     } finally {
       setLoadingTickets(false);
     }
-  };
+  }, [accessToken, apiUrl]);
 
   useEffect(() => {
     void loadTickets();
-  }, []);
+  }, [loadTickets]);
 
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -76,7 +77,7 @@ export function SupportTickets({ apiUrl, accessToken }: SupportTicketsProps) {
 
   return (
     <div className="min-h-screen p-6">
-      <section className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
+      <section className="premium-card p-6">
         <h2 className="mb-6 text-xl font-semibold text-slate-900">
           Support Tickets
         </h2>
@@ -92,7 +93,7 @@ export function SupportTickets({ apiUrl, accessToken }: SupportTicketsProps) {
                 }))
               }
               placeholder="Subject"
-              className="w-full rounded border border-slate-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500"
+              className="w-full rounded-lg border border-slate-200 bg-slate-50 px-3 py-2 text-sm focus:bg-white focus:outline-none focus:ring-2 focus:ring-brand-600"
               required
             />
             <textarea
@@ -104,7 +105,7 @@ export function SupportTickets({ apiUrl, accessToken }: SupportTicketsProps) {
                 }))
               }
               placeholder="Message"
-              className="min-h-20 w-full resize-y rounded border border-slate-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500"
+              className="min-h-20 w-full resize-y rounded-lg border border-slate-200 bg-slate-50 px-3 py-2 text-sm focus:bg-white focus:outline-none focus:ring-2 focus:ring-brand-600"
               required
             />
           </div>
@@ -116,7 +117,7 @@ export function SupportTickets({ apiUrl, accessToken }: SupportTicketsProps) {
                 priority: event.target.value as SupportTicket["priority"],
               }))
             }
-            className="mt-4 w-full rounded border border-slate-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500 md:w-48"
+            className="mt-4 w-full rounded-lg border border-slate-200 bg-slate-50 px-3 py-2 text-sm focus:bg-white focus:outline-none focus:ring-2 focus:ring-brand-600 md:w-48"
           >
             <option value="low">Low</option>
             <option value="normal">Normal</option>
@@ -135,7 +136,16 @@ export function SupportTickets({ apiUrl, accessToken }: SupportTicketsProps) {
           </p>
         )}
         {loadingTickets ? (
-          <p className="mt-4 text-sm text-slate-500">Loading tickets...</p>
+          <div
+            role="status"
+            aria-label="Loading support tickets"
+            className="mt-6 space-y-3"
+          >
+            {[0, 1, 2].map((item) => (
+              <Skeleton key={item} className="h-24 rounded-xl" />
+            ))}
+            <span className="sr-only">Loading support tickets</span>
+          </div>
         ) : tickets.length === 0 ? (
           <p className="mt-4 text-sm text-slate-500">No tickets yet</p>
         ) : (
@@ -143,7 +153,7 @@ export function SupportTickets({ apiUrl, accessToken }: SupportTicketsProps) {
             {tickets.map((ticket, index) => (
               <article
                 key={ticket.id ?? `${ticket.subject}-${index}`}
-                className="rounded-lg border border-slate-200 bg-white px-4 py-3"
+                className="premium-card px-4 py-3"
               >
                 <div className="flex items-start justify-between gap-4">
                   <div>

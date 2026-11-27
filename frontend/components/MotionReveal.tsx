@@ -1,7 +1,7 @@
 "use client";
 
 import { Children, type ReactNode } from "react";
-import { motion } from "framer-motion";
+import { motion, useReducedMotion } from "framer-motion";
 
 export function RevealCard({
   children,
@@ -18,29 +18,38 @@ export function RevealCard({
   tilt?: boolean;
   direction?: "left" | "right";
 }) {
+  const reduceMotion = useReducedMotion();
+
   return (
     <motion.article
       initial={
-        direction
-          ? { opacity: 0, x: direction === "left" ? -32 : 32 }
-          : { opacity: 0, y: 22 }
+        reduceMotion
+          ? false
+          : direction
+            ? { opacity: 0, x: direction === "left" ? -32 : 32 }
+            : { opacity: 0, y: 22 }
       }
       whileInView={{ opacity: 1, x: 0, y: 0 }}
       viewport={{ once: true, amount: 0.2 }}
-      transition={{ duration: 0.45, delay }}
+      transition={{
+        duration: reduceMotion ? 0 : 0.45,
+        delay: reduceMotion ? 0 : delay,
+      }}
       whileHover={
-        tilt
-          ? {
-              rotateX: 4,
-              rotateY: -4,
-              scale: 1.02,
-              transition: { duration: 0.2 },
-            }
-          : hoverLift
-            ? { y: -5 }
-            : { scale: 1.02, y: -2 }
+        reduceMotion
+          ? undefined
+          : tilt
+            ? {
+                rotateX: 4,
+                rotateY: -4,
+                scale: 1.02,
+                transition: { duration: 0.2 },
+              }
+            : hoverLift
+              ? { y: -5 }
+              : { y: -5 }
       }
-      whileTap={{ scale: 0.98 }}
+      whileTap={reduceMotion ? undefined : { scale: 0.98 }}
       style={tilt ? { transformStyle: "preserve-3d" } : undefined}
       className={className}
     >
@@ -56,9 +65,11 @@ export function StaggeredReveal({
   children: ReactNode;
   className?: string;
 }) {
+  const reduceMotion = useReducedMotion();
+
   return (
     <motion.div
-      initial="hidden"
+      initial={reduceMotion ? false : "hidden"}
       animate="visible"
       variants={{
         hidden: { opacity: 0 },
@@ -91,12 +102,14 @@ export function RevealSection({
   children: ReactNode;
   className?: string;
 }) {
+  const reduceMotion = useReducedMotion();
+
   return (
     <motion.section
-      initial={{ opacity: 0, y: 30 }}
+      initial={reduceMotion ? false : { opacity: 0, y: 30 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, amount: 0.2 }}
-      transition={{ duration: 0.55 }}
+      transition={{ duration: reduceMotion ? 0 : 0.55 }}
       className={className}
     >
       {children}
@@ -105,12 +118,22 @@ export function RevealSection({
 }
 
 export function PulseOrb({ className }: { className: string }) {
+  const reduceMotion = useReducedMotion();
+
   return (
     <motion.div
       aria-hidden="true"
       className={className}
-      animate={{ scale: [1, 1.13, 1], opacity: [0.35, 0.7, 0.35] }}
-      transition={{ duration: 10, repeat: Infinity, ease: "easeInOut" }}
+      animate={
+        reduceMotion
+          ? undefined
+          : { scale: [1, 1.13, 1], opacity: [0.35, 0.7, 0.35] }
+      }
+      transition={{
+        duration: 10,
+        repeat: reduceMotion ? 0 : Infinity,
+        ease: "easeInOut",
+      }}
     />
   );
 }

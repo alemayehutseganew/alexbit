@@ -38,6 +38,7 @@ import {
   Wallet,
   Trash2,
 } from "lucide-react";
+import Image from "next/image";
 import { useTranslations } from "next-intl";
 import {
   type ChangeEvent,
@@ -75,7 +76,6 @@ type ShareholderRecord = {
 type ShareholderCapTableProps = {
   accessToken: string;
   locale: string;
-  tenantId: string;
   canManage: boolean;
 };
 
@@ -204,11 +204,11 @@ function LoadingTable({ label }: { label: string }) {
     <div
       role="status"
       aria-label={label}
-      className="space-y-4 rounded-2xl border border-white/10 bg-white/[0.04] p-5"
+      className="space-y-4 rounded-2xl border border-slate-200 bg-white p-5"
     >
-      <Skeleton className="h-7 w-56 bg-white/10" />
+      <Skeleton className="h-7 w-56" />
       {Array.from({ length: 5 }, (_, index) => (
-        <Skeleton key={index} className="h-12 w-full bg-white/10" />
+        <Skeleton key={index} className="h-12 w-full" />
       ))}
       <span className="sr-only">{label}</span>
     </div>
@@ -218,7 +218,6 @@ function LoadingTable({ label }: { label: string }) {
 export function ShareholderCapTable({
   accessToken,
   locale,
-  tenantId,
   canManage,
 }: ShareholderCapTableProps) {
   const t = useTranslations("ShareholderPortal");
@@ -364,7 +363,7 @@ export function ShareholderCapTable({
           id: "name",
           header: t("columnName"),
           cell: ({ row }) => (
-            <span className="font-medium text-white">
+            <span className="font-medium text-slate-900">
               {row.original.tenant.name}
             </span>
           ),
@@ -412,7 +411,7 @@ export function ShareholderCapTable({
               aria-label={t("viewDocumentsFor", {
                 name: row.original.tenant.name,
               })}
-              className="min-h-11 border-white/15 bg-white/5 text-slate-100 hover:bg-white/10"
+              className="min-h-11 border-slate-200 bg-white text-slate-700 hover:bg-slate-50"
               onClick={() => {
                 setSelectedShareholderId(row.original.id);
                 setDocumentName("");
@@ -719,13 +718,13 @@ export function ShareholderCapTable({
 
   return (
     <>
-      <section className="rounded-2xl border border-white/[0.08] bg-white/[0.035] p-5 sm:p-6">
+      <section className="premium-card p-5 sm:p-6">
         <div className="flex flex-wrap items-start justify-between gap-4">
           <div>
-            <p className="text-xs font-semibold uppercase tracking-[0.16em] text-blue-300">
+            <p className="text-xs font-semibold uppercase tracking-[0.16em] text-brand-600">
               Company documents
             </p>
-            <h2 className="mt-1 text-lg font-semibold text-white">
+            <h2 className="mt-1 text-lg font-semibold text-slate-900">
               Receipts and shared records
             </h2>
           </div>
@@ -740,7 +739,7 @@ export function ShareholderCapTable({
                 onChange={(event) =>
                   setCompanyFile(event.target.files?.[0] ?? null)
                 }
-                className="block max-w-[220px] text-xs text-slate-300 file:mr-3 file:min-h-10 file:rounded-lg file:border-0 file:bg-brand-600 file:px-3 file:text-xs file:font-semibold file:text-white"
+                className="block max-w-[220px] text-xs text-slate-600 file:mr-3 file:min-h-10 file:rounded-lg file:border-0 file:bg-brand-600 file:px-3 file:text-xs file:font-semibold file:text-white"
               />
               <Button
                 type="submit"
@@ -754,12 +753,12 @@ export function ShareholderCapTable({
           )}
         </div>
         {companyUploadError && (
-          <p role="alert" className="mt-3 text-sm text-red-300">
+          <p role="alert" className="mt-3 text-sm text-red-700">
             {companyUploadError}
           </p>
         )}
         {companyDocuments.length > 0 ? (
-          <ul className="mt-4 divide-y divide-white/10 overflow-hidden rounded-xl border border-white/10 bg-slate-950/20">
+          <ul className="mt-4 divide-y divide-slate-200 overflow-hidden rounded-xl border border-slate-200 bg-white">
             {companyDocuments.map((document) => {
               const apiUrl =
                 process.env.NEXT_PUBLIC_API_URL?.replace(/\/$/, "") ?? "";
@@ -772,14 +771,14 @@ export function ShareholderCapTable({
                   <div className="flex min-w-0 items-center gap-3">
                     <FileText
                       aria-hidden="true"
-                      className="shrink-0 text-blue-300"
+                      className="shrink-0 text-brand-600"
                       size={18}
                     />
                     <div className="min-w-0">
-                      <p className="break-all text-sm font-semibold text-white">
+                      <p className="break-all text-sm font-semibold text-slate-900">
                         {document.documentName}
                       </p>
-                      <p className="mt-1 text-xs text-slate-400">
+                      <p className="mt-1 text-xs text-slate-500">
                         {t("uploadedAt", {
                           date: formatDate(document.uploadedAt, locale),
                         })}
@@ -801,7 +800,7 @@ export function ShareholderCapTable({
                       anchor.click();
                       URL.revokeObjectURL(objectUrl);
                     }}
-                    className="inline-flex min-h-9 items-center gap-2 rounded-lg border border-white/15 px-3 text-xs font-semibold text-slate-200 hover:bg-white/10"
+                    className="inline-flex min-h-9 items-center gap-2 rounded-lg border border-slate-200 px-3 text-xs font-semibold text-slate-700 hover:bg-slate-50"
                   >
                     <Download aria-hidden="true" size={14} />
                     Download
@@ -811,7 +810,7 @@ export function ShareholderCapTable({
             })}
           </ul>
         ) : (
-          <p className="mt-4 rounded-xl border border-dashed border-white/10 px-4 py-6 text-center text-sm text-slate-400">
+          <p className="mt-4 rounded-xl border border-dashed border-slate-300 px-4 py-6 text-center text-sm text-slate-600">
             No company documents have been uploaded.
           </p>
         )}
@@ -824,16 +823,18 @@ export function ShareholderCapTable({
         {statCards.map(({ label, value, Icon }) => (
           <article
             key={label}
-            className="rounded-2xl border border-white/10 bg-white/[0.04] p-5 shadow-lg shadow-black/10"
+            className="premium-card p-5"
           >
             <div className="flex items-center justify-between gap-3">
-              <p className="text-sm text-slate-400">{label}</p>
-              <Icon aria-hidden="true" className="text-blue-300" size={19} />
+              <p className="text-sm text-slate-600">{label}</p>
+              <span className="flex size-10 items-center justify-center rounded-full bg-brand-100 text-brand-600">
+                <Icon aria-hidden="true" size={19} />
+              </span>
             </div>
             {isLoading ? (
-              <Skeleton className="mt-4 h-8 w-36 bg-white/10" />
+              <Skeleton className="mt-4 h-8 w-36" />
             ) : (
-              <p className="mt-4 text-2xl font-semibold tracking-tight text-white sm:text-xl lg:text-2xl">
+              <p className="mt-4 text-2xl font-bold tracking-tight text-slate-900 sm:text-xl lg:text-2xl">
                 {value}
               </p>
             )}
@@ -843,22 +844,22 @@ export function ShareholderCapTable({
 
       <section
         id="cap-table"
-        className="scroll-mt-28 overflow-hidden rounded-2xl border border-white/[0.08] bg-white/[0.035] shadow-xl shadow-black/10"
+        className="premium-card scroll-mt-28 overflow-hidden"
       >
-        <div className="flex flex-wrap items-end justify-between gap-4 border-b border-white/10 px-5 py-5 sm:px-6">
+        <div className="flex flex-wrap items-end justify-between gap-4 border-b border-slate-200 px-5 py-5 sm:px-6">
           <div>
-            <p className="text-xs font-semibold uppercase tracking-[0.16em] text-blue-300">
+            <p className="text-xs font-semibold uppercase tracking-[0.16em] text-brand-600">
               {t("capTableEyebrow")}
             </p>
-            <h2 className="mt-1 text-lg font-semibold text-white">
+            <h2 className="mt-1 text-lg font-semibold text-slate-900">
               {t("capTableHeading")}
             </h2>
-            <p className="mt-1 text-sm text-slate-400">
+            <p className="mt-1 text-sm text-slate-600">
               {t("capTableDescription")}
             </p>
           </div>
           {!isLoading && !error && (
-            <p className="text-sm text-slate-400">
+            <p className="text-sm text-slate-600">
               {t("shareholderCount", { count: shareholders.length })}
             </p>
           )}
@@ -871,7 +872,7 @@ export function ShareholderCapTable({
         ) : error ? (
           <div
             role="alert"
-            className="m-5 flex flex-wrap items-center gap-3 rounded-xl border border-red-300/20 bg-red-300/5 p-4 text-sm text-red-200"
+            className="m-5 flex flex-wrap items-center gap-3 rounded-xl border border-red-200 bg-red-50 p-4 text-sm text-red-800"
           >
             <AlertCircle aria-hidden="true" size={18} />
             <span className="min-w-0 flex-1">{error}</span>
@@ -879,24 +880,24 @@ export function ShareholderCapTable({
               type="button"
               variant="outline"
               onClick={() => setRefreshKey((key) => key + 1)}
-              className="min-h-11 border-white/15 text-slate-100"
+              className="min-h-11 border-slate-200 text-slate-700"
             >
               <RefreshCw aria-hidden="true" size={15} />
               {t("retry")}
             </Button>
           </div>
         ) : (
-          <Table className="min-w-[900px] text-slate-300">
+          <Table className="min-w-[900px] text-slate-700">
             <TableHeader>
               {table.getHeaderGroups().map((headerGroup) => (
                 <TableRow
                   key={headerGroup.id}
-                  className="border-white/10 bg-white/[0.03] hover:bg-white/[0.03]"
+                  className="border-slate-200 bg-slate-100 hover:bg-slate-100"
                 >
                   {headerGroup.headers.map((header) => (
                     <TableHead
                       key={header.id}
-                      className="h-12 px-4 text-xs font-semibold uppercase tracking-wide text-slate-400"
+                      className="h-12 px-4 text-xs font-semibold uppercase tracking-wide text-slate-700"
                     >
                       {header.isPlaceholder ? null : (
                         <table.FlexRender header={header} />
@@ -910,12 +911,12 @@ export function ShareholderCapTable({
               {table.getRowModel().rows.map((row) => (
                 <TableRow
                   key={row.id}
-                  className="border-white/5 hover:bg-white/[0.03]"
+                  className="border-slate-200 hover:bg-slate-50"
                 >
                   {row.getAllCells().map((cell) => (
                     <TableCell
                       key={cell.id}
-                      className="px-4 py-4 text-sm text-slate-300"
+                      className="px-4 py-4 text-sm text-slate-700"
                     >
                       <table.FlexRender cell={cell} />
                     </TableCell>
@@ -923,10 +924,10 @@ export function ShareholderCapTable({
                 </TableRow>
               ))}
               {shareholders.length === 0 && (
-                <TableRow className="border-white/5 hover:bg-transparent">
+                <TableRow className="border-slate-200 hover:bg-transparent">
                   <TableCell
                     colSpan={columns.length}
-                    className="h-28 text-center text-sm text-slate-400"
+                    className="h-28 text-center text-sm text-slate-600"
                   >
                     {t("noShareholders")}
                   </TableCell>
@@ -947,19 +948,19 @@ export function ShareholderCapTable({
       >
         {selectedShareholder && (
           <DialogContent className="max-h-[88vh] overflow-y-auto rounded-3xl border-0 bg-white p-0 text-slate-900 shadow-[0_30px_100px_rgba(2,6,23,0.45)] ring-1 ring-slate-200 sm:max-w-2xl">
-            <DialogHeader className="relative overflow-hidden bg-gradient-to-br from-[#0b4a8b] via-[#123a75] to-[#0f172a] px-6 py-6 pr-16 text-white sm:px-7">
-              <div className="pointer-events-none absolute -right-10 -top-16 size-40 rounded-full bg-cyan-300/15 blur-2xl" />
+            <DialogHeader className="relative overflow-hidden bg-gradient-to-br from-blue-50 via-white to-slate-50 px-6 py-6 pr-16 text-slate-900 sm:px-7">
+              <div className="pointer-events-none absolute -right-10 -top-16 size-40 rounded-full bg-brand-300/20 blur-2xl" />
               <div className="relative flex items-center gap-4">
-                <span className="grid size-12 shrink-0 place-items-center rounded-2xl border border-white/15 bg-white/10 shadow-lg shadow-slate-950/20">
+                <span className="grid size-12 shrink-0 place-items-center rounded-2xl border border-blue-100 bg-brand-50 text-brand-600 shadow-sm">
                   <FolderOpen aria-hidden="true" size={22} />
                 </span>
                 <div className="min-w-0">
-                  <DialogTitle className="truncate text-xl font-semibold text-white">
+                  <DialogTitle className="truncate text-xl font-semibold text-slate-900">
                     {t("documentsFor", {
                       name: selectedShareholder.tenant.name,
                     })}
                   </DialogTitle>
-                  <DialogDescription className="mt-1.5 text-sm text-blue-100/75">
+                  <DialogDescription className="mt-1.5 text-sm text-slate-600">
                     {t("documentVaultDescription")}
                   </DialogDescription>
                 </div>
@@ -1045,8 +1046,7 @@ export function ShareholderCapTable({
                               >
                                 <Download aria-hidden="true" size={14} />
                               </a>
-                              {(canManage ||
-                                selectedShareholder.tenantId === tenantId) && (
+                              {canManage && (
                                 <Button
                                   type="button"
                                   size="icon-sm"
@@ -1061,21 +1061,19 @@ export function ShareholderCapTable({
                               )}
                             </div>
                           )}
-                          {!href &&
-                            (canManage ||
-                              selectedShareholder.tenantId === tenantId) && (
-                              <Button
-                                type="button"
-                                size="icon-sm"
-                                variant="outline"
-                                disabled={deletingDocumentId === document.id}
-                                aria-label={`Delete ${document.documentName}`}
-                                onClick={() => void deleteDocument(document)}
-                                className="size-9 border-red-200 bg-white text-red-600 hover:bg-red-50 hover:text-red-700"
-                              >
-                                <Trash2 aria-hidden="true" size={14} />
-                              </Button>
-                            )}
+                          {!href && canManage && (
+                            <Button
+                              type="button"
+                              size="icon-sm"
+                              variant="outline"
+                              disabled={deletingDocumentId === document.id}
+                              aria-label={`Delete ${document.documentName}`}
+                              onClick={() => void deleteDocument(document)}
+                              className="size-9 border-red-200 bg-white text-red-600 hover:bg-red-50 hover:text-red-700"
+                            >
+                              <Trash2 aria-hidden="true" size={14} />
+                            </Button>
+                          )}
                         </li>
                       );
                     })}
@@ -1239,7 +1237,7 @@ export function ShareholderCapTable({
                 </div>
               )}
 
-              {canManage || selectedShareholder.tenantId === tenantId ? (
+              {canManage ? (
                 <form
                   onSubmit={(event) => void submitDocument(event)}
                   className="space-y-4 rounded-2xl border border-slate-200 bg-slate-50/60 p-4 sm:p-5"
@@ -1315,12 +1313,12 @@ export function ShareholderCapTable({
                   </div>
 
                   {uploadError && (
-                    <p role="alert" className="text-sm text-red-300">
+                    <p role="alert" className="text-sm text-red-700">
                       {uploadError}
                     </p>
                   )}
                   {uploadSuccess && (
-                    <p role="status" className="text-sm text-emerald-300">
+                    <p role="status" className="text-sm text-emerald-700">
                       {t("documentAdded")}
                     </p>
                   )}
@@ -1351,13 +1349,13 @@ export function ShareholderCapTable({
         }}
       >
         {viewingDocument && (
-          <DialogContent className="h-[88vh] max-h-[88vh] gap-0 overflow-hidden rounded-3xl border-0 bg-slate-950 p-0 text-white shadow-[0_30px_100px_rgba(2,6,23,0.6)] ring-1 ring-slate-700 sm:max-w-5xl">
-            <DialogHeader className="flex-row items-center justify-between gap-4 border-b border-white/10 bg-slate-900 px-5 py-4 pr-14 sm:px-6">
+          <DialogContent className="h-[88vh] max-h-[88vh] gap-0 overflow-hidden rounded-3xl border-0 bg-white p-0 text-slate-900 shadow-[0_30px_100px_rgba(2,6,23,0.25)] ring-1 ring-slate-200 sm:max-w-5xl">
+            <DialogHeader className="flex-row items-center justify-between gap-4 border-b border-slate-200 bg-slate-50 px-5 py-4 pr-14 sm:px-6">
               <div className="min-w-0">
-                <DialogTitle className="truncate text-base font-semibold text-white">
+                <DialogTitle className="truncate text-base font-semibold text-slate-900">
                   {viewingDocument.documentName}
                 </DialogTitle>
-                <DialogDescription className="mt-1 text-xs text-slate-400">
+                <DialogDescription className="mt-1 text-xs text-slate-600">
                   Secure document preview
                 </DialogDescription>
               </div>
@@ -1369,7 +1367,7 @@ export function ShareholderCapTable({
                     }
                     target="_blank"
                     rel="noreferrer"
-                    className="inline-flex min-h-9 items-center gap-2 rounded-lg border border-white/15 bg-white/5 px-3 text-xs font-semibold text-slate-200 hover:bg-white/10"
+                    className="inline-flex min-h-9 items-center gap-2 rounded-lg border border-slate-200 bg-white px-3 text-xs font-semibold text-slate-700 hover:bg-slate-50"
                   >
                     <ExternalLink aria-hidden="true" size={14} />
                     Open
@@ -1387,15 +1385,18 @@ export function ShareholderCapTable({
                 </div>
               )}
             </DialogHeader>
-            <div className="h-[calc(88vh-73px)] bg-slate-100">
+            <div className="relative h-[calc(88vh-73px)] bg-slate-100">
               {(() => {
                 const href = safeDocumentUrl(viewingDocument.documentUrl);
                 if (!href) return null;
                 const isImage = /\.(png|jpe?g|gif|webp)$/i.test(href);
                 return isImage ? (
-                  <img
+                  <Image
                     src={href}
                     alt={viewingDocument.documentName}
+                    fill
+                    sizes="100vw"
+                    unoptimized
                     className="size-full object-contain"
                   />
                 ) : (

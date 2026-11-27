@@ -34,27 +34,27 @@ export default async function ExpertisePage({ params }: ExpertisePageProps) {
 
   return (
     <div className="bg-slate-50 text-slate-900 transition-colors dark:bg-slate-950 dark:text-white">
-      <section className="relative isolate overflow-hidden bg-[#061426] px-6 py-20 text-white sm:px-8 sm:py-28">
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_78%_20%,rgba(11,74,139,0.55),transparent_44%),radial-gradient(ellipse_at_12%_100%,rgba(22,101,52,0.18),transparent_40%)]" />
+      <RevealSection className="relative isolate overflow-hidden bg-slate-50 px-6 py-20 text-slate-900 sm:px-8 sm:py-28 dark:bg-[#061426] dark:text-white">
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_78%_20%,rgba(11,74,139,0.14),transparent_44%),radial-gradient(ellipse_at_12%_100%,rgba(22,101,52,0.08),transparent_40%)] dark:bg-[radial-gradient(ellipse_at_78%_20%,rgba(11,74,139,0.55),transparent_44%),radial-gradient(ellipse_at_12%_100%,rgba(22,101,52,0.18),transparent_40%)]" />
         <div
           aria-hidden="true"
-          className="absolute inset-0 opacity-[0.1]"
+          className="absolute inset-0 opacity-[0.08] dark:opacity-[0.1]"
           style={{
             backgroundImage:
-              "linear-gradient(rgba(255,255,255,.18) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,.18) 1px, transparent 1px)",
+              "linear-gradient(rgba(11,74,139,.12) 1px, transparent 1px), linear-gradient(90deg, rgba(11,74,139,.12) 1px, transparent 1px)",
             backgroundSize: "64px 64px",
             maskImage: "linear-gradient(to bottom, black, transparent 90%)",
           }}
         />
         <div className="relative mx-auto max-w-7xl">
-          <p className="inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/[0.07] px-4 py-2 text-[11px] font-semibold uppercase tracking-[0.2em] text-blue-100">
+          <p className="inline-flex items-center gap-2 rounded-full border border-blue-200 bg-white/80 px-4 py-2 text-[11px] font-semibold uppercase tracking-[0.2em] text-brand-700 dark:border-white/15 dark:bg-white/[0.07] dark:text-blue-100">
             <span className="size-1.5 rounded-full bg-[#f2b632]" aria-hidden="true" />
             {t("eyebrow")}
           </p>
-          <h1 className="mt-6 max-w-4xl text-4xl font-semibold leading-[1.06] tracking-[-0.045em] sm:text-6xl">
+          <h1 className="mt-6 max-w-4xl text-4xl font-bold leading-[1.06] tracking-[-0.045em] text-slate-900 sm:text-6xl dark:text-white">
             {t("title")}
           </h1>
-          <p className="mt-6 max-w-2xl text-base leading-8 text-blue-50/75 sm:text-lg">
+          <p className="mt-6 max-w-2xl text-base leading-8 text-slate-600 sm:text-lg dark:text-blue-50/75">
             {t("description")}
           </p>
           <Link
@@ -65,7 +65,7 @@ export default async function ExpertisePage({ params }: ExpertisePageProps) {
             <ArrowRight size={17} aria-hidden="true" />
           </Link>
         </div>
-      </section>
+      </RevealSection>
 
       <div className="bg-white dark:bg-slate-950">
         {sectors.map(({ key, Icon }, index) => (
@@ -102,14 +102,14 @@ export default async function ExpertisePage({ params }: ExpertisePageProps) {
                 </p>
               </div>
               <div
-                className={`group relative flex min-h-[22rem] items-center justify-center overflow-hidden rounded-[2rem] border border-white/10 bg-slate-950 p-10 shadow-[0_28px_90px_rgba(2,6,23,0.18)] sm:min-h-[28rem] ${
+                className={`premium-card group relative flex min-h-[22rem] items-center justify-center overflow-hidden bg-gradient-to-br from-white to-blue-50 p-10 shadow-[0_28px_90px_rgba(2,6,23,0.08)] sm:min-h-[28rem] dark:border-white/10 dark:bg-slate-950 ${
                   index % 2 === 1 ? "lg:order-1" : ""
                 }`}
               >
-                <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_50%_45%,rgba(11,74,139,0.36),transparent_62%)]" />
-                <div className="absolute -right-20 -top-20 size-64 rounded-full border border-cyan-100/10 transition duration-700 group-hover:scale-110" />
-                <div className="absolute -bottom-28 -left-20 size-80 rounded-full border border-blue-100/10 transition duration-700 group-hover:scale-110" />
-                <div className="relative flex size-36 items-center justify-center rounded-[2rem] border border-blue-100/20 bg-white/[0.06] text-cyan-200 shadow-[0_0_80px_rgba(34,211,238,0.12)] backdrop-blur-xl transition duration-500 group-hover:scale-105 sm:size-44">
+                <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_50%_45%,rgba(11,74,139,0.12),transparent_62%)]" />
+                <div className="absolute -right-20 -top-20 size-64 rounded-full border border-brand-600/10 transition duration-700 group-hover:scale-110" />
+                <div className="absolute -bottom-28 -left-20 size-80 rounded-full border border-blue-100 transition duration-700 group-hover:scale-110" />
+                <div className="relative flex size-36 items-center justify-center rounded-[2rem] border border-blue-200 bg-brand-50 text-brand-600 shadow-[0_0_80px_rgba(37,99,235,0.12)] backdrop-blur-xl transition duration-500 group-hover:scale-105 sm:size-44 dark:border-blue-100/20 dark:bg-white/[0.06] dark:text-cyan-200">
                   <Icon
                     size={60}
                     strokeWidth={1.25}
@@ -118,7 +118,7 @@ export default async function ExpertisePage({ params }: ExpertisePageProps) {
                   />
                 </div>
                 <div className="absolute bottom-6 left-6 text-[10px] font-semibold uppercase tracking-[0.2em] text-slate-500 sm:bottom-8 sm:left-8">
-                  PrimeHorizon <span className="px-2 text-cyan-300/70">/</span>{" "}
+                  PrimeHorizon <span className="px-2 text-brand-500">/</span>{" "}
                   0{index + 1}
                 </div>
               </div>

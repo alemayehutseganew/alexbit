@@ -12,7 +12,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 
 const fieldClassName =
-  "mt-2 min-h-11 w-full rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm text-slate-900 outline-none transition-all placeholder:text-slate-400 focus:border-transparent focus:ring-2 focus:ring-brand-500 focus:shadow-[0_0_24px_rgba(11,74,139,0.18)] dark:border-white/15 dark:bg-slate-950 dark:text-white";
+  "mt-2 min-h-11 w-full rounded-lg border border-slate-200 bg-slate-50 px-3 py-2 text-sm text-slate-900 outline-none transition-all placeholder:text-slate-400 focus:border-transparent focus:bg-white focus:ring-2 focus:ring-brand-600 focus:shadow-[0_0_24px_rgba(11,74,139,0.14)]";
 
 export function ContactForm() {
   const t = useTranslations("Contact");
@@ -91,7 +91,7 @@ export function ContactForm() {
       )}
 
       <div className="grid gap-5 sm:grid-cols-2">
-        <label className="block text-sm font-medium text-slate-700 dark:text-slate-200">
+        <label className="block text-sm font-medium text-slate-700">
           {t("fullName")}
           <Input
             className={fieldClassName}
@@ -106,7 +106,7 @@ export function ContactForm() {
           )}
         </label>
 
-        <label className="block text-sm font-medium text-slate-700 dark:text-slate-200">
+        <label className="block text-sm font-medium text-slate-700">
           {t("email")}
           <Input
             className={fieldClassName}
@@ -122,7 +122,7 @@ export function ContactForm() {
           )}
         </label>
 
-        <label className="block text-sm font-medium text-slate-700 dark:text-slate-200">
+        <label className="block text-sm font-medium text-slate-700">
           {t("phone")}
           <Input
             className={fieldClassName}
@@ -138,7 +138,7 @@ export function ContactForm() {
           )}
         </label>
 
-        <label className="block text-sm font-medium text-slate-700 dark:text-slate-200">
+        <label className="block text-sm font-medium text-slate-700">
           {t("subject")}
           <select
             className={fieldClassName}
@@ -153,7 +153,7 @@ export function ContactForm() {
         </label>
       </div>
 
-      <label className="block text-sm font-medium text-slate-700 dark:text-slate-200">
+      <label className="block text-sm font-medium text-slate-700">
         {t("message")}
         <textarea
           className={`${fieldClassName} min-h-36 resize-y`}

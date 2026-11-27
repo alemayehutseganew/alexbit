@@ -62,9 +62,9 @@ export function ClientShell({ children, locale }: ClientShellProps) {
   }
 
   return (
-    <div className="portal-theme min-h-screen w-full bg-slate-950 text-white">
-      <aside className="fixed inset-y-0 left-0 z-20 hidden w-64 flex-col border-r border-white/10 bg-slate-950/95 backdrop-blur-xl md:flex">
-        <div className="border-b border-slate-100 px-6 py-6">
+    <div className="portal-theme min-h-screen w-full bg-slate-50 text-slate-900">
+      <aside className="fixed inset-y-0 left-0 z-20 hidden w-64 flex-col border-r border-slate-200 bg-white backdrop-blur-xl md:flex">
+        <div className="border-b border-slate-200 px-6 py-6">
           <Link
             href={`/${locale}`}
             className="inline-flex items-center gap-3 text-sm font-bold leading-6 text-brand-600"
@@ -86,8 +86,8 @@ export function ClientShell({ children, locale }: ClientShellProps) {
               onClick={() => setMobileNavOpen(false)}
               className={`flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition ${
                 isActive(href)
-                  ? "bg-brand-500/10 text-cyan-100 shadow-[inset_3px_0_0_#06b6d4,0_0_18px_rgba(6,182,212,0.12)]"
-                  : "text-slate-400 hover:bg-white/10 hover:text-white"
+                  ? "border-r-4 border-brand-600 bg-brand-50 text-brand-700"
+                  : "text-slate-600 hover:bg-slate-50 hover:text-slate-900"
               }`}
             >
               <Icon aria-hidden="true" size={18} />
@@ -95,7 +95,7 @@ export function ClientShell({ children, locale }: ClientShellProps) {
             </Link>
           ))}
         </nav>
-        <div className="border-t border-slate-100 px-6 py-4 text-xs text-slate-500">
+        <div className="border-t border-slate-200 px-6 py-4 text-xs text-slate-500">
           <button
             type="button"
             onClick={() => void signOut({ redirectTo: `/${locale}/login` })}
@@ -108,7 +108,7 @@ export function ClientShell({ children, locale }: ClientShellProps) {
       </aside>
 
       <div className="min-h-screen w-full md:pl-64">
-        <header className="sticky top-0 z-30 border-b border-white/10 bg-slate-950/90 backdrop-blur-xl">
+        <header className="sticky top-0 z-30 border-b border-slate-200 bg-white/90 backdrop-blur-xl">
           <div className="mx-auto flex max-w-7xl items-center justify-between gap-4 px-5 py-4 sm:px-8">
             <div className="flex items-center gap-3">
               <BrandLogo
@@ -158,7 +158,7 @@ export function ClientShell({ children, locale }: ClientShellProps) {
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
                   exit={{ opacity: 0 }}
-                  className="fixed inset-0 z-30 bg-slate-950/30 md:hidden"
+                  className="fixed inset-0 z-30 bg-slate-900/20 md:hidden"
                   onClick={() => setMobileNavOpen(false)}
                 />
                 <motion.nav
@@ -168,7 +168,7 @@ export function ClientShell({ children, locale }: ClientShellProps) {
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, y: -8 }}
                   transition={{ duration: 0.18 }}
-                  className="absolute inset-x-3 top-[calc(100%-0.25rem)] z-40 rounded-2xl border border-white/10 bg-slate-900/90 p-3 shadow-xl backdrop-blur-xl md:hidden"
+                  className="absolute inset-x-3 top-[calc(100%-0.25rem)] z-40 rounded-2xl border border-slate-200 bg-white p-3 shadow-xl backdrop-blur-xl md:hidden"
                 >
                   {items.map(({ href, label, Icon }) => (
                     <Link
@@ -178,8 +178,8 @@ export function ClientShell({ children, locale }: ClientShellProps) {
                       onClick={() => setMobileNavOpen(false)}
                       className={`flex min-h-11 items-center gap-3 rounded-lg px-3 text-sm font-medium focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-600 ${
                         isActive(href)
-                          ? "bg-brand-500/10 text-cyan-100"
-                          : "text-slate-300 hover:bg-white/10 hover:text-white"
+                          ? "bg-brand-50 text-brand-700"
+                          : "text-slate-600 hover:bg-slate-50 hover:text-slate-900"
                       }`}
                     >
                       <Icon aria-hidden="true" size={18} />

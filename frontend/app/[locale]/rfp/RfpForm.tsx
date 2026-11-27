@@ -67,16 +67,16 @@ export function RfpForm() {
   };
 
   const inputClass =
-    "mt-2 min-h-11 w-full rounded-md border border-slate-300 bg-white px-4 py-3 text-slate-900 outline-none transition focus:border-brand-600 focus:ring-2 focus:ring-brand-600/20 dark:border-white/15 dark:bg-slate-900 dark:text-white";
+    "mt-2 min-h-11 w-full rounded-lg border border-slate-200 bg-slate-50 px-4 py-3 text-slate-900 outline-none transition focus:border-brand-600 focus:bg-white focus:ring-2 focus:ring-brand-600/20";
 
   return (
     <form
-      className="grid gap-6 rounded-lg border border-slate-200 bg-white p-6 shadow-sm dark:border-white/10 dark:bg-slate-900"
+      className="premium-card grid gap-6 p-6 sm:p-8"
       onSubmit={handleSubmit(onSubmit)}
       noValidate
     >
       <div className="grid gap-6 md:grid-cols-2">
-        <label className="text-sm font-semibold text-slate-800 dark:text-slate-200">
+        <label className="text-sm font-semibold text-slate-700">
           {t("organization")}
           <input className={inputClass} {...register("organization")} />
           {errors.organization && (
@@ -86,7 +86,7 @@ export function RfpForm() {
           )}
         </label>
 
-        <label className="text-sm font-semibold text-slate-800 dark:text-slate-200">
+        <label className="text-sm font-semibold text-slate-700">
           {t("contactName")}
           <input className={inputClass} {...register("contactName")} />
           {errors.contactName && (
@@ -96,7 +96,7 @@ export function RfpForm() {
           )}
         </label>
 
-        <label className="text-sm font-semibold text-slate-800 dark:text-slate-200">
+        <label className="text-sm font-semibold text-slate-700">
           {t("contactEmail")}
           <input
             className={inputClass}
@@ -110,7 +110,7 @@ export function RfpForm() {
           )}
         </label>
 
-        <label className="text-sm font-semibold text-slate-800 dark:text-slate-200">
+        <label className="text-sm font-semibold text-slate-700">
           {t("phone")}
           <input className={inputClass} type="tel" {...register("phone")} />
           {errors.phone && (
@@ -120,7 +120,7 @@ export function RfpForm() {
           )}
         </label>
 
-        <label className="text-sm font-semibold text-slate-800 dark:text-slate-200 md:col-span-2">
+        <label className="text-sm font-semibold text-slate-700 md:col-span-2">
           {t("sector")}
           <select
             className={inputClass}
@@ -144,7 +144,7 @@ export function RfpForm() {
         </label>
       </div>
 
-      <label className="text-sm font-semibold text-slate-800 dark:text-slate-200">
+      <label className="text-sm font-semibold text-slate-700">
         {t("projectDetails")}
         <textarea
           className={`${inputClass} min-h-36 resize-y`}
@@ -158,12 +158,12 @@ export function RfpForm() {
       </label>
 
       <div className="grid gap-6 md:grid-cols-2">
-        <label className="text-sm font-semibold text-slate-800 dark:text-slate-200">
+        <label className="text-sm font-semibold text-slate-700">
           {t("budgetRange")}
           <input className={inputClass} {...register("budgetRange")} />
         </label>
 
-        <label className="text-sm font-semibold text-slate-800 dark:text-slate-200">
+        <label className="text-sm font-semibold text-slate-700">
           {t("timeline")}
           <input className={inputClass} {...register("timeline")} />
         </label>
@@ -190,7 +190,7 @@ export function RfpForm() {
       <button
         type="submit"
         disabled={isSubmitting}
-        className="flex min-h-11 items-center justify-center gap-2 rounded-md bg-brand-600 px-5 py-3 font-semibold text-white transition hover:scale-[1.02] hover:bg-brand-700 active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-600 focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-60"
+        className="flex min-h-11 items-center justify-center gap-2 rounded-lg bg-brand-600 px-5 py-3 font-semibold text-white transition-all duration-300 hover:bg-brand-700 active:scale-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-600 focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-60"
       >
         {isSubmitting && (
           <svg

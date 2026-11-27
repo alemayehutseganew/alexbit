@@ -1,6 +1,7 @@
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { Mail, MapPin, Phone } from "lucide-react";
 import Image from "next/image";
+import { RevealSection } from "@/components/MotionReveal";
 import { ContactForm } from "./ContactForm";
 
 type ContactPageProps = {
@@ -17,30 +18,30 @@ export default async function ContactPage({ params }: ContactPageProps) {
 
   return (
     <div className="bg-white text-slate-900 transition-colors dark:bg-slate-950 dark:text-white">
-      <section className="relative isolate overflow-hidden bg-[#061426] px-6 py-16 text-white sm:px-8 sm:py-20">
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_78%_20%,rgba(11,74,139,0.5),transparent_44%)]" />
+      <RevealSection className="relative isolate overflow-hidden bg-slate-50 px-6 py-16 text-slate-900 sm:px-8 sm:py-20">
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_78%_20%,rgba(11,74,139,0.12),transparent_44%)]" />
         <div className="relative mx-auto max-w-7xl">
-          <p className="inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/[0.07] px-4 py-2 text-[11px] font-semibold uppercase tracking-[0.2em] text-blue-100">
+          <p className="inline-flex items-center gap-2 rounded-full border border-blue-200 bg-white/80 px-4 py-2 text-[11px] font-semibold uppercase tracking-[0.2em] text-brand-700">
             <span className="size-1.5 rounded-full bg-[#f2b632]" aria-hidden="true" />
             {t("eyebrow")}
           </p>
-          <h1 className="mt-5 max-w-4xl text-3xl font-semibold leading-[1.06] tracking-[-0.045em] sm:text-4xl md:text-5xl">
+          <h1 className="mt-5 max-w-4xl text-3xl font-bold leading-[1.06] tracking-[-0.045em] text-slate-900 sm:text-4xl md:text-5xl">
             {t("title")}
           </h1>
-          <p className="mt-4 max-w-2xl text-base leading-7 text-blue-50/75">
+          <p className="mt-4 max-w-2xl text-base leading-7 text-slate-600">
             {t("description")}
           </p>
           <a
             href={`tel:${brand("phone")}`}
-            className="mt-6 inline-flex min-h-11 items-center gap-2 rounded-xl border border-white/20 bg-white/[0.06] px-4 py-2 text-sm font-semibold text-white backdrop-blur transition hover:border-cyan-200/60 hover:bg-white/[0.12]"
+            className="mt-6 inline-flex min-h-11 items-center gap-2 rounded-xl border border-slate-300 bg-white/80 px-4 py-2 text-sm font-semibold text-brand-700 backdrop-blur transition-all duration-300 hover:border-brand-300 hover:bg-white active:scale-95"
           >
             <Phone size={16} aria-hidden="true" />
             {brand("phone")}
           </a>
         </div>
-      </section>
+      </RevealSection>
 
-      <div className="mx-auto grid max-w-7xl gap-10 px-6 py-12 sm:px-8 sm:py-16 lg:grid-cols-[0.85fr_1.15fr] lg:gap-16">
+      <RevealSection className="mx-auto grid max-w-7xl gap-10 px-6 py-12 sm:px-8 sm:py-16 lg:grid-cols-[0.85fr_1.15fr] lg:gap-16">
         <aside className="order-2 space-y-8 lg:order-1">
           <div>
             <p className="text-xs font-semibold uppercase tracking-[0.18em] text-brand-600">
@@ -57,7 +58,7 @@ export default async function ContactPage({ params }: ContactPageProps) {
           <div className="space-y-4">
             <a
               href={`tel:${brand("phone")}`}
-              className="group flex min-h-16 items-center gap-4 rounded-xl border border-slate-200 p-4 transition duration-200 hover:-translate-y-1 hover:border-cyan-300/50 hover:shadow-[0_0_28px_rgba(6,182,212,0.12)] dark:border-white/10 dark:bg-white/[0.03]"
+              className="premium-card group flex min-h-16 items-center gap-4 p-4 hover:-translate-y-1 hover:border-brand-200"
             >
               <span className="flex size-10 items-center justify-center rounded-lg bg-blue-50 text-brand-600 transition group-hover:shadow-[0_0_18px_rgba(6,182,212,0.35)]">
                 <Phone size={18} aria-hidden="true" />
@@ -73,7 +74,7 @@ export default async function ContactPage({ params }: ContactPageProps) {
             </a>
             <a
               href="mailto:info@primehorizon.com"
-              className="group flex min-h-16 items-center gap-4 rounded-xl border border-slate-200 p-4 transition duration-200 hover:-translate-y-1 hover:border-cyan-300/50 hover:shadow-[0_0_28px_rgba(6,182,212,0.12)] dark:border-white/10 dark:bg-white/[0.03]"
+              className="premium-card group flex min-h-16 items-center gap-4 p-4 hover:-translate-y-1 hover:border-brand-200"
             >
               <span className="flex size-10 items-center justify-center rounded-lg bg-blue-50 text-brand-600 transition group-hover:shadow-[0_0_18px_rgba(6,182,212,0.35)]">
                 <Mail size={18} aria-hidden="true" />
@@ -123,20 +124,18 @@ export default async function ContactPage({ params }: ContactPageProps) {
           </div>
         </aside>
 
-        <section className="order-1 rounded-3xl border border-cyan-300/20 bg-gradient-to-br from-cyan-300/20 via-blue-600/10 to-transparent p-px shadow-[0_0_44px_rgba(6,182,212,0.1)] sm:p-px lg:order-2">
-          <div className="h-full rounded-[calc(1.5rem-1px)] bg-white p-6 sm:p-9 dark:bg-slate-900/90">
-            <div className="mb-7">
-              <h2 className="text-2xl font-semibold tracking-tight text-slate-900 dark:text-white">
-                {t("formTitle")}
-              </h2>
-              <p className="mt-2 text-sm leading-6 text-slate-600 dark:text-slate-300">
-                {t("formDescription")}
-              </p>
-            </div>
-            <ContactForm />
+        <section className="premium-card order-1 p-6 sm:p-9 lg:order-2">
+          <div className="mb-7">
+            <h2 className="text-2xl font-bold tracking-tight text-slate-900">
+              {t("formTitle")}
+            </h2>
+            <p className="mt-2 text-sm leading-6 text-slate-600">
+              {t("formDescription")}
+            </p>
           </div>
+          <ContactForm />
         </section>
-      </div>
+      </RevealSection>
     </div>
   );
 }

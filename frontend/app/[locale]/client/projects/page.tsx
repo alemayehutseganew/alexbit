@@ -122,7 +122,7 @@ export default async function ClientProjectsPage({
         <p className="mt-2 text-slate-600">{t("projectsDescription")}</p>
       </section>
 
-      <section className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
+      <section className="premium-card p-6">
         <div className="mb-5 flex items-center justify-between gap-4">
           <div className="flex items-center gap-3">
             <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-blue-50 text-brand-600">

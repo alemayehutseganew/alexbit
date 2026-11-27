@@ -11,10 +11,16 @@ const config: Config = {
     extend: {
       colors: {
         brand: {
+          50: "#eff6ff",
+          100: "#dbeafe",
+          200: "#bfdbfe",
+          300: "#93c5fd",
           400: "#60a5fa",
           500: "#1681c4",
           600: "#0b4a8b",
           700: "#083a70",
+          800: "#0b315d",
+          900: "#08264a",
         },
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",

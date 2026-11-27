@@ -34,7 +34,7 @@ type LoginActionsProps = {
 
 function FieldError({ children }: { children?: string }) {
   return children ? (
-    <p role="alert" className="mt-1 text-sm text-red-600">
+    <p role="alert" className="mt-1 text-sm text-red-700 dark:text-red-300">
       {children}
     </p>
   ) : null;
@@ -44,8 +44,8 @@ function fieldClassName(hasError: boolean) {
   return `mt-1 min-h-11 w-full rounded-lg border px-3 py-2 text-sm text-slate-900 outline-none transition focus-visible:ring-2 focus-visible:ring-brand-600 ${
     hasError
       ? "border-red-400 focus-visible:border-red-500"
-      : "border-slate-300 focus-visible:border-brand-600"
-  } bg-white dark:border-white/15 dark:bg-slate-950 dark:text-white`;
+      : "border-slate-200 focus-visible:border-brand-600"
+  } bg-slate-50 dark:border-white/15 dark:bg-slate-950 dark:text-white`;
 }
 
 async function getBackendError(response: Response): Promise<string> {
@@ -130,7 +130,7 @@ export function LoginActions({
     });
 
     if (result?.error) {
-      setFormError(result.error);
+      setFormError(t("loginError"));
       return false;
     }
 
@@ -274,7 +274,7 @@ export function LoginActions({
 
   return (
     <div className="w-full">
-      <div className="mb-6 grid grid-cols-2 rounded-xl bg-slate-100 p-1 dark:bg-slate-800">
+      <div className="mb-5 grid grid-cols-2 rounded-2xl border border-slate-200/80 bg-white/70 p-1.5 shadow-sm backdrop-blur-xl dark:border-white/10 dark:bg-white/[0.04]">
         {(["client", "shareholder"] as const).map((option) => (
           <button
             key={option}
@@ -283,8 +283,8 @@ export function LoginActions({
             onClick={() => changeRealm(option)}
             className={`min-h-11 rounded-lg px-3 text-sm font-semibold transition ${
               realm === option
-                ? "bg-white text-brand-700 shadow-sm dark:bg-slate-700 dark:text-white"
-                : "text-slate-600 hover:text-slate-900 dark:text-slate-300 dark:hover:text-white"
+                ? "bg-brand-600 text-white shadow-[0_6px_18px_rgba(11,74,139,0.24)] dark:bg-cyan-300 dark:text-slate-950"
+                : "text-slate-600 hover:bg-white/80 hover:text-brand-700 dark:text-slate-300 dark:hover:bg-white/10 dark:hover:text-white"
             }`}
           >
             {option === "client" ? t("clientPortal") : t("shareholderPortal")}
@@ -299,9 +299,9 @@ export function LoginActions({
           animate={{ opacity: 1, x: 0 }}
           exit={{ opacity: 0, x: -20 }}
           transition={{ duration: 0.18 }}
-          className="w-full max-w-none rounded-none border border-white/40 bg-white/80 p-6 shadow-2xl shadow-slate-950/10 backdrop-blur-xl sm:p-8 md:max-w-md md:rounded-2xl dark:border-white/10 dark:bg-slate-900/90"
+          className="premium-card w-full rounded-3xl border-slate-200/80 bg-white/95 p-6 shadow-[0_24px_70px_rgba(15,23,42,0.12)] backdrop-blur-xl sm:p-8 dark:border-white/10 dark:bg-slate-900/90"
         >
-          <h2 className="text-2xl font-bold tracking-tight text-slate-900 dark:text-white">
+          <h2 className="text-2xl font-bold tracking-tight text-slate-950 dark:text-white">
             {title}
           </h2>
 
@@ -366,13 +366,13 @@ export function LoginActions({
                     <button
                       type="button"
                       onClick={() => changeView("forgot")}
-                      className="mt-2 text-sm font-semibold text-brand-700 hover:text-blue-900"
+                      className="mt-2 text-sm font-semibold text-brand-700 hover:text-blue-900 dark:text-cyan-300 dark:hover:text-cyan-100"
                     >
                       {t("forgotLink")}
                     </button>
                   </div>
                   {formError && (
-                    <p role="alert" className="text-sm text-red-600">
+                    <p role="alert" className="text-sm text-red-700 dark:text-red-300">
                       {formError}
                     </p>
                   )}
@@ -384,7 +384,7 @@ export function LoginActions({
                     <Button
                       type="submit"
                       disabled={loginForm.formState.isSubmitting}
-                      className="min-h-11 w-full gap-2 bg-brand-600 px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-brand-700 motion-safe:hover:scale-100 active:scale-100"
+                      className="min-h-11 w-full gap-2 bg-brand-600 px-4 py-2 text-sm font-semibold text-white shadow-[0_8px_24px_rgba(11,74,139,0.18)] transition-colors hover:bg-brand-700 motion-safe:hover:scale-100 active:scale-100 dark:bg-cyan-400 dark:text-slate-950 dark:hover:bg-cyan-300"
                     >
                       {loginForm.formState.isSubmitting && (
                         <LoaderCircle
@@ -402,7 +402,7 @@ export function LoginActions({
                       <button
                         type="button"
                         onClick={() => changeView("register")}
-                        className="font-semibold text-brand-700 hover:text-blue-900 dark:text-blue-300 dark:hover:text-blue-100"
+                        className="font-semibold text-brand-700 hover:text-blue-900 dark:text-cyan-300 dark:hover:text-cyan-100"
                       >
                         {t("signUpLink")}
                       </button>
@@ -569,7 +569,7 @@ export function LoginActions({
                     </FieldError>
                   </div>
                   {formError && (
-                    <p role="alert" className="text-sm text-red-600">
+                    <p role="alert" className="text-sm text-red-700 dark:text-red-300">
                       {formError}
                     </p>
                   )}
@@ -581,7 +581,7 @@ export function LoginActions({
                     <Button
                       type="submit"
                       disabled={registerForm.formState.isSubmitting}
-                      className="min-h-11 w-full gap-2 bg-brand-600 px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-brand-700 motion-safe:hover:scale-100 active:scale-100"
+                      className="min-h-11 w-full gap-2 bg-brand-600 px-4 py-2 text-sm font-semibold text-white shadow-[0_8px_24px_rgba(11,74,139,0.18)] transition-colors hover:bg-brand-700 motion-safe:hover:scale-100 active:scale-100 dark:bg-cyan-400 dark:text-slate-950 dark:hover:bg-cyan-300"
                     >
                       {registerForm.formState.isSubmitting && (
                         <LoaderCircle
@@ -598,7 +598,7 @@ export function LoginActions({
                     <button
                       type="button"
                       onClick={() => changeView("login")}
-                      className="font-semibold text-brand-700 hover:text-blue-900 dark:text-blue-300 dark:hover:text-blue-100"
+                      className="font-semibold text-brand-700 hover:text-blue-900 dark:text-cyan-300 dark:hover:text-cyan-100"
                     >
                       {t("signInLink")}
                     </button>
@@ -643,7 +643,7 @@ export function LoginActions({
                     </p>
                   )}
                   {formError && (
-                    <p role="alert" className="text-sm text-red-600">
+                    <p role="alert" className="text-sm text-red-700 dark:text-red-300">
                       {formError}
                     </p>
                   )}
@@ -655,7 +655,7 @@ export function LoginActions({
                     <Button
                       type="submit"
                       disabled={forgotForm.formState.isSubmitting}
-                      className="min-h-11 w-full gap-2 bg-brand-600 px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-brand-700 motion-safe:hover:scale-100 active:scale-100"
+                      className="min-h-11 w-full gap-2 bg-brand-600 px-4 py-2 text-sm font-semibold text-white shadow-[0_8px_24px_rgba(11,74,139,0.18)] transition-colors hover:bg-brand-700 motion-safe:hover:scale-100 active:scale-100 dark:bg-cyan-400 dark:text-slate-950 dark:hover:bg-cyan-300"
                     >
                       {forgotForm.formState.isSubmitting && (
                         <LoaderCircle
@@ -670,7 +670,7 @@ export function LoginActions({
                   <button
                     type="button"
                     onClick={() => changeView("login")}
-                    className="flex min-h-10 items-center gap-2 text-sm font-semibold text-brand-700 hover:text-blue-900"
+                    className="flex min-h-10 items-center gap-2 text-sm font-semibold text-brand-700 hover:text-blue-900 dark:text-cyan-300 dark:hover:text-cyan-100"
                   >
                     <ArrowLeft aria-hidden="true" size={16} />
                     {t("backToLogin")}

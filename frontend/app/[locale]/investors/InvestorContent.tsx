@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useTranslations } from "next-intl";
 import { ArrowRight, ShieldCheck, TrendingUp, Users } from "lucide-react";
 import { motion, type Variants } from "framer-motion";
+import { RevealSection } from "@/components/MotionReveal";
 import { BrandLogo } from "@/components/brand/BrandLogo";
 import { AnimatedCounter } from "@/components/AnimatedCounter";
 import {
@@ -73,24 +74,24 @@ export function InvestorContent({ locale }: InvestorContentProps) {
 
   return (
     <div className="bg-white text-slate-900 transition-colors dark:bg-slate-950 dark:text-white">
-      <section className="relative isolate overflow-hidden bg-[#061426] text-white">
-        <div className="absolute inset-0 -z-10 bg-[radial-gradient(ellipse_at_78%_20%,rgba(11,74,139,0.55),transparent_44%),radial-gradient(ellipse_at_12%_100%,rgba(22,101,52,0.18),transparent_40%)]" />
+      <RevealSection className="relative isolate overflow-hidden bg-slate-50 text-slate-900 dark:bg-[#061426] dark:text-white">
+        <div className="absolute inset-0 -z-10 bg-[radial-gradient(ellipse_at_78%_20%,rgba(11,74,139,0.14),transparent_44%),radial-gradient(ellipse_at_12%_100%,rgba(22,101,52,0.08),transparent_40%)] dark:bg-[radial-gradient(ellipse_at_78%_20%,rgba(11,74,139,0.55),transparent_44%),radial-gradient(ellipse_at_12%_100%,rgba(22,101,52,0.18),transparent_40%)]" />
         <motion.div
           aria-hidden="true"
           animate={{ scale: [1, 1.14, 1], opacity: [0.35, 0.65, 0.35] }}
           transition={{ duration: 9, repeat: Infinity, ease: "easeInOut" }}
-          className="absolute -right-32 top-10 -z-10 h-96 w-96 rounded-full bg-cyan-400/15 blur-[100px]"
+          className="absolute -right-32 top-10 -z-10 h-96 w-96 rounded-full bg-brand-400/15 blur-[100px]"
         />
         <div className="relative mx-auto grid max-w-7xl items-center gap-12 px-6 py-20 sm:px-8 sm:py-28 lg:grid-cols-[1.05fr_0.95fr]">
           <div className="max-w-3xl">
-            <p className="inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/[0.07] px-4 py-2 text-[11px] font-semibold uppercase tracking-[0.2em] text-blue-100">
+            <p className="inline-flex items-center gap-2 rounded-full border border-blue-200 bg-white/80 px-4 py-2 text-[11px] font-semibold uppercase tracking-[0.2em] text-brand-700 dark:border-white/15 dark:bg-white/[0.07] dark:text-blue-100">
               <span className="size-1.5 rounded-full bg-[#f2b632]" aria-hidden="true" />
               PrimeHorizon Group Trading PLC
             </p>
-            <h1 className="mt-6 text-3xl font-bold leading-tight tracking-tight text-white sm:text-5xl md:text-6xl">
+            <h1 className="mt-6 text-3xl font-bold leading-tight tracking-tight text-slate-900 sm:text-5xl md:text-6xl dark:text-white">
               {t("heroTitle")}
             </h1>
-            <p className="mt-6 max-w-2xl text-lg leading-8 text-blue-50/75">
+            <p className="mt-6 max-w-2xl text-lg leading-8 text-slate-600 dark:text-blue-50/75">
               {t("heroSubtitle")}
             </p>
             <Link
@@ -102,43 +103,43 @@ export function InvestorContent({ locale }: InvestorContentProps) {
             </Link>
           </div>
           <div className="relative mx-auto flex aspect-square w-full max-w-[420px] items-center justify-center">
-            <div className="absolute inset-[8%] rounded-full border border-white/10" />
-            <div className="absolute inset-[20%] animate-[spin_72s_linear_infinite] rounded-full border border-dashed border-cyan-200/20" />
-            <div className="absolute inset-[32%] rounded-full border border-white/10" />
+            <div className="absolute inset-[8%] rounded-full border border-brand-900/10 dark:border-white/10" />
+            <div className="absolute inset-[20%] animate-[spin_72s_linear_infinite] rounded-full border border-dashed border-brand-600/20 dark:border-cyan-200/20" />
+            <div className="absolute inset-[32%] rounded-full border border-brand-900/10 dark:border-white/10" />
             <div className="absolute size-56 rounded-full bg-brand-600/20 blur-[80px]" />
             <BrandLogo
               alt=""
               priority
-              className="relative size-48 rounded-3xl bg-white object-contain p-1 shadow-[0_24px_70px_rgba(0,0,0,0.3)] sm:size-56"
+              className="relative size-48 rounded-3xl border border-blue-100 bg-white object-contain p-1 shadow-[0_24px_70px_rgba(37,99,235,0.12)] sm:size-56"
             />
           </div>
         </div>
-      </section>
+      </RevealSection>
 
-      <section className="border-y border-blue-950/10 bg-[#071b32] py-12 text-white sm:py-14">
+      <RevealSection className="border-y border-slate-200 bg-white py-12 text-slate-900 sm:py-14 dark:border-blue-950/10 dark:bg-[#071b32] dark:text-white">
         <div className="mx-auto grid max-w-7xl gap-4 px-6 sm:grid-cols-3 sm:px-8">
           {metrics.map((metric) => (
             <div
               key={metric.label}
-              className="border-white/10 px-6 py-3 text-center sm:border-r sm:last:border-r-0"
+              className="border-slate-200 px-6 py-3 text-center sm:border-r sm:last:border-r-0 dark:border-white/10"
             >
-              <p className="text-4xl font-bold tracking-tight text-white sm:text-5xl">
+              <p className="text-4xl font-bold tracking-tight text-brand-600 sm:text-5xl dark:text-white">
                 <AnimatedCounter
                   value={metric.value}
                   suffix={metric.suffix}
                 />
               </p>
-              <p className="mt-3 text-sm font-medium text-blue-100/65">
+              <p className="mt-3 text-sm font-medium text-slate-600 dark:text-blue-100/65">
                 {metric.label}
               </p>
             </div>
           ))}
         </div>
-      </section>
+      </RevealSection>
 
-      <section className="bg-slate-50 py-16 transition-colors sm:py-20 dark:bg-slate-950">
+      <RevealSection className="bg-slate-50 py-16 transition-colors sm:py-20 dark:bg-slate-950">
         <div className="mx-auto max-w-6xl px-6">
-          <h2 className="bg-gradient-to-r from-white to-slate-400 bg-clip-text text-2xl font-bold tracking-tight text-transparent sm:text-3xl">
+          <h2 className="bg-gradient-to-r from-slate-900 to-slate-600 bg-clip-text text-2xl font-bold tracking-tight text-transparent sm:text-3xl dark:from-white dark:to-slate-400">
             {t("whyInvestTitle")}
           </h2>
           <motion.div
@@ -154,7 +155,7 @@ export function InvestorContent({ locale }: InvestorContentProps) {
                 variants={cardVariants}
                 whileHover={{ y: -6, scale: 1.015 }}
                 whileTap={{ scale: 0.98 }}
-                className="group rounded-3xl border border-slate-200/80 bg-white p-7 shadow-[0_16px_50px_rgba(7,27,50,0.06)] backdrop-blur-md transition-colors hover:border-blue-300 hover:shadow-[0_26px_65px_rgba(7,27,50,0.12)] dark:border-white/10 dark:bg-white/[0.05] dark:shadow-black/20 dark:hover:shadow-blue-900/30"
+                className="premium-card group p-7 backdrop-blur-md hover:-translate-y-1 hover:border-blue-300"
               >
                 <span className="flex h-12 w-12 items-center justify-center rounded-2xl bg-brand-600/10 text-brand-600 transition group-hover:bg-brand-600 group-hover:text-white dark:bg-brand-600/15 dark:text-blue-300">
                   <Icon
@@ -173,21 +174,21 @@ export function InvestorContent({ locale }: InvestorContentProps) {
             ))}
           </motion.div>
         </div>
-      </section>
+      </RevealSection>
 
-      <section className="bg-slate-50 px-6 py-10 transition-colors sm:px-8 sm:py-14 dark:bg-slate-950">
+      <RevealSection className="bg-slate-50 px-6 py-10 transition-colors sm:px-8 sm:py-14 dark:bg-slate-950">
         <div className="mx-auto grid max-w-7xl gap-6 lg:grid-cols-[1.4fr_0.6fr]">
-          <article className="rounded-3xl border border-white/10 bg-white/[0.04] p-6 shadow-xl shadow-black/10 backdrop-blur-xl sm:p-8">
+          <article className="premium-card p-6 sm:p-8">
             <div className="flex flex-wrap items-start justify-between gap-3">
               <div>
-                <h2 className="text-xl font-semibold tracking-tight text-white sm:text-2xl">
+                <h2 className="text-xl font-semibold tracking-tight text-slate-900 sm:text-2xl">
                   {t("growthTitle")}
                 </h2>
-                <p className="mt-2 text-sm text-slate-400">
+                <p className="mt-2 text-sm text-slate-600">
                   {t("growthNote")}
                 </p>
               </div>
-              <span className="rounded-full border border-cyan-300/20 bg-cyan-300/10 px-3 py-1 text-xs font-medium text-cyan-100">
+              <span className="rounded-full border border-blue-200 bg-blue-50 px-3 py-1 text-xs font-medium text-brand-700">
                 {t("growthIndex")}
               </span>
             </div>
@@ -202,14 +203,14 @@ export function InvestorContent({ locale }: InvestorContentProps) {
                   margin={{ top: 8, right: 8, bottom: 0, left: -20 }}
                 >
                   <CartesianGrid
-                    stroke="rgba(148,163,184,0.12)"
+                    stroke="rgba(148,163,184,0.28)"
                     vertical={false}
                   />
                   <XAxis
                     dataKey="year"
                     axisLine={false}
                     tickLine={false}
-                    tick={{ fill: "#94a3b8", fontSize: 12 }}
+                    tick={{ fill: "#64748b", fontSize: 12 }}
                   />
                   <YAxis
                     axisLine={false}
@@ -218,10 +219,10 @@ export function InvestorContent({ locale }: InvestorContentProps) {
                   />
                   <Tooltip
                     contentStyle={{
-                      background: "#0f172a",
-                      border: "1px solid rgba(148,163,184,0.2)",
+                      background: "#ffffff",
+                      border: "1px solid #e2e8f0",
                       borderRadius: 12,
-                      color: "#f8fafc",
+                      color: "#0f172a",
                     }}
                   />
                   <Bar
@@ -234,25 +235,25 @@ export function InvestorContent({ locale }: InvestorContentProps) {
               </ResponsiveContainer>
             </div>
           </article>
-          <aside className="flex flex-col justify-center rounded-3xl border border-cyan-300/20 bg-gradient-to-br from-blue-500/15 via-white/[0.04] to-cyan-400/10 p-7 shadow-[0_0_44px_rgba(6,182,212,0.08)] backdrop-blur-xl sm:p-8">
-            <p className="text-sm leading-6 text-slate-300">
+          <aside className="premium-card flex flex-col justify-center bg-gradient-to-br from-blue-50 via-white to-cyan-50 p-7 sm:p-8">
+            <p className="text-sm leading-6 text-slate-600">
               {t("heroSubtitle")}
             </p>
             <Link
               href={`/${locale}/login?role=shareholder`}
-              className="mt-7 inline-flex min-h-12 items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-brand-600 to-cyan-500 px-5 py-3 text-sm font-semibold text-white shadow-lg shadow-cyan-950/30 transition hover:-translate-y-0.5 hover:shadow-cyan-500/20 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-200"
+              className="mt-7 inline-flex min-h-12 items-center justify-center gap-2 rounded-xl bg-brand-600 px-5 py-3 text-sm font-semibold text-white shadow-lg shadow-brand-900/20 transition-all duration-300 hover:-translate-y-0.5 hover:bg-brand-700 active:scale-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-600"
             >
               {t("requestAccess")}
               <ArrowRight aria-hidden="true" size={18} />
             </Link>
           </aside>
         </div>
-      </section>
+      </RevealSection>
 
-      <section className="bg-slate-50 px-6 pb-24 pt-8 transition-colors dark:bg-slate-950">
-        <div className="mx-auto max-w-7xl rounded-[2rem] bg-[#061426] p-8 text-white shadow-[0_30px_90px_rgba(7,27,50,0.2)] sm:p-12">
+      <RevealSection className="bg-slate-50 px-6 pb-24 pt-8 transition-colors dark:bg-slate-950">
+        <div className="mx-auto max-w-7xl rounded-[2rem] border border-blue-100 bg-gradient-to-br from-blue-50 via-white to-slate-50 p-8 text-slate-900 shadow-xl shadow-brand-900/5 sm:p-12">
           <div className="mx-auto max-w-3xl text-center">
-            <h2 className="text-2xl font-bold tracking-tight text-white sm:text-3xl">
+            <h2 className="text-2xl font-bold tracking-tight text-slate-900 sm:text-3xl">
               {t("ctaButton")}
             </h2>
             <Link
@@ -264,7 +265,7 @@ export function InvestorContent({ locale }: InvestorContentProps) {
             </Link>
           </div>
         </div>
-      </section>
+      </RevealSection>
     </div>
   );
 }

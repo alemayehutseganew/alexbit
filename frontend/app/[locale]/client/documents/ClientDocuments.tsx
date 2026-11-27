@@ -2,12 +2,41 @@
 
 import { Download, FileText, UploadCloud } from "lucide-react";
 import { type ChangeEvent, type FormEvent, useEffect, useState } from "react";
+import { Skeleton } from "@/components/ui/skeleton";
 
 type ClientDocument = {
   id: string;
   documentName: string;
   uploadedAt: string;
 };
+
+const maxDocumentSize = 5 * 1024 * 1024;
+
+function isClientDocument(value: unknown): value is ClientDocument {
+  return (
+    typeof value === "object" &&
+    value !== null &&
+    "id" in value &&
+    typeof value.id === "string" &&
+    "documentName" in value &&
+    typeof value.documentName === "string" &&
+    "uploadedAt" in value &&
+    typeof value.uploadedAt === "string"
+  );
+}
+
+async function getUploadError(response: Response): Promise<string> {
+  const payload: unknown = await response.json().catch(() => null);
+  if (
+    typeof payload === "object" &&
+    payload !== null &&
+    "message" in payload &&
+    typeof payload.message === "string"
+  ) {
+    return payload.message;
+  }
+  return `Unable to upload document (HTTP ${response.status}).`;
+}
 
 export function ClientDocuments({
   apiUrl,
@@ -26,38 +55,57 @@ export function ClientDocuments({
   const [file, setFile] = useState<File | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [uploading, setUploading] = useState(false);
-  const [refreshKey, setRefreshKey] = useState(0);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     const controller = new AbortController();
-    void fetch(`${apiUrl.replace(/\/$/, "")}/api/client/documents`, {
-      headers: { Authorization: `Bearer ${accessToken}` },
-      signal: controller.signal,
-      cache: "no-store",
-    })
-      .then((response) => (response.ok ? response.json() : []))
-      .then((value: unknown) => {
-        if (
-          Array.isArray(value) &&
-          value.every(
-            (item) =>
-              typeof item === "object" &&
-              item !== null &&
-              "id" in item &&
-              "documentName" in item &&
-              "uploadedAt" in item,
-          )
-        ) {
-          setDocuments(value as ClientDocument[]);
+    async function loadDocuments() {
+      try {
+        const response = await fetch(
+          `${apiUrl.replace(/\/$/, "")}/api/client/documents`,
+          {
+            headers: { Authorization: `Bearer ${accessToken}` },
+            signal: controller.signal,
+            cache: "no-store",
+          },
+        );
+        if (!response.ok) {
+          throw new Error("Unable to load documents.");
         }
-      })
-      .catch(() => setError("Unable to load documents."));
+        const value: unknown = await response.json();
+        if (Array.isArray(value) && value.every(isClientDocument)) {
+          setDocuments(value);
+        } else {
+          throw new Error("The server returned an invalid document response.");
+        }
+      } catch (loadError) {
+        if (!controller.signal.aborted) {
+          setError(
+            loadError instanceof Error
+              ? loadError.message
+              : "Unable to load documents.",
+          );
+        }
+      } finally {
+        if (!controller.signal.aborted) {
+          setIsLoading(false);
+        }
+      }
+    }
+
+    void loadDocuments();
     return () => controller.abort();
-  }, [apiUrl, accessToken, refreshKey]);
+  }, [apiUrl, accessToken]);
 
   const submit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     if (!file) return;
+    const form = event.currentTarget;
+    if (file.size > maxDocumentSize) {
+      setError("Choose a file no larger than 5 MB.");
+      return;
+    }
+
     setUploading(true);
     setError(null);
     const formData = new FormData();
@@ -71,9 +119,18 @@ export function ClientDocuments({
           body: formData,
         },
       );
-      if (!response.ok) throw new Error("Unable to upload document.");
+      if (!response.ok) throw new Error(await getUploadError(response));
+      const uploaded: unknown = await response.json();
+      if (!isClientDocument(uploaded)) {
+        throw new Error("The server returned an invalid document response.");
+      }
+
+      setDocuments((current) => [
+        uploaded,
+        ...current.filter((document) => document.id !== uploaded.id),
+      ]);
       setFile(null);
-      setRefreshKey((key) => key + 1);
+      form.reset();
     } catch (uploadError) {
       setError(
         uploadError instanceof Error
@@ -102,7 +159,7 @@ export function ClientDocuments({
 
   return (
     <div className="min-h-screen p-6">
-      <section className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
+      <section className="premium-card p-6">
         <h2 className="mb-6 text-xl font-semibold text-slate-900">{title}</h2>
         <form
           onSubmit={(event) => void submit(event)}
@@ -135,7 +192,18 @@ export function ClientDocuments({
             {error}
           </p>
         )}
-        {documents.length ? (
+        {isLoading ? (
+          <div
+            role="status"
+            aria-label="Loading documents"
+            className="space-y-3"
+          >
+            {[0, 1, 2].map((item) => (
+              <Skeleton key={item} className="h-16 rounded-xl" />
+            ))}
+            <span className="sr-only">Loading documents</span>
+          </div>
+        ) : documents.length ? (
           <ul className="divide-y divide-slate-200 rounded-xl border border-slate-200">
             {documents.map((document) => (
               <li
@@ -149,9 +217,12 @@ export function ClientDocuments({
                       {document.documentName}
                     </p>
                     <p className="text-xs text-slate-500">
-                      {new Intl.DateTimeFormat(locale === "am" ? "am-ET" : "en-ET", {
-                        dateStyle: "medium",
-                      }).format(new Date(document.uploadedAt))}
+                      {new Intl.DateTimeFormat(
+                        locale === "am" ? "am-ET" : "en-ET",
+                        {
+                          dateStyle: "medium",
+                        },
+                      ).format(new Date(document.uploadedAt))}
                     </p>
                   </div>
                 </div>

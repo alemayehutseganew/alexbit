@@ -76,12 +76,12 @@ export function ShareholderShell({ children, locale }: ShareholderShellProps) {
   }
 
   return (
-    <div className="portal-theme min-h-screen w-full bg-[#07111f] text-slate-100">
-      <aside className="fixed inset-y-0 left-0 z-20 hidden w-72 flex-col border-r border-white/[0.07] bg-[#091426]/95 backdrop-blur-xl md:flex">
-        <div className="border-b border-white/[0.07] px-7 py-7">
+    <div className="portal-theme min-h-screen w-full bg-slate-50 text-slate-900">
+      <aside className="fixed inset-y-0 left-0 z-20 hidden w-72 flex-col border-r border-slate-200 bg-white backdrop-blur-xl md:flex">
+        <div className="border-b border-slate-200 px-7 py-7">
           <Link
             href={`/${locale}`}
-            className="group inline-flex items-center gap-3 text-sm font-bold tracking-wide text-white"
+            className="group inline-flex items-center gap-3 text-sm font-bold tracking-wide text-slate-900"
           >
             <BrandLogo
               alt=""
@@ -89,7 +89,7 @@ export function ShareholderShell({ children, locale }: ShareholderShellProps) {
             />
             <span>
               PrimeHorizon
-              <span className="mt-1 block text-[10px] font-medium uppercase tracking-[0.18em] text-slate-400">
+              <span className="mt-1 block text-[10px] font-medium uppercase tracking-[0.18em] text-slate-500">
                 Group PLC
               </span>
             </span>
@@ -108,15 +108,15 @@ export function ShareholderShell({ children, locale }: ShareholderShellProps) {
               aria-current={activeHref === href ? "page" : undefined}
               className={`group relative flex items-center gap-3 rounded-xl px-3 py-3 text-sm font-medium transition-all ${
                 activeHref === href
-                  ? "bg-gradient-to-r from-brand-500/20 to-brand-500/5 text-white shadow-[inset_3px_0_0_#60a5fa]"
-                  : "text-slate-400 hover:translate-x-0.5 hover:bg-white/[0.04] hover:text-white"
+                  ? "border-r-4 border-brand-600 bg-brand-50 text-brand-700"
+                  : "text-slate-600 hover:translate-x-0.5 hover:bg-slate-50 hover:text-slate-900"
               }`}
             >
               <span
                 className={`grid size-8 place-items-center rounded-lg transition ${
                   activeHref === href
-                    ? "bg-brand-500/20 text-blue-300"
-                    : "bg-white/[0.04] text-slate-500 group-hover:text-slate-300"
+                    ? "bg-brand-100 text-brand-700"
+                    : "bg-slate-100 text-slate-500 group-hover:text-slate-700"
                 }`}
               >
                 <Icon aria-hidden="true" size={17} />
@@ -125,17 +125,17 @@ export function ShareholderShell({ children, locale }: ShareholderShellProps) {
               {activeHref === href && (
                 <motion.span
                   layoutId="shareholder-active-dot"
-                  className="ml-auto size-1.5 rounded-full bg-blue-300 shadow-[0_0_12px_#93c5fd]"
+                  className="ml-auto size-1.5 rounded-full bg-brand-600 shadow-[0_0_12px_#93c5fd]"
                 />
               )}
             </a>
           ))}
         </nav>
-        <div className="border-t border-white/10 px-7 py-5">
+        <div className="border-t border-slate-200 px-7 py-5">
           <button
             type="button"
             onClick={() => void signOut({ redirectTo: `/${locale}/login` })}
-            className="inline-flex items-center gap-2 text-sm font-medium text-slate-400 transition hover:text-white"
+            className="inline-flex items-center gap-2 text-sm font-medium text-slate-600 transition hover:text-brand-700"
           >
             <LogOut aria-hidden="true" size={16} />
             {t("signOut")}
@@ -143,14 +143,14 @@ export function ShareholderShell({ children, locale }: ShareholderShellProps) {
         </div>
       </aside>
       <div className="min-h-screen w-full md:pl-72">
-        <header className="sticky top-0 z-10 border-b border-white/10 bg-slate-950/90 px-5 py-4 backdrop-blur-xl sm:px-8">
+        <header className="sticky top-0 z-10 border-b border-slate-200 bg-white/90 px-5 py-4 backdrop-blur-xl sm:px-8">
           <div className="mx-auto flex max-w-7xl items-center justify-between gap-5">
             <div className="flex items-center gap-3">
               <BrandLogo
                 alt=""
                 className="size-8 rounded-md bg-white p-0.5 object-contain md:hidden"
               />
-              <span className="text-sm font-semibold text-slate-200">
+              <span className="text-sm font-semibold text-slate-800">
                 {t("portalName")}
               </span>
             </div>
@@ -162,7 +162,7 @@ export function ShareholderShell({ children, locale }: ShareholderShellProps) {
                 }
                 aria-expanded={mobileNavOpen}
                 aria-controls="shareholder-mobile-navigation"
-                className="inline-flex size-11 items-center justify-center rounded-lg border border-white/15 text-slate-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-300 md:hidden"
+                className="inline-flex size-11 items-center justify-center rounded-lg border border-slate-200 text-slate-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-600 md:hidden"
                 onClick={() => setMobileNavOpen((open) => !open)}
               >
                 {mobileNavOpen ? (
@@ -174,7 +174,7 @@ export function ShareholderShell({ children, locale }: ShareholderShellProps) {
               <button
                 type="button"
                 onClick={() => void signOut({ redirectTo: `/${locale}/login` })}
-                className="hidden min-h-11 items-center gap-2 rounded-md px-2 text-xs font-semibold text-slate-400 transition hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-300 md:inline-flex"
+                className="hidden min-h-11 items-center gap-2 rounded-md px-2 text-xs font-semibold text-slate-600 transition hover:text-brand-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-600 md:inline-flex"
               >
                 <LogOut aria-hidden="true" size={15} />
                 {t("signOut")}
@@ -190,7 +190,7 @@ export function ShareholderShell({ children, locale }: ShareholderShellProps) {
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
                   exit={{ opacity: 0 }}
-                  className="fixed inset-0 z-30 bg-slate-950/60 md:hidden"
+                  className="fixed inset-0 z-30 bg-slate-900/20 md:hidden"
                   onClick={() => setMobileNavOpen(false)}
                 />
                 <motion.nav
@@ -200,7 +200,7 @@ export function ShareholderShell({ children, locale }: ShareholderShellProps) {
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, y: -8 }}
                   transition={{ duration: 0.18 }}
-                  className="absolute inset-x-3 top-[calc(100%-0.25rem)] z-40 rounded-2xl border border-white/10 bg-slate-900 p-3 shadow-xl md:hidden"
+                  className="absolute inset-x-3 top-[calc(100%-0.25rem)] z-40 rounded-2xl border border-slate-200 bg-white p-3 shadow-xl md:hidden"
                 >
                   {items.map(({ href, label, Icon }) => (
                     <a
@@ -210,8 +210,8 @@ export function ShareholderShell({ children, locale }: ShareholderShellProps) {
                       aria-current={activeHref === href ? "page" : undefined}
                       className={`flex min-h-11 items-center gap-3 rounded-xl px-3 text-sm font-medium transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-300 ${
                         activeHref === href
-                          ? "bg-brand-500/15 text-white"
-                          : "text-slate-200 hover:bg-white/10"
+                          ? "bg-brand-50 text-brand-700"
+                          : "text-slate-600 hover:bg-slate-50 hover:text-slate-900"
                       }`}
                     >
                       <Icon aria-hidden="true" size={18} />
@@ -223,7 +223,7 @@ export function ShareholderShell({ children, locale }: ShareholderShellProps) {
                     onClick={() =>
                       void signOut({ redirectTo: `/${locale}/login` })
                     }
-                    className="mt-2 flex min-h-11 w-full items-center gap-3 rounded-lg border-t border-white/10 px-3 pt-2 text-sm font-medium text-slate-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-300"
+                    className="mt-2 flex min-h-11 w-full items-center gap-3 rounded-lg border-t border-slate-200 px-3 pt-2 text-sm font-medium text-slate-600 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-600"
                   >
                     <LogOut aria-hidden="true" size={18} />
                     {t("signOut")}

@@ -75,7 +75,7 @@ export default async function ClientInvoicesPage({
 
   return (
     <div className="min-h-screen p-6">
-      <section className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
+      <section className="premium-card overflow-hidden p-0">
         <h2 className="text-xl font-semibold text-slate-900 mb-6">
           {t("invoices")}
         </h2>
@@ -83,7 +83,7 @@ export default async function ClientInvoicesPage({
         <div className="overflow-x-auto">
           <table className="w-full">
             <thead>
-              <tr className="border-b border-slate-200">
+              <tr className="border-b border-slate-200 bg-slate-100">
                 <th className="text-left text-sm font-medium text-slate-600 px-6 py-3">
                   {t("invoiceNumber")}
                 </th>
@@ -105,7 +105,7 @@ export default async function ClientInvoicesPage({
               {invoices.map((invoice) => (
                 <tr
                   key={invoice.id}
-                  className="bg-white border-b border-slate-200"
+                  className="border-b border-slate-200 bg-white hover:bg-slate-50"
                 >
                   <td className="p-6 whitespace-nowrap">
                     <p className="text-sm font-medium text-slate-900">

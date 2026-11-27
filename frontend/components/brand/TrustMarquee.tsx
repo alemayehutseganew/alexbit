@@ -9,7 +9,7 @@ export function TrustMarquee({ label, partners }: TrustMarqueeProps) {
   return (
     <section
       aria-label={label}
-      className="overflow-hidden border-y border-slate-200 bg-slate-50 py-7 transition-colors dark:border-white/10 dark:bg-slate-950/90"
+      className="overflow-hidden border-y border-slate-200 bg-white py-7 transition-colors dark:border-white/10 dark:bg-slate-950/90"
     >
       <div className="mx-auto flex max-w-7xl items-center gap-8 px-6 sm:px-8">
         <p className="hidden shrink-0 text-[10px] font-semibold uppercase tracking-[0.2em] text-slate-500 sm:block">
@@ -25,7 +25,7 @@ export function TrustMarquee({ label, partners }: TrustMarqueeProps) {
                 {partners.map((partner) => (
                   <span
                     key={`${copy}-${partner}`}
-                    className="whitespace-nowrap text-base font-semibold tracking-tight text-slate-600 sm:text-xl dark:text-slate-300/80"
+                    className="whitespace-nowrap text-base font-semibold tracking-tight text-slate-400 grayscale transition duration-300 hover:text-brand-600 hover:grayscale-0 sm:text-xl dark:text-slate-300/80"
                   >
                     {partner}
                   </span>

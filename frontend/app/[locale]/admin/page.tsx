@@ -43,7 +43,7 @@ export default function AdminDashboardPage() {
         <h1 className="text-2xl font-bold tracking-tight text-slate-900">
           Dashboard
         </h1>
-        <p className="mt-1 text-sm text-slate-500">
+        <p className="mt-1 text-sm text-slate-600">
           Overview of your organization&apos;s activity and performance.
         </p>
       </div>
@@ -55,7 +55,7 @@ export default function AdminDashboardPage() {
           return (
             <article
               key={metric.label}
-              className="group relative overflow-hidden rounded-xl border border-white/10 bg-gradient-to-br from-blue-500/10 via-white/[0.04] to-cyan-400/[0.04] p-5 shadow-sm transition duration-200 hover:-translate-y-0.5 hover:border-cyan-300/30"
+              className="premium-card group relative overflow-hidden p-5 hover:-translate-y-1 hover:border-brand-200"
             >
               <span
                 aria-hidden="true"
@@ -88,7 +88,7 @@ export default function AdminDashboardPage() {
         <h2 className="text-base font-semibold text-slate-900">
           Welcome to your dashboard
         </h2>
-        <p className="mt-2 text-sm text-slate-500">
+        <p className="mt-2 text-sm text-slate-600">
           Key operational metrics will appear here as your team processes RFPs
           and manages projects.
         </p>

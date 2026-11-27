@@ -55,14 +55,14 @@ export function ExpertiseGrid({
   items,
 }: ExpertiseGridProps) {
   return (
-    <section className="border-y border-slate-200 bg-slate-50 px-6 py-24 text-slate-900 transition-colors sm:px-8 sm:py-28 dark:border-white/10 dark:bg-slate-950 dark:text-white">
+    <section className="border-y border-slate-200 bg-white px-6 py-24 text-slate-900 transition-colors sm:px-8 sm:py-28 dark:border-white/10 dark:bg-slate-950 dark:text-white">
       <div className="mx-auto max-w-7xl">
         <div className="flex flex-col justify-between gap-5 md:flex-row md:items-end">
           <div className="max-w-2xl">
             <p className="text-xs font-semibold uppercase tracking-[0.2em] text-brand-600 dark:text-cyan-300">
               {eyebrow}
             </p>
-            <h2 className="mt-4 bg-gradient-to-r from-white to-slate-400 bg-clip-text text-3xl font-semibold tracking-tight text-transparent sm:text-4xl">
+            <h2 className="mt-4 bg-gradient-to-r from-slate-900 to-slate-600 bg-clip-text text-3xl font-semibold tracking-tight text-transparent sm:text-4xl dark:from-white dark:to-slate-400">
               {title}
             </h2>
           </div>
@@ -74,38 +74,47 @@ export function ExpertiseGrid({
             <ArrowRight size={16} aria-hidden="true" />
           </a>
         </div>
-        <div className="mt-10 grid grid-cols-1 gap-4 md:grid-cols-3">
-          {items.map(({ icon, title: itemTitle, description }, index) => {
-            const Icon = icons[icon];
+        <div className="relative mt-10">
+          <div
+            aria-hidden="true"
+            className="pointer-events-none absolute -inset-x-12 inset-y-8 -z-10 bg-brand-100/60 opacity-30 blur-3xl"
+          />
+          <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
+            {items.map(({ icon, title: itemTitle, description }, index) => {
+              const Icon = icons[icon];
 
-            return (
-              <div
-                key={itemTitle}
-                className={`rounded-2xl bg-gradient-to-br from-blue-300/60 via-slate-200 to-cyan-300/30 p-px dark:from-blue-300/40 dark:via-white/10 dark:to-cyan-300/10 ${layouts[index] ?? ""}`}
-              >
-                <motion.article
-                  whileHover={{ scale: 1.02 }}
-                  whileTap={{ scale: 0.98 }}
-                  transition={{ duration: 0.2 }}
-                  className="group relative h-full min-h-52 overflow-hidden rounded-[15px] border border-white/10 bg-white/5 p-6 shadow-sm transition duration-300 hover:border-brand-500 hover:shadow-[0_0_36px_rgba(6,182,212,0.15)] sm:p-7"
+              return (
+                <div
+                  key={itemTitle}
+                  className={`rounded-2xl ${layouts[index] ?? ""}`}
                 >
-                  <div
-                    aria-hidden="true"
-                    className="absolute -right-14 -top-14 size-40 rounded-full bg-brand-600/10 blur-3xl transition group-hover:bg-cyan-400/20 dark:bg-brand-600/15"
-                  />
-                  <div className="relative flex size-11 items-center justify-center rounded-xl border border-blue-200/60 bg-blue-50 text-brand-600 dark:border-blue-200/15 dark:bg-blue-400/10 dark:text-cyan-200">
-                    <Icon size={21} strokeWidth={1.7} aria-hidden="true" />
-                  </div>
-                  <h3 className="relative mt-5 text-lg font-semibold text-slate-900 dark:text-white">
-                    {itemTitle}
-                  </h3>
-                  <p className="relative mt-2 max-w-2xl text-sm leading-6 text-slate-600 dark:text-slate-400">
-                    {description}
-                  </p>
-                </motion.article>
-              </div>
-            );
-          })}
+                  <motion.article
+                    initial={{ opacity: 0, y: 20 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true, amount: 0.2 }}
+                    whileHover={{ y: -5 }}
+                    whileTap={{ scale: 0.98 }}
+                    transition={{ duration: 0.3 }}
+                    className="premium-card group relative h-full min-h-52 overflow-hidden p-6 sm:p-7"
+                  >
+                    <div
+                      aria-hidden="true"
+                      className="absolute -right-14 -top-14 size-40 rounded-full bg-brand-600/10 blur-3xl transition group-hover:bg-cyan-400/20 dark:bg-brand-600/15"
+                    />
+                    <div className="relative flex size-11 items-center justify-center rounded-xl border border-blue-200/60 bg-blue-50 text-brand-600 dark:border-blue-200/15 dark:bg-blue-400/10 dark:text-cyan-200">
+                      <Icon size={21} strokeWidth={1.7} aria-hidden="true" />
+                    </div>
+                    <h3 className="relative mt-5 text-lg font-semibold text-slate-900 dark:text-white">
+                      {itemTitle}
+                    </h3>
+                    <p className="relative mt-2 max-w-2xl text-sm leading-6 text-slate-600 dark:text-slate-400">
+                      {description}
+                    </p>
+                  </motion.article>
+                </div>
+              );
+            })}
+          </div>
         </div>
       </div>
     </section>

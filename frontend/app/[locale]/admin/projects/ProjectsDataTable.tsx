@@ -92,7 +92,7 @@ export function ProjectsDataTable({
 
   return (
     <>
-      <section className="overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm">
+      <section className="premium-card overflow-hidden rounded-xl">
         <div className="border-b border-slate-200 p-4">
           <div className="relative w-full sm:max-w-sm">
             <Search
@@ -117,12 +117,12 @@ export function ProjectsDataTable({
             {table.getHeaderGroups().map((headerGroup) => (
               <TableRow
                 key={headerGroup.id}
-                className="bg-slate-50 hover:bg-slate-50"
+                className="bg-slate-100 hover:bg-slate-100"
               >
                 {headerGroup.headers.map((header) => (
                   <TableHead
                     key={header.id}
-                    className="h-12 px-4 text-xs font-semibold uppercase tracking-wide text-slate-500"
+                    className="h-12 px-4 text-xs font-semibold uppercase tracking-wide text-slate-700"
                   >
                     {String(header.column.columnDef.header ?? header.id)}
                   </TableHead>
