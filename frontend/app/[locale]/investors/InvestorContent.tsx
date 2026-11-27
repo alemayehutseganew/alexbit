@@ -1,18 +1,11 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { useTranslations } from "next-intl";
 import { ArrowRight, ShieldCheck, TrendingUp, Users } from "lucide-react";
-import {
-  animate,
-  motion,
-  useInView,
-  useMotionValue,
-  useMotionValueEvent,
-  type Variants,
-} from "framer-motion";
+import { motion, type Variants } from "framer-motion";
 import { BrandLogo } from "@/components/brand/BrandLogo";
+import { AnimatedCounter } from "@/components/AnimatedCounter";
 
 type InvestorContentProps = {
   locale: string;
@@ -52,41 +45,6 @@ const cardVariants: Variants = {
     transition: { duration: 0.45, ease: "easeOut" },
   },
 };
-
-export function AnimatedCounter({
-  endValue,
-  suffix = "",
-}: {
-  endValue: number;
-  suffix?: string;
-}) {
-  const ref = useRef<HTMLSpanElement>(null);
-  const isInView = useInView(ref, { once: true });
-  const count = useMotionValue(0);
-  const [displayValue, setDisplayValue] = useState(0);
-  useMotionValueEvent(count, "change", (current) => {
-    setDisplayValue(Math.round(current));
-  });
-
-  useEffect(() => {
-    if (!isInView) {
-      return;
-    }
-
-    const controls = animate(count, endValue, {
-      duration: 1.6,
-      ease: "easeOut",
-    });
-    return () => controls.stop();
-  }, [count, endValue, isInView]);
-
-  return (
-    <motion.span ref={ref}>
-      {displayValue}
-      {suffix}
-    </motion.span>
-  );
-}
 
 export function InvestorContent({ locale }: InvestorContentProps) {
   const t = useTranslations("Investors");
@@ -149,7 +107,7 @@ export function InvestorContent({ locale }: InvestorContentProps) {
             >
               <p className="text-4xl font-bold tracking-tight text-white sm:text-5xl">
                 <AnimatedCounter
-                  endValue={metric.value}
+                  value={metric.value}
                   suffix={metric.suffix}
                 />
               </p>

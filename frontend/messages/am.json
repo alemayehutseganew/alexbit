@@ -24,10 +24,11 @@
     "tagline": "ለኢትዮጵያ እና ለቀጣናው አስተማማኝ የዲጂታል እና የመሠረተ ልማት መፍትሄዎችን እንገነባለን።",
     "quickLinksTitle": "ፈጣን አገናኞች",
     "contactTitle": "ያግኙን",
-    "legalTitle": "ሕጋዊ መረጃ",
+    "portalsTitle": "የፖርታል መግቢያ",
+    "phoneLabel": "ስልክ",
     "emailLabel": "ኢሜይል",
-    "privacy": "ግላዊነት",
-    "terms": "የአገልግሎት ውሎች",
+    "requestProposal": "የፕሮጀክት ጥያቄ ያቅርቡ",
+    "allRightsReserved": "መብቱ በሕግ የተጠበቀ ነው።",
     "email": "info@primehorizon.com"
   },
   "Home": {

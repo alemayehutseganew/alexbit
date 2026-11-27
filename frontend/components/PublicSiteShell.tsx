@@ -18,10 +18,11 @@ type PublicSiteShellProps = {
     tagline: string;
     quickLinksTitle: string;
     contactTitle: string;
-    legalTitle: string;
+    portalsTitle: string;
     emailLabel: string;
-    privacy: string;
-    terms: string;
+    phoneLabel: string;
+    requestProposal: string;
+    allRightsReserved: string;
     email: string;
     year: number;
   };
@@ -80,6 +81,8 @@ export function PublicSiteShell({
         expertise={nav.expertise}
         investors={nav.investors}
         contact={nav.contact}
+        clientPortal={nav.clientPortal}
+        shareholderPortal={nav.shareholderPortal}
       />
     </div>
   );

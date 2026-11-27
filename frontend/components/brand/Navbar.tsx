@@ -82,12 +82,17 @@ export function Navbar({
           </span>
         </Link>
 
-        <nav className="hidden items-center gap-4 lg:flex" aria-label="Main">
+        <nav className="hidden items-center gap-1 xl:flex" aria-label="Main">
           {links.map((link) => (
             <Link
               key={link.href}
               href={link.href}
-              className="rounded-sm text-sm font-medium text-slate-600 transition hover:text-brand-600 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-600 focus-visible:ring-offset-2 dark:text-white/70 dark:hover:text-white"
+              aria-current={pathname === link.href ? "page" : undefined}
+              className={`whitespace-nowrap rounded-full px-3 py-2 text-sm font-semibold transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-600 focus-visible:ring-offset-2 dark:focus-visible:ring-offset-slate-950 ${
+                pathname === link.href
+                  ? "bg-blue-50 text-brand-700 dark:bg-white/10 dark:text-cyan-100"
+                  : "text-slate-600 hover:bg-slate-100 hover:text-brand-700 dark:text-white/70 dark:hover:bg-white/10 dark:hover:text-white"
+              }`}
             >
               {link.label}
             </Link>
@@ -127,13 +132,13 @@ export function Navbar({
             </Link>
           </div>
           {themeToggleAction}
-          <div className="hidden shrink-0 items-center gap-2 lg:flex">
+          <div className="hidden shrink-0 items-center gap-2 xl:flex">
             {clientPortalAction}
             {shareholderPortalAction}
           </div>
           <button
             type="button"
-            className="inline-flex size-11 items-center justify-center rounded-lg border border-slate-200 text-slate-700 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-600 lg:hidden dark:border-white/15 dark:text-white"
+            className="inline-flex size-11 items-center justify-center rounded-lg border border-slate-200 text-slate-700 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-600 xl:hidden dark:border-white/15 dark:text-white"
             aria-label={menuOpen ? labels.close : labels.menu}
             aria-expanded={menuOpen}
             aria-controls="public-mobile-navigation"
@@ -156,7 +161,7 @@ export function Navbar({
             animate={{ opacity: 1, height: "auto" }}
             exit={{ opacity: 0, height: 0 }}
             transition={{ duration: 0.2, ease: "easeOut" }}
-            className="overflow-hidden border-t border-slate-200 bg-white/95 px-5 py-5 backdrop-blur-md lg:hidden dark:border-white/10 dark:bg-slate-950/90"
+            className="overflow-hidden border-t border-slate-200 bg-white/95 px-5 py-5 backdrop-blur-md xl:hidden dark:border-white/10 dark:bg-slate-950/90"
           >
             <nav
               className="mx-auto flex max-w-7xl flex-col gap-1"
@@ -166,8 +171,13 @@ export function Navbar({
                 <Link
                   key={link.href}
                   href={link.href}
+                  aria-current={pathname === link.href ? "page" : undefined}
                   onClick={() => setMenuOpen(false)}
-                  className="rounded-lg px-3 py-3 text-sm font-medium text-slate-700 transition hover:bg-slate-100 hover:text-brand-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-600 dark:text-white/75 dark:hover:bg-white/10 dark:hover:text-white"
+                  className={`rounded-lg px-3 py-3 text-sm font-medium transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-600 ${
+                    pathname === link.href
+                      ? "bg-blue-50 text-brand-700 dark:bg-white/10 dark:text-cyan-100"
+                      : "text-slate-700 hover:bg-slate-100 hover:text-brand-700 dark:text-white/75 dark:hover:bg-white/10 dark:hover:text-white"
+                  }`}
                 >
                   {link.label}
                 </Link>
