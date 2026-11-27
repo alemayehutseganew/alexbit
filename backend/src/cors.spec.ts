@@ -1,5 +1,4 @@
 import {
-  CURRENT_PRODUCTION_FRONTEND_ORIGIN,
   PRODUCTION_FRONTEND_ORIGIN,
   getAllowedCorsOrigins,
 } from './cors';
@@ -13,7 +12,6 @@ describe('CORS configuration', () => {
 
     expect(origins).toEqual([
       PRODUCTION_FRONTEND_ORIGIN,
-      CURRENT_PRODUCTION_FRONTEND_ORIGIN,
       'https://example.com',
       'https://second.example.com',
     ]);
@@ -24,8 +22,8 @@ describe('CORS configuration', () => {
 
     expect(origins).toEqual([
       PRODUCTION_FRONTEND_ORIGIN,
-      CURRENT_PRODUCTION_FRONTEND_ORIGIN,
     ]);
+    expect(origins).not.toContain('https://alexbit-wine.vercel.app');
   });
 
   it('allows the local Next.js development origin outside production', () => {

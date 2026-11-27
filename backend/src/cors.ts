@@ -1,11 +1,7 @@
-export const PRODUCTION_FRONTEND_ORIGIN = 'https://alexbit-wine.vercel.app';
-export const CURRENT_PRODUCTION_FRONTEND_ORIGIN =
+export const PRODUCTION_FRONTEND_ORIGIN =
   'https://primehorizonplc.vercel.app';
 
-const productionFrontendOrigins = [
-  PRODUCTION_FRONTEND_ORIGIN,
-  CURRENT_PRODUCTION_FRONTEND_ORIGIN,
-];
+const productionFrontendOrigins = [PRODUCTION_FRONTEND_ORIGIN];
 const localFrontendOrigins = ['http://localhost:3001'];
 
 export function getAllowedCorsOrigins(

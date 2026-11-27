@@ -99,11 +99,14 @@ describe('ContactController', () => {
   it('handles OPTIONS preflight for an authorized origin', async () => {
     await request(app.getHttpServer())
       .options('/api/contact')
-      .set('Origin', 'https://alexbit-wine.vercel.app')
+      .set('Origin', 'https://primehorizonplc.vercel.app')
       .set('Access-Control-Request-Method', 'POST')
       .set('Access-Control-Request-Headers', 'Content-Type')
       .expect(204)
-      .expect('Access-Control-Allow-Origin', 'https://alexbit-wine.vercel.app')
+      .expect(
+        'Access-Control-Allow-Origin',
+        'https://primehorizonplc.vercel.app',
+      )
       .expect('Access-Control-Allow-Credentials', 'true');
   });
 
@@ -121,7 +124,7 @@ describe('ContactController', () => {
   it('allows OPTIONS preflight for Authorization requests', async () => {
     await request(app.getHttpServer())
       .options('/api/contact/admin/all')
-      .set('Origin', 'https://alexbit-wine.vercel.app')
+      .set('Origin', 'https://primehorizonplc.vercel.app')
       .set('Access-Control-Request-Method', 'GET')
       .set('Access-Control-Request-Headers', 'Authorization')
       .expect(204)
@@ -148,7 +151,7 @@ describe('ContactController', () => {
 
     await request(app.getHttpServer())
       .post('/api/contact')
-      .set('Origin', 'https://alexbit-wine.vercel.app')
+      .set('Origin', 'https://primehorizonplc.vercel.app')
       .send({
         fullName: 'Alex Example',
         email: 'alex@example.com',
@@ -171,7 +174,7 @@ describe('ContactController', () => {
   it('rejects invalid contact submissions', async () => {
     await request(app.getHttpServer())
       .post('/api/contact')
-      .set('Origin', 'https://alexbit-wine.vercel.app')
+      .set('Origin', 'https://primehorizonplc.vercel.app')
       .send({
         fullName: '',
         email: 'not-an-email',
