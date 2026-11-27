@@ -12,7 +12,7 @@ import type {
   RegisterInput,
 } from "@/lib/schemas/auth.schema";
 import { AnimatePresence, motion } from "framer-motion";
-import { ArrowLeft, ArrowRight, LoaderCircle } from "lucide-react";
+import { ArrowLeft, LoaderCircle } from "lucide-react";
 import { getSession, signIn } from "next-auth/react";
 import { useTranslations } from "next-intl";
 import { useRouter, useSearchParams } from "next/navigation";
@@ -29,8 +29,6 @@ type LoginActionsProps = {
   clientCallbackUrl: string;
   shareholderCallbackUrl: string;
   adminCallbackUrl: string;
-  shareholderConfigured: boolean;
-  credentialsEnabled: boolean;
   preferredRealm: Realm | null;
 };
 
@@ -72,8 +70,6 @@ export function LoginActions({
   clientCallbackUrl,
   shareholderCallbackUrl,
   adminCallbackUrl,
-  shareholderConfigured,
-  credentialsEnabled,
   preferredRealm,
 }: LoginActionsProps) {
   const t = useTranslations("Login");
@@ -89,7 +85,6 @@ export function LoginActions({
   );
   const [formError, setFormError] = useState<string | null>(null);
   const [resetSent, setResetSent] = useState(false);
-  const [shareholderLoading, setShareholderLoading] = useState(false);
 
   const loginForm = useForm<LoginInput>({
     resolver: zodResolver(LoginSchema),
@@ -267,24 +262,6 @@ export function LoginActions({
     }
   }
 
-  async function submitShareholderSignIn() {
-    if (!shareholderConfigured) {
-      setFormError(t("notConfigured"));
-      return;
-    }
-
-    setFormError(null);
-    setShareholderLoading(true);
-    try {
-      await signIn("keycloak-shareholder", {
-        redirectTo: shareholderCallbackUrl,
-      });
-    } catch {
-      setShareholderLoading(false);
-      setFormError(t("loginError"));
-    }
-  }
-
   const title =
     view === "login"
       ? t("signInTitle", {
@@ -328,41 +305,6 @@ export function LoginActions({
             {title}
           </h2>
 
-          {realm === "shareholder" && !credentialsEnabled ? (
-            <div className="mt-6">
-              <p className="text-sm leading-6 text-slate-600 dark:text-slate-300">
-                {t("shareholderDescription")}
-              </p>
-              <motion.div
-                className="mt-6 w-full"
-                whileHover={{ scale: 1.02 }}
-                whileTap={{ scale: 0.98 }}
-              >
-                <Button
-                  type="button"
-                  onClick={() => void submitShareholderSignIn()}
-                  disabled={shareholderLoading || !shareholderConfigured}
-                  className="min-h-11 w-full gap-2 bg-brand-600 px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-brand-700 motion-safe:hover:scale-100 active:scale-100"
-                >
-                  {shareholderLoading ? (
-                    <LoaderCircle
-                      aria-hidden="true"
-                      className="animate-spin"
-                      size={17}
-                    />
-                  ) : (
-                    <ArrowRight aria-hidden="true" size={17} />
-                  )}
-                  {t("shareholderButton")}
-                </Button>
-              </motion.div>
-              {!shareholderConfigured && (
-                <p className="mt-3 text-sm text-amber-700 dark:text-amber-300">
-                  {t("notConfigured")}
-                </p>
-              )}
-            </div>
-          ) : (
             <>
               {view === "login" && (
                 <form
@@ -451,9 +393,7 @@ export function LoginActions({
                           size={17}
                         />
                       )}
-                      {realm === "client"
-                        ? t("signInButton")
-                        : t("shareholderButton")}
+                      {t("signInButton")}
                     </Button>
                   </motion.div>
                   {realm === "client" && (
@@ -738,13 +678,6 @@ export function LoginActions({
                 </form>
               )}
             </>
-          )}
-
-          {formError && realm === "shareholder" && !credentialsEnabled && (
-            <p role="alert" className="mt-4 text-sm text-red-600">
-              {formError}
-            </p>
-          )}
         </motion.div>
       </AnimatePresence>
     </div>

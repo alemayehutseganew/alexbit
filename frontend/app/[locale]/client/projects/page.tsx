@@ -87,10 +87,25 @@ export default async function ClientProjectsPage({
     cache: "no-store",
   });
   if (!response.ok) {
-    throw new Error("Unable to load client projects");
+    console.error("Client projects API request failed", {
+      status: response.status,
+      statusText: response.statusText,
+    });
+    if (response.status === 401) {
+      redirect(
+        `/${locale}/login?realm=client&callbackUrl=${encodeURIComponent(`/${locale}/client/projects`)}`,
+      );
+    }
+    throw new Error(`Projects API returned HTTP ${response.status}`);
   }
 
-  const responseData: unknown = await response.json();
+  let responseData: unknown;
+  try {
+    responseData = await response.json();
+  } catch (error) {
+    console.error("Client projects API returned invalid JSON", error);
+    throw new Error("Projects API returned an invalid response");
+  }
   if (!Array.isArray(responseData) || !responseData.every(isProject)) {
     throw new Error("Projects API returned an invalid response");
   }

@@ -64,12 +64,31 @@ export default async function ClientDashboardPage({
       headers: { Authorization: `Bearer ${accessToken}` },
       cache: "no-store",
     });
-    responseData = await response.json();
   } catch (error) {
     console.error("Fetch error:", error);
     throw new Error(
       "Unable to load client projects. Check the backend server and network connection.",
     );
+  }
+
+  if (!response.ok) {
+    console.error("Client projects API request failed", {
+      status: response.status,
+      statusText: response.statusText,
+    });
+    if (response.status === 401) {
+      redirect(
+        `/${locale}/login?realm=client&callbackUrl=${encodeURIComponent(`/${locale}/client`)}`,
+      );
+    }
+    throw new Error(`Projects API returned HTTP ${response.status}`);
+  }
+
+  try {
+    responseData = await response.json();
+  } catch (error) {
+    console.error("Client projects API returned invalid JSON", error);
+    throw new Error("Projects API returned an invalid response");
   }
 
   if (!Array.isArray(responseData) || !responseData.every(isProject)) {

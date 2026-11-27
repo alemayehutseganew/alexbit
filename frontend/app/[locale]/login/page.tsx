@@ -1,5 +1,4 @@
 import { getTranslations, setRequestLocale } from 'next-intl/server';
-import { shareholderKeycloakConfigured } from '@/auth';
 import { LoginBranding } from './LoginBranding';
 import { LoginActions } from './LoginActions';
 
@@ -70,8 +69,6 @@ export default async function LoginPage({
     requestedRealm === 'client' || requestedRealm === 'shareholder'
       ? requestedRealm
       : null;
-  const credentialsEnabled = process.env.NODE_ENV !== 'production';
-
   return (
     <div className='grid min-h-screen w-full overflow-hidden bg-slate-50 pt-32 transition-colors md:grid-cols-2 dark:bg-slate-950'>
       <section className='relative hidden min-h-[calc(100vh-8rem)] flex-col overflow-hidden bg-gradient-to-br from-brand-900 via-blue-900 to-slate-950 px-8 py-10 text-white md:flex sm:px-12 lg:px-16 lg:py-14'>
@@ -103,8 +100,6 @@ export default async function LoginPage({
             clientCallbackUrl={clientCallbackUrl}
             shareholderCallbackUrl={shareholderCallbackUrl}
             adminCallbackUrl={adminCallbackUrl}
-            shareholderConfigured={shareholderKeycloakConfigured}
-            credentialsEnabled={credentialsEnabled}
             preferredRealm={preferredRealm}
           />
         </div>
