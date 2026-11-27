@@ -8,6 +8,11 @@ describe('JwtStrategy', () => {
   const originalJwtAudience = process.env.JWT_AUDIENCE;
   const originalNodeEnv = process.env.NODE_ENV;
 
+  beforeEach(() => {
+    process.env.JWT_SECRET =
+      'test-only-secret-that-is-at-least-thirty-two-characters';
+  });
+
   afterEach(() => {
     if (originalIssuer === undefined) {
       delete process.env.AUTH_KEYCLOAK_CLIENT_ISSUER;
@@ -37,7 +42,6 @@ describe('JwtStrategy', () => {
   });
 
   it('extracts tenant ID and an allowed role from verified token claims', () => {
-    delete process.env.JWT_SECRET;
     process.env.AUTH_KEYCLOAK_CLIENT_ISSUER =
       'https://identity.example.test/realms/client';
     const strategy = new JwtStrategy();
@@ -57,7 +61,6 @@ describe('JwtStrategy', () => {
   });
 
   it('rejects token claims missing a tenant ID or role', () => {
-    delete process.env.JWT_SECRET;
     process.env.AUTH_KEYCLOAK_CLIENT_ISSUER =
       'https://identity.example.test/realms/client';
     const strategy = new JwtStrategy();
@@ -67,6 +70,18 @@ describe('JwtStrategy', () => {
         sub: 'user-1',
         iss: process.env.AUTH_KEYCLOAK_CLIENT_ISSUER,
         realm_access: { roles: ['CLIENT'] },
+      }),
+    ).toThrow(UnauthorizedException);
+  });
+
+  it('rejects roles that are not recognized by the application', () => {
+    const strategy = new JwtStrategy();
+
+    expect(() =>
+      strategy.validate({
+        sub: 'user-1',
+        tenantId: 'tenant-1',
+        role: 'UNKNOWN_ROLE',
       }),
     ).toThrow(UnauthorizedException);
   });

@@ -12,6 +12,11 @@ export class HealthController {
 
   constructor(private readonly prisma: PrismaService) {}
 
+  @Get('live')
+  live(): { status: 'ok' } {
+    return { status: 'ok' };
+  }
+
   @Get()
   async check(): Promise<{ status: 'ok'; timestamp: string }> {
     try {

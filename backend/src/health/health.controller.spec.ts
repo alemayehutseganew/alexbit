@@ -29,6 +29,15 @@ describe('HealthController', () => {
     queryRaw.mockResolvedValue([{ '?column?': 1 }]);
   });
 
+  it('GET /health/live succeeds without checking the database', async () => {
+    await request(app.getHttpServer())
+      .get('/health/live')
+      .expect(200)
+      .expect({ status: 'ok' });
+
+    expect(queryRaw).not.toHaveBeenCalled();
+  });
+
   afterAll(async () => {
     await app.close();
   });

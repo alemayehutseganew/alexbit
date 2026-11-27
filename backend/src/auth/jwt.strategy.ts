@@ -11,17 +11,38 @@ type JwtPayload = {
   tenant_id?: unknown;
   role?: unknown;
   roles?: unknown;
+  realm_access?: unknown;
   aud?: unknown;
   [key: string]: unknown;
 };
 
+const appRoles: readonly AppRole[] = [
+  'CLIENT',
+  'SHAREHOLDER',
+  'ADMIN',
+  'SUPER_ADMIN',
+  'PROJECT_MANAGER',
+  'CLIENT_ADMIN',
+];
+
+function isAppRole(value: unknown): value is AppRole {
+  return appRoles.some((role) => role === value);
+}
+
 @Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy) {
   constructor() {
+    const secret = process.env.JWT_SECRET;
+    if (!secret || secret.length < 32) {
+      throw new Error(
+        'JWT_SECRET must be configured with at least 32 characters',
+      );
+    }
+
     super({
       jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
       ignoreExpiration: false,
-      secretOrKey: process.env.JWT_SECRET,
+      secretOrKey: secret,
     });
   }
 
@@ -40,11 +61,19 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
       throw new UnauthorizedException('Invalid access token claims');
     }
 
-    const role = Array.isArray(payload.role)
-      ? payload.role.filter((r): r is string => typeof r === 'string')[0]
-      : typeof payload.role === 'string'
-        ? payload.role
+    const realmAccess = payload.realm_access;
+    const realmRoles =
+      realmAccess && typeof realmAccess === 'object' && 'roles' in realmAccess
+        ? realmAccess.roles
         : undefined;
+    const roles = [
+      ...(typeof payload.role === 'string' ? [payload.role] : []),
+      ...(Array.isArray(payload.role) ? payload.role : []),
+      ...(typeof payload.roles === 'string' ? [payload.roles] : []),
+      ...(Array.isArray(payload.roles) ? payload.roles : []),
+      ...(Array.isArray(realmRoles) ? realmRoles : []),
+    ];
+    const role = roles.find(isAppRole);
 
     if (!role) {
       throw new UnauthorizedException('Invalid access token claims');
