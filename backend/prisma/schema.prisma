@@ -53,6 +53,7 @@ enum UserRole {
   CLIENT_ADMIN
   CLIENT
   SHAREHOLDER
+  SHAREHOLDER_ADMIN
 }
 
 model RfpRequest {

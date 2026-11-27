@@ -23,6 +23,7 @@ const appRoles: readonly AppRole[] = [
   'SUPER_ADMIN',
   'PROJECT_MANAGER',
   'CLIENT_ADMIN',
+  'SHAREHOLDER_ADMIN',
 ];
 
 function isAppRole(value: unknown): value is AppRole {

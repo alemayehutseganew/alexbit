@@ -5,13 +5,19 @@ const prisma = new PrismaClient();
 const SALT_ROUNDS = 12;
 
 async function main() {
-  // Use environment variables if available, otherwise fallback to the specified passwords
+  // Use environment variables if available, otherwise fallback to the specified credentials
   const superAdminPassword = process.env.BOOTSTRAP_SUPERADMIN_PASSWORD || 'SuperAdmin@2026';
   const shareholderPassword = process.env.BOOTSTRAP_SHAREHOLDER_PASSWORD || 'Primehorizon@2026';
+  const shareholderAdminPassword = process.env.BOOTSTRAP_SHAREHOLDER_ADMIN_PASSWORD || 'ShAdmin@2026';
 
-  const [superAdminPasswordHash, shareholderPasswordHash] = await Promise.all([
+  const [
+    superAdminPasswordHash,
+    shareholderPasswordHash,
+    shareholderAdminPasswordHash,
+  ] = await Promise.all([
     bcrypt.hash(superAdminPassword, SALT_ROUNDS),
     bcrypt.hash(shareholderPassword, SALT_ROUNDS),
+    bcrypt.hash(shareholderAdminPassword, SALT_ROUNDS),
   ]);
 
   await prisma.$transaction(async (transaction) => {
@@ -38,7 +44,7 @@ async function main() {
       },
     });
 
-    // 2. Provision Shared Shareholder
+    // 2. Provision Shared Shareholder (Read-Only)
     await transaction.user.upsert({
       where: { email: 'shareholder@primehorizon.com' },
       create: {
@@ -63,9 +69,41 @@ async function main() {
         role: 'SHAREHOLDER',
       },
     });
+
+    // 3. Provision Shareholder Admin (Full CRUD on Documents)
+    const shareholderAdminTenant =
+      (await transaction.tenant.findFirst({
+        where: { name: 'Shareholder Admin', type: 'SHAREHOLDER' },
+        select: { id: true },
+      })) ??
+      (await transaction.tenant.create({
+        data: { name: 'Shareholder Admin', type: 'SHAREHOLDER' },
+        select: { id: true },
+      }));
+
+    await transaction.user.upsert({
+      where: { email: 'shareholderadmin@primehorizon.com' },
+      create: {
+        tenantId: shareholderAdminTenant.id,
+        email: 'shareholderadmin@primehorizon.com',
+        firstName: 'Shareholder',
+        lastName: 'Admin',
+        passwordHash: shareholderAdminPasswordHash,
+        role: 'SHAREHOLDER_ADMIN',
+      },
+      update: {
+        tenantId: shareholderAdminTenant.id,
+        firstName: 'Shareholder',
+        lastName: 'Admin',
+        passwordHash: shareholderAdminPasswordHash,
+        resetToken: null,
+        resetTokenExpiry: null,
+        role: 'SHAREHOLDER_ADMIN',
+      },
+    });
   });
 
-  console.log('✅ Superadmin and shareholder accounts provisioned successfully.');
+  console.log('✅ Superadmin, shareholder, and shareholder admin accounts provisioned successfully.');
 }
 
 main()

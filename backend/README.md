@@ -90,9 +90,10 @@ Set these environment variables in the AletCloud app settings:
   `KEYCLOAK_API_AUDIENCE`: only when using the corresponding Keycloak flows.
 - `OPENAI_API_KEY` and `CHAPA_SECRET_KEY`: only when enabling those integrations.
 
-To provision the shared superadmin and shareholder accounts on the deployed
-database, temporarily add `BOOTSTRAP_SUPERADMIN_PASSWORD` and
-`BOOTSTRAP_SHAREHOLDER_PASSWORD` as private app environment secrets. Use the
+To provision the superadmin, shared shareholder, and shareholder admin accounts
+on the deployed database, temporarily add `BOOTSTRAP_SUPERADMIN_PASSWORD`,
+`BOOTSTRAP_SHAREHOLDER_PASSWORD`, and
+`BOOTSTRAP_SHAREHOLDER_ADMIN_PASSWORD` as private app environment secrets. Use
 strong, unique passwords of at least 12 characters, then run either command
 from the backend app root with the intended database connection configured:
 
@@ -101,11 +102,11 @@ npx prisma db seed
 # Or: npm run provision:accounts
 ```
 
-The command only creates or updates these two accounts; it does not wipe or
+The command only creates or updates these three accounts; it does not wipe or
 modify other records. It hashes passwords before storing them. Running it again
-will reset both passwords to the configured values, so remove the two bootstrap
+will reset their passwords to the configured values, so remove the bootstrap
 secrets from the app settings after it succeeds. Do not commit the passwords to
-the repository. The command should be run against the deployed database, not
+the repository. The command should be run against the intended database, not
 just during the build, so it only changes the intended environment.
 
 `npx prisma db seed` is intentionally configured for this non-destructive

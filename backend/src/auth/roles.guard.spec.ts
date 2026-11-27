@@ -44,10 +44,30 @@ describe('RolesGuard', () => {
     expect(guard.canActivate(executionContext())).toBe(false);
   });
 
-  it('grants superadmins access to admin write routes', () => {
-    const writeRoutes = [
-      [RfpController.prototype, 'createRfp'],
-      [RfpController.prototype, 'updateStatus'],
+  it('keeps public RFP creation open and restricts review routes', () => {
+    expect(
+      Reflect.getMetadata('__guards__', RfpController.prototype.createRfp),
+    ).toBeUndefined();
+    expect(
+      Reflect.getMetadata(ROLES_KEY, RfpController.prototype.createRfp),
+    ).toBeUndefined();
+
+    for (const method of ['findAll', 'updateStatus'] as const) {
+      expect(
+        Reflect.getMetadata('__guards__', RfpController.prototype[method]),
+      ).toHaveLength(2);
+      expect(
+        Reflect.getMetadata(ROLES_KEY, RfpController.prototype[method]),
+      ).toEqual(['ADMIN', 'SUPER_ADMIN']);
+    }
+
+    expect(
+      Reflect.getMetadata('__guards__', RfpController),
+    ).toBeUndefined();
+  });
+
+  it('grants shareholder admins access to shareholder write routes', () => {
+    const shareholderWriteRoutes = [
       [ShareholderController.prototype, 'updateShareholder'],
       [ShareholderController.prototype, 'addDocument'],
       [ShareholderController.prototype, 'addUploadedDocument'],
@@ -55,10 +75,11 @@ describe('RolesGuard', () => {
       [ShareholderController.prototype, 'deleteDocument'],
     ] as const;
 
-    for (const [controller, method] of writeRoutes) {
+    for (const [controller, method] of shareholderWriteRoutes) {
       expect(Reflect.getMetadata(ROLES_KEY, controller[method])).toEqual([
         'ADMIN',
         'SUPER_ADMIN',
+        'SHAREHOLDER_ADMIN',
       ]);
     }
   });

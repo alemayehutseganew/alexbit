@@ -158,12 +158,10 @@ export class ShareholderService {
       }
 
       if (
-        user.role !== 'ADMIN' &&
-        user.role !== 'SUPER_ADMIN' &&
-        user.tenantId !== profile.tenantId
+        !['ADMIN', 'SUPER_ADMIN', 'SHAREHOLDER_ADMIN'].includes(user.role)
       ) {
         throw new ForbiddenException(
-          'Shareholders can only add documents to their own profile',
+          'You are not allowed to add shareholder documents',
         );
       }
 
@@ -205,12 +203,10 @@ export class ShareholderService {
       throw new NotFoundException('Shareholder profile not found');
     }
     if (
-      user.role !== 'ADMIN' &&
-      user.role !== 'SUPER_ADMIN' &&
-      user.tenantId !== profile.tenantId
+      !['ADMIN', 'SUPER_ADMIN', 'SHAREHOLDER_ADMIN'].includes(user.role)
     ) {
       throw new ForbiddenException(
-        'Shareholders can only add documents to their own profile',
+        'You are not allowed to add shareholder documents',
       );
     }
 
@@ -239,6 +235,7 @@ export class ShareholderService {
     if (
       user.role !== 'ADMIN' &&
       user.role !== 'SUPER_ADMIN' &&
+      user.role !== 'SHAREHOLDER_ADMIN' &&
       user.role !== 'PROJECT_MANAGER' &&
       user.tenantId !== document.shareholderProfile.tenantId
     ) {
@@ -329,16 +326,14 @@ export class ShareholderService {
         throw new NotFoundException('Shareholder document not found');
       }
 
-      const isPrivileged =
-        user.role === 'ADMIN' ||
-        user.role === 'SUPER_ADMIN' ||
-        user.role === 'PROJECT_MANAGER';
-      if (
-        !isPrivileged &&
-        user.tenantId !== document.shareholderProfile.tenantId
-      ) {
+      const canManageDocuments = [
+        'ADMIN',
+        'SUPER_ADMIN',
+        'SHAREHOLDER_ADMIN',
+      ].includes(user.role);
+      if (!canManageDocuments) {
         throw new ForbiddenException(
-          'Shareholders can only delete documents from their own profile',
+          'You are not allowed to delete shareholder documents',
         );
       }
 

@@ -102,7 +102,7 @@ describe('ShareholderService', () => {
     );
   });
 
-  it('allows a shareholder to add a document to their own profile', async () => {
+  it('allows a shareholder admin to add a document to any profile', async () => {
     findUnique.mockResolvedValue({ id: 'profile-1', tenantId: 'tenant-1' });
     createDocument.mockResolvedValue({ id: 'document-1' });
 
@@ -113,12 +113,16 @@ describe('ShareholderService', () => {
           documentName: 'Receipt',
           documentUrl: 'https://files.example.test/receipt.pdf',
         },
-        { userId: 'user-1', tenantId: 'tenant-1', role: 'SHAREHOLDER' },
+        {
+          userId: 'admin-1',
+          tenantId: 'tenant-admin',
+          role: 'SHAREHOLDER_ADMIN',
+        },
       ),
     ).resolves.toEqual({ id: 'document-1' });
   });
 
-  it('allows a shareholder to add a document without a hosted URL', async () => {
+  it('allows a shareholder admin to add a document without a hosted URL', async () => {
     findUnique.mockResolvedValue({ id: 'profile-1', tenantId: 'tenant-1' });
     createDocument.mockResolvedValue({ id: 'document-1' });
 
@@ -126,7 +130,11 @@ describe('ShareholderService', () => {
       service.addDocument(
         'profile-1',
         { documentName: 'Receipt' },
-        { userId: 'user-1', tenantId: 'tenant-1', role: 'SHAREHOLDER' },
+        {
+          userId: 'admin-1',
+          tenantId: 'tenant-admin',
+          role: 'SHAREHOLDER_ADMIN',
+        },
       ),
     ).resolves.toEqual({ id: 'document-1' });
 
@@ -139,8 +147,8 @@ describe('ShareholderService', () => {
     });
   });
 
-  it('prevents a shareholder from adding documents to another profile', async () => {
-    findUnique.mockResolvedValue({ id: 'profile-1', tenantId: 'tenant-2' });
+  it('keeps regular shareholders read-only for documents on their own profile', async () => {
+    findUnique.mockResolvedValue({ id: 'profile-1', tenantId: 'tenant-1' });
 
     await expect(
       service.addDocument(
@@ -171,11 +179,28 @@ describe('ShareholderService', () => {
     ).resolves.toEqual({ success: true });
   });
 
-  it('prevents a shareholder from deleting another profile document', async () => {
+  it('allows a shareholder admin to delete any shareholder document', async () => {
     findDocument.mockResolvedValue({
       id: 'document-1',
       shareholderProfileId: 'profile-1',
-      shareholderProfile: { tenantId: 'tenant-2' },
+      shareholderProfile: { tenantId: 'tenant-1' },
+    });
+    deleteDocument.mockResolvedValue({ id: 'document-1' });
+
+    await expect(
+      service.deleteDocument('profile-1', 'document-1', {
+        userId: 'shareholder-admin-1',
+        tenantId: 'tenant-admin',
+        role: 'SHAREHOLDER_ADMIN',
+      }),
+    ).resolves.toEqual({ success: true });
+  });
+
+  it('keeps regular shareholders read-only for documents on their own profile', async () => {
+    findDocument.mockResolvedValue({
+      id: 'document-1',
+      shareholderProfileId: 'profile-1',
+      shareholderProfile: { tenantId: 'tenant-1' },
     });
 
     await expect(
