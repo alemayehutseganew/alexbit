@@ -16,6 +16,7 @@ import {
 } from "lucide-react";
 import { AnimatePresence, motion } from "framer-motion";
 import { useState } from "react";
+import { BrandLogo } from "@/components/brand/BrandLogo";
 
 type ClientShellProps = {
   children: React.ReactNode;
@@ -66,9 +67,13 @@ export function ClientShell({ children, locale }: ClientShellProps) {
         <div className="border-b border-slate-100 px-6 py-6">
           <Link
             href={`/${locale}`}
-            className="text-sm font-bold leading-6 text-brand-600"
+            className="inline-flex items-center gap-3 text-sm font-bold leading-6 text-brand-600"
           >
-            PrimeHorizon
+            <BrandLogo
+              alt=""
+              className="size-10 rounded-lg bg-white object-contain p-0.5"
+            />
+            <span>PrimeHorizon</span>
           </Link>
           <p className="mt-1 text-xs text-slate-500">{t("portalName")}</p>
         </div>
@@ -105,8 +110,14 @@ export function ClientShell({ children, locale }: ClientShellProps) {
       <div className="min-h-screen w-full md:pl-64">
         <header className="sticky top-0 z-30 border-b border-slate-200 bg-white">
           <div className="mx-auto flex max-w-7xl items-center justify-between gap-4 px-5 py-4 sm:px-8">
-            <div className="text-sm font-semibold text-slate-700">
-              {t("portalName")}
+            <div className="flex items-center gap-3">
+              <BrandLogo
+                alt=""
+                className="size-8 rounded-md bg-white p-0.5 object-contain md:hidden"
+              />
+              <div className="text-sm font-semibold text-slate-700">
+                {t("portalName")}
+              </div>
             </div>
             <div className="flex items-center gap-3">
               <span className="hidden rounded-full bg-blue-50 px-3 py-1.5 text-xs font-semibold text-brand-600 md:inline-flex">

@@ -16,6 +16,7 @@ import { AnimatePresence, motion } from "framer-motion";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useState, type ReactNode } from "react";
+import { BrandLogo } from "@/components/brand/BrandLogo";
 
 const navigation = [
   { label: "Dashboard", href: "/admin", icon: LayoutDashboard },
@@ -59,9 +60,10 @@ export function AdminShell({ children, locale }: AdminShellProps) {
           className="flex h-16 shrink-0 items-center gap-3 border-b border-slate-200 px-5"
           aria-label="PrimeHorizon Admin dashboard"
         >
-          <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-brand-600 text-sm font-bold text-white">
-            PH
-          </span>
+          <BrandLogo
+            alt=""
+            className="h-9 w-9 shrink-0 rounded-lg bg-white object-contain p-0.5"
+          />
           <AnimatePresence initial={false}>
             {!isCollapsed && (
               <motion.span
@@ -158,6 +160,10 @@ export function AdminShell({ children, locale }: AdminShellProps) {
             >
               <Menu aria-hidden="true" />
             </Button>
+            <BrandLogo
+              alt=""
+              className="size-8 rounded-md bg-white p-0.5 object-contain md:hidden"
+            />
             <div>
               <p className="text-sm font-semibold text-slate-900">
                 Internal Admin

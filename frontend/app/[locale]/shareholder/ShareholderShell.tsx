@@ -15,6 +15,7 @@ import {
 } from "lucide-react";
 import { AnimatePresence, motion } from "framer-motion";
 import { useEffect, useState } from "react";
+import { BrandLogo } from "@/components/brand/BrandLogo";
 
 type ShareholderShellProps = {
   children: React.ReactNode;
@@ -82,9 +83,10 @@ export function ShareholderShell({ children, locale }: ShareholderShellProps) {
             href={`/${locale}`}
             className="group inline-flex items-center gap-3 text-sm font-bold tracking-wide text-white"
           >
-            <span className="grid size-10 place-items-center rounded-xl bg-gradient-to-br from-brand-400 to-brand-700 shadow-lg shadow-brand-950/40">
-              PH
-            </span>
+            <BrandLogo
+              alt=""
+              className="size-10 rounded-xl bg-white object-contain p-0.5 shadow-lg shadow-brand-950/40"
+            />
             <span>
               PrimeHorizon
               <span className="mt-1 block text-[10px] font-medium uppercase tracking-[0.18em] text-slate-400">
@@ -143,9 +145,15 @@ export function ShareholderShell({ children, locale }: ShareholderShellProps) {
       <div className="min-h-screen w-full md:pl-72">
         <header className="sticky top-0 z-10 border-b border-white/10 bg-slate-950/90 px-5 py-4 backdrop-blur-xl sm:px-8">
           <div className="mx-auto flex max-w-7xl items-center justify-between gap-5">
-            <span className="text-sm font-semibold text-slate-200">
-              {t("portalName")}
-            </span>
+            <div className="flex items-center gap-3">
+              <BrandLogo
+                alt=""
+                className="size-8 rounded-md bg-white p-0.5 object-contain md:hidden"
+              />
+              <span className="text-sm font-semibold text-slate-200">
+                {t("portalName")}
+              </span>
+            </div>
             <div className="flex items-center gap-3">
               <button
                 type="button"

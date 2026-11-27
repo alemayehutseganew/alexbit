@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { BrandLogo } from "@/components/brand/BrandLogo";
 
 type FooterProps = {
   locale: string;
@@ -49,9 +50,10 @@ export function Footer({
             href={`/${locale}`}
             className="inline-flex items-center gap-3 text-slate-900 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-600 dark:text-white"
           >
-            <span className="flex size-10 items-center justify-center rounded-xl bg-brand-600 text-xs font-black text-white">
-              PH
-            </span>
+            <BrandLogo
+              alt=""
+              className="size-12 rounded-lg bg-white object-contain p-0.5"
+            />
             <span className="text-sm font-bold">{nameEn}</span>
           </Link>
           <p className="mt-5 max-w-sm text-sm leading-6 text-slate-600 dark:text-slate-400">

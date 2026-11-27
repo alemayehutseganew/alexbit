@@ -5,6 +5,7 @@ import { useEffect, useState, type ReactNode } from "react";
 import { usePathname } from "next/navigation";
 import { AnimatePresence, motion } from "framer-motion";
 import { Menu, X } from "lucide-react";
+import { BrandLogo } from "@/components/brand/BrandLogo";
 
 export type NavbarLabels = {
   home: string;
@@ -68,9 +69,11 @@ export function Navbar({
           aria-label="PrimeHorizon home"
           onClick={() => setMenuOpen(false)}
         >
-          <span className="flex size-11 items-center justify-center rounded-xl bg-brand-600 text-sm font-black tracking-tight text-white shadow-lg shadow-brand-600/20">
-            PH
-          </span>
+          <BrandLogo
+            alt=""
+            priority
+            className="size-11 rounded-xl bg-white object-contain p-0.5 shadow-sm"
+          />
           <span className="hidden text-sm font-bold leading-tight tracking-tight sm:block">
             PrimeHorizon
             <span className="mt-1 block text-[10px] font-medium uppercase tracking-[0.18em] text-slate-500 dark:text-blue-100/60">
