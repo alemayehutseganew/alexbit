@@ -10,6 +10,7 @@
     "start": "node dist/main.js",
     "dev": "nest start --watch",
     "provision:accounts": "ts-node prisma/provision-accounts.ts",
+    "seed:dev": "ts-node prisma/seed.ts",
     "postinstall": "prisma generate"
   },
   "dependencies": {
@@ -65,7 +66,7 @@
     "typescript-eslint": "^8.20.0"
   },
   "prisma": {
-    "seed": "ts-node prisma/seed.ts"
+    "seed": "ts-node prisma/provision-accounts.ts"
   },
   "jest": {
     "moduleFileExtensions": [

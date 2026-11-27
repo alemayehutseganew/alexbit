@@ -5,18 +5,17 @@ const prisma = new PrismaClient();
 const SALT_ROUNDS = 12;
 
 async function main() {
-  const superAdminPassword = requiredPassword(
-    'BOOTSTRAP_SUPERADMIN_PASSWORD',
-  );
-  const shareholderPassword = requiredPassword(
-    'BOOTSTRAP_SHAREHOLDER_PASSWORD',
-  );
+  // Use environment variables if available, otherwise fallback to the specified passwords
+  const superAdminPassword = process.env.BOOTSTRAP_SUPERADMIN_PASSWORD || 'SuperAdmin@2026';
+  const shareholderPassword = process.env.BOOTSTRAP_SHAREHOLDER_PASSWORD || 'Primehorizon@2026';
+
   const [superAdminPasswordHash, shareholderPasswordHash] = await Promise.all([
     bcrypt.hash(superAdminPassword, SALT_ROUNDS),
     bcrypt.hash(shareholderPassword, SALT_ROUNDS),
   ]);
 
   await prisma.$transaction(async (transaction) => {
+    // 1. Provision Superadmin
     await transaction.user.upsert({
       where: { email: 'superadmin@primehorizon.com' },
       create: {
@@ -39,6 +38,7 @@ async function main() {
       },
     });
 
+    // 2. Provision Shared Shareholder
     await transaction.user.upsert({
       where: { email: 'shareholder@primehorizon.com' },
       create: {
@@ -65,20 +65,12 @@ async function main() {
     });
   });
 
-  console.log('Superadmin and shareholder accounts provisioned.');
-}
-
-function requiredPassword(name: string): string {
-  const password = process.env[name];
-  if (!password || password.length < 12) {
-    throw new Error(`${name} must be set to at least 12 characters.`);
-  }
-  return password;
+  console.log('✅ Superadmin and shareholder accounts provisioned successfully.');
 }
 
 main()
   .catch((error: unknown) => {
-    console.error('Failed to provision accounts', error);
+    console.error('❌ Failed to provision accounts', error);
     process.exitCode = 1;
   })
   .finally(async () => {

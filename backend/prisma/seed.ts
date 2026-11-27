@@ -55,8 +55,8 @@ async function main() {
       await transaction.tenant.deleteMany();
       console.log("Database wiped.");
 
-      // 1. Seed the 17 Shareholder Profiles
-      console.log("Seeding 17 shareholders...");
+      // 1. Seed the 18 Shareholder Profiles
+      console.log("Seeding 18 shareholders...");
       for (const shareholder of shareholders) {
         const tenant = await transaction.tenant.create({
           data: { name: shareholder.name, type: "SHAREHOLDER" },

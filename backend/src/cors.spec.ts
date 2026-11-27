@@ -27,9 +27,10 @@ describe('CORS configuration', () => {
   });
 
   it('allows the local Next.js development origin outside production', () => {
-    expect(getAllowedCorsOrigins({ NODE_ENV: 'development' })).toContain(
-      'http://localhost:3001',
-    );
+    const origins = getAllowedCorsOrigins({ NODE_ENV: 'development' });
+
+    expect(origins).toContain('http://localhost:3000');
+    expect(origins).toContain('http://localhost:3001');
   });
 
   it('does not allow the local development origin in production', () => {

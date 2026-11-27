@@ -2,7 +2,7 @@ export const PRODUCTION_FRONTEND_ORIGIN =
   'https://primehorizonplc.vercel.app';
 
 const productionFrontendOrigins = [PRODUCTION_FRONTEND_ORIGIN];
-const localFrontendOrigins = ['http://localhost:3000'];
+const localFrontendOrigins = ['http://localhost:3000', 'http://localhost:3001'];
 
 export function getAllowedCorsOrigins(
   env: NodeJS.ProcessEnv = process.env,

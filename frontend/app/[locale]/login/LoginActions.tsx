@@ -138,18 +138,13 @@ export function LoginActions({
     const role = session?.user?.role ?? session?.role;
     const isPrivilegedRole =
       role === "ADMIN" || role === "SUPER_ADMIN" || role === "PROJECT_MANAGER";
-    const destination =
-      isPrivilegedRole && realm === "shareholder"
-        ? shareholderCallbackUrl
-        : isPrivilegedRole && realm === "client"
-          ? clientCallbackUrl
-          : isPrivilegedRole
-            ? adminCallbackUrl
-            : role === "CLIENT" || role === "CLIENT_ADMIN"
-              ? clientCallbackUrl
-              : role === "SHAREHOLDER"
-                ? shareholderCallbackUrl
-                : null;
+    const destination = isPrivilegedRole
+      ? adminCallbackUrl
+      : role === "CLIENT" || role === "CLIENT_ADMIN"
+        ? clientCallbackUrl
+        : role === "SHAREHOLDER"
+          ? shareholderCallbackUrl
+          : null;
 
     if (!destination) {
       setFormError(t("loginError"));

@@ -41,10 +41,13 @@ The Keycloak clients must allow the deployed callback URLs
 `/api/auth/callback/keycloak-client`. Vercel supplies the request host; this
 app sets `trustHost: true`, so `NEXTAUTH_URL` is not required for this setup.
 
-The local seed deletes existing database rows. Run it only against a disposable
-development database; it refuses production and requires
-`ALLOW_DESTRUCTIVE_SEED=true` plus `SEED_SUPERADMIN_PASSWORD`,
-`SEED_CLIENT_PASSWORD`, and `SEED_SHAREHOLDER_PASSWORD`.
+The backend's `npx prisma db seed` command provisions only the shared superadmin
+and shareholder accounts using private `BOOTSTRAP_*_PASSWORD` environment
+secrets. To load the full fixture dataset, run `npm run seed:dev` from the
+backend app root only against a disposable development database; it deletes
+existing rows, refuses production, and requires `ALLOW_DESTRUCTIVE_SEED=true`
+plus `SEED_SUPERADMIN_PASSWORD`, `SEED_CLIENT_PASSWORD`, and
+`SEED_SHAREHOLDER_PASSWORD`.
 
 Open [http://localhost:3001/en](http://localhost:3001/en). The API liveness
 endpoint is [http://localhost:3000/health/live](http://localhost:3000/health/live).

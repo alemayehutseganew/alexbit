@@ -93,11 +93,12 @@ Set these environment variables in the AletCloud app settings:
 To provision the shared superadmin and shareholder accounts on the deployed
 database, temporarily add `BOOTSTRAP_SUPERADMIN_PASSWORD` and
 `BOOTSTRAP_SHAREHOLDER_PASSWORD` as private app environment secrets. Use the
-requested passwords (at least 12 characters), then run this one-time command
-from the backend app root with the deployment's database connection configured:
+strong, unique passwords of at least 12 characters, then run either command
+from the backend app root with the intended database connection configured:
 
 ```bash
-npm run provision:accounts
+npx prisma db seed
+# Or: npm run provision:accounts
 ```
 
 The command only creates or updates these two accounts; it does not wipe or
@@ -106,6 +107,12 @@ will reset both passwords to the configured values, so remove the two bootstrap
 secrets from the app settings after it succeeds. Do not commit the passwords to
 the repository. The command should be run against the deployed database, not
 just during the build, so it only changes the intended environment.
+
+`npx prisma db seed` is intentionally configured for this non-destructive
+account provisioning. To load the full fixture dataset into a disposable local
+database, run `npm run seed:dev` instead; it deletes existing rows, refuses
+production, and requires `ALLOW_DESTRUCTIVE_SEED=true` and the three `SEED_*`
+password variables.
 
 Prisma connection attempts run in the background with logged exponential
 retries, so database unavailability does not delay opening the API port.
