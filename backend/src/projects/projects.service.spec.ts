@@ -1,3 +1,4 @@
+import { Logger } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 import { PrismaService } from '../prisma.service';
 import { ProjectsService } from './projects.service';
@@ -49,5 +50,23 @@ describe('ProjectsService', () => {
       include: { tenant: { select: { id: true, name: true } } },
       orderBy: { createdAt: 'desc' },
     });
+  });
+
+  it('logs project query failures before propagating them', async () => {
+    const databaseError = new Error('Project table is unavailable');
+    const loggerError = jest
+      .spyOn(Logger.prototype, 'error')
+      .mockImplementation();
+    findMany.mockRejectedValue(databaseError);
+
+    await expect(service.findAllForTenant('tenant-1')).rejects.toBe(
+      databaseError,
+    );
+    expect(loggerError).toHaveBeenCalledWith(
+      'Failed to fetch tenant projects',
+      databaseError.message,
+    );
+
+    loggerError.mockRestore();
   });
 });

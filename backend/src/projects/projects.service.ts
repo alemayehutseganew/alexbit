@@ -1,9 +1,15 @@
-import { Injectable, InternalServerErrorException } from '@nestjs/common';
+import {
+  Injectable,
+  InternalServerErrorException,
+  Logger,
+} from '@nestjs/common';
 import { Prisma } from '@prisma/client';
 import { PrismaService } from '../prisma.service';
 
 @Injectable()
 export class ProjectsService {
+  private readonly logger = new Logger(ProjectsService.name);
+
   constructor(private readonly prisma: PrismaService) {}
 
   async findAllForTenant(tenantId: string) {
@@ -13,6 +19,10 @@ export class ProjectsService {
         orderBy: { createdAt: 'desc' },
       });
     } catch (error) {
+      this.logger.error(
+        'Failed to fetch tenant projects',
+        error instanceof Error ? error.message : String(error),
+      );
       if (error instanceof Prisma.PrismaClientKnownRequestError) {
         throw new InternalServerErrorException('Unable to fetch projects');
       }
@@ -28,6 +38,10 @@ export class ProjectsService {
         orderBy: { createdAt: 'desc' },
       });
     } catch (error) {
+      this.logger.error(
+        'Failed to fetch all projects',
+        error instanceof Error ? error.message : String(error),
+      );
       if (error instanceof Prisma.PrismaClientKnownRequestError) {
         throw new InternalServerErrorException('Unable to fetch projects');
       }
