@@ -20,90 +20,91 @@ async function main() {
     bcrypt.hash(shareholderAdminPassword, SALT_ROUNDS),
   ]);
 
-  await prisma.$transaction(async (transaction) => {
-    // 1. Provision Superadmin
-    await transaction.user.upsert({
-      where: { email: 'superadmin@primehorizon.com' },
-      create: {
-        email: 'superadmin@primehorizon.com',
-        firstName: 'Super',
-        lastName: 'Admin',
-        passwordHash: superAdminPasswordHash,
-        role: 'SUPER_ADMIN',
-        tenant: {
-          create: { name: 'PrimeHorizon Admin', type: 'INTERNAL' },
-        },
+  // 1. Provision Superadmin (No transaction to prevent P2028 timeout)
+  await prisma.user.upsert({
+    where: { email: 'superadmin@primehorizon.com' },
+    create: {
+      email: 'superadmin@primehorizon.com',
+      firstName: 'Super',
+      lastName: 'Admin',
+      passwordHash: superAdminPasswordHash,
+      role: 'SUPER_ADMIN',
+      tenant: {
+        create: { name: 'PrimeHorizon Admin', type: 'INTERNAL' },
       },
-      update: {
-        firstName: 'Super',
-        lastName: 'Admin',
-        passwordHash: superAdminPasswordHash,
-        resetToken: null,
-        resetTokenExpiry: null,
-        role: 'SUPER_ADMIN',
-      },
-    });
-
-    // 2. Provision Shared Shareholder (Read-Only)
-    await transaction.user.upsert({
-      where: { email: 'shareholder@primehorizon.com' },
-      create: {
-        email: 'shareholder@primehorizon.com',
-        firstName: 'All',
-        lastName: 'Shareholders',
-        passwordHash: shareholderPasswordHash,
-        role: 'SHAREHOLDER',
-        tenant: {
-          create: {
-            name: 'PrimeHorizon Shareholders',
-            type: 'SHAREHOLDER',
-          },
-        },
-      },
-      update: {
-        firstName: 'All',
-        lastName: 'Shareholders',
-        passwordHash: shareholderPasswordHash,
-        resetToken: null,
-        resetTokenExpiry: null,
-        role: 'SHAREHOLDER',
-      },
-    });
-
-    // 3. Provision Shareholder Admin (Full CRUD on Documents)
-    const shareholderAdminTenant =
-      (await transaction.tenant.findFirst({
-        where: { name: 'Shareholder Admin', type: 'SHAREHOLDER' },
-        select: { id: true },
-      })) ??
-      (await transaction.tenant.create({
-        data: { name: 'Shareholder Admin', type: 'SHAREHOLDER' },
-        select: { id: true },
-      }));
-
-    await transaction.user.upsert({
-      where: { email: 'shareholderadmin@primehorizon.com' },
-      create: {
-        tenantId: shareholderAdminTenant.id,
-        email: 'shareholderadmin@primehorizon.com',
-        firstName: 'Shareholder',
-        lastName: 'Admin',
-        passwordHash: shareholderAdminPasswordHash,
-        role: 'SHAREHOLDER_ADMIN',
-      },
-      update: {
-        tenantId: shareholderAdminTenant.id,
-        firstName: 'Shareholder',
-        lastName: 'Admin',
-        passwordHash: shareholderAdminPasswordHash,
-        resetToken: null,
-        resetTokenExpiry: null,
-        role: 'SHAREHOLDER_ADMIN',
-      },
-    });
+    },
+    update: {
+      firstName: 'Super',
+      lastName: 'Admin',
+      passwordHash: superAdminPasswordHash,
+      resetToken: null,
+      resetTokenExpiry: null,
+      role: 'SUPER_ADMIN',
+    },
   });
+  console.log('✅ Superadmin provisioned');
 
-  console.log('✅ Superadmin, shareholder, and shareholder admin accounts provisioned successfully.');
+  // 2. Provision Shared Shareholder (Read-Only)
+  await prisma.user.upsert({
+    where: { email: 'shareholder@primehorizon.com' },
+    create: {
+      email: 'shareholder@primehorizon.com',
+      firstName: 'All',
+      lastName: 'Shareholders',
+      passwordHash: shareholderPasswordHash,
+      role: 'SHAREHOLDER',
+      tenant: {
+        create: {
+          name: 'PrimeHorizon Shareholders',
+          type: 'SHAREHOLDER',
+        },
+      },
+    },
+    update: {
+      firstName: 'All',
+      lastName: 'Shareholders',
+      passwordHash: shareholderPasswordHash,
+      resetToken: null,
+      resetTokenExpiry: null,
+      role: 'SHAREHOLDER',
+    },
+  });
+  console.log('✅ Shareholder provisioned');
+
+  // 3. Provision Shareholder Admin (Full CRUD on Documents)
+  const shareholderAdminTenant =
+    (await prisma.tenant.findFirst({
+      where: { name: 'Shareholder Admin', type: 'SHAREHOLDER' },
+      select: { id: true },
+    })) ??
+    (await prisma.tenant.create({
+      data: { name: 'Shareholder Admin', type: 'SHAREHOLDER' },
+      select: { id: true },
+    }));
+
+  await prisma.user.upsert({
+    where: { email: 'shareholderadmin@primehorizon.com' },
+    create: {
+      tenantId: shareholderAdminTenant.id,
+      email: 'shareholderadmin@primehorizon.com',
+      firstName: 'Shareholder',
+      lastName: 'Admin',
+      passwordHash: shareholderAdminPasswordHash,
+      role: 'SHAREHOLDER_ADMIN',
+    },
+    update: {
+      tenantId: shareholderAdminTenant.id,
+      firstName: 'Shareholder',
+      lastName: 'Admin',
+      passwordHash: shareholderAdminPasswordHash,
+      resetToken: null,
+      resetTokenExpiry: null,
+      role: 'SHAREHOLDER_ADMIN',
+    },
+  });
+  console.log('✅ Shareholder Admin provisioned');
+
+  console.log('🎉 All accounts provisioned successfully.');
 }
 
 main()
