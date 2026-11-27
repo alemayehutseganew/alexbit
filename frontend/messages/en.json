@@ -25,6 +25,7 @@
     "quickLinksTitle": "Quick links",
     "contactTitle": "Contact",
     "portalsTitle": "Access portals",
+    "legalTitle": "Legal",
     "phoneLabel": "Phone",
     "emailLabel": "Email",
     "requestProposal": "Request a proposal",
@@ -130,7 +131,7 @@
       }
     },
     "timelineEyebrow": "Our journey",
-    "timelineTitle": "A path shaped by expertise and shared purpose.",
+    "timelineTitle": "Timeline of Excellence",
     "journey": {
       "foundation": {
         "title": "Strong foundations",
@@ -385,6 +386,10 @@
     "heroTitle": "Invest in Africa's Next Tech Horizon",
     "heroSubtitle": "PrimeHorizon Group Trading PLC is bridging global academic excellence with deep local infrastructure expertise. Join us as we scale.",
     "ctaButton": "Request Investor Prospectus",
+    "requestAccess": "Request Access",
+    "growthTitle": "Projected Growth",
+    "growthIndex": "Illustrative index",
+    "growthNote": "Illustrative index values for demonstration only; not actual historical or forecast financial returns.",
     "metrics": {
       "experts": "Tech Experts",
       "sectors": "Core Sectors",

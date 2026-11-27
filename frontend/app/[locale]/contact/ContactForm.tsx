@@ -12,7 +12,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 
 const fieldClassName =
-  "mt-2 min-h-11 w-full rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm text-slate-900 outline-none transition placeholder:text-slate-400 focus:border-brand-600 focus:ring-4 focus:ring-blue-500/20 focus:shadow-[0_0_24px_rgba(11,74,139,0.18)] dark:border-white/15 dark:bg-slate-950 dark:text-white";
+  "mt-2 min-h-11 w-full rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm text-slate-900 outline-none transition-all placeholder:text-slate-400 focus:border-transparent focus:ring-2 focus:ring-brand-500 focus:shadow-[0_0_24px_rgba(11,74,139,0.18)] dark:border-white/15 dark:bg-slate-950 dark:text-white";
 
 export function ContactForm() {
   const t = useTranslations("Contact");

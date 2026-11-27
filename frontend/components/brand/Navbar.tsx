@@ -57,7 +57,9 @@ export function Navbar({
 
   return (
     <motion.header
-      className="isolate sticky top-3 z-50 mx-auto w-[calc(100%-1.5rem)] max-w-7xl rounded-2xl border border-slate-200/80 bg-white/80 text-slate-900 shadow-[0_12px_48px_rgba(2,6,23,0.12)] backdrop-blur-md before:pointer-events-none before:absolute before:inset-0 before:-z-10 before:rounded-2xl before:bg-white/90 after:absolute after:inset-x-8 after:-bottom-px after:h-px after:bg-gradient-to-r after:from-transparent after:via-cyan-500/70 after:to-transparent after:shadow-[0_0_16px_rgba(103,232,249,0.45)] dark:border-white/10 dark:bg-white/5 dark:text-white dark:shadow-[0_12px_48px_rgba(2,6,23,0.3)] dark:before:bg-slate-950/75"
+      className={`isolate sticky top-4 z-50 mx-auto w-[calc(100%-1.5rem)] max-w-7xl border border-slate-200/80 bg-white/80 text-slate-900 shadow-[0_12px_48px_rgba(2,6,23,0.12)] backdrop-blur-md before:pointer-events-none before:absolute before:inset-0 before:-z-10 before:bg-white/90 after:absolute after:inset-x-8 after:-bottom-px after:h-px after:bg-gradient-to-r after:from-transparent after:via-cyan-500/70 after:to-transparent after:shadow-[0_0_16px_rgba(103,232,249,0.45)] dark:border-white/10 dark:bg-white/5 dark:text-white dark:shadow-[0_12px_48px_rgba(2,6,23,0.3)] dark:before:bg-slate-950/75 ${
+        menuOpen ? "rounded-2xl before:rounded-2xl" : "rounded-full before:rounded-full"
+      }`}
       initial={{ y: -16 }}
       animate={{ y: 0 }}
       transition={{ duration: 0.3, ease: "easeOut" }}
@@ -161,7 +163,7 @@ export function Navbar({
             animate={{ opacity: 1, height: "auto" }}
             exit={{ opacity: 0, height: 0 }}
             transition={{ duration: 0.2, ease: "easeOut" }}
-            className="overflow-hidden border-t border-slate-200 bg-white/95 px-5 py-5 backdrop-blur-md xl:hidden dark:border-white/10 dark:bg-slate-950/90"
+            className="overflow-hidden border-t border-slate-200 bg-white/95 px-5 py-5 backdrop-blur-xl xl:hidden dark:border-white/10 dark:bg-slate-900/90"
           >
             <nav
               className="mx-auto flex max-w-7xl flex-col gap-1"

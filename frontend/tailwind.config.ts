@@ -11,6 +11,8 @@ const config: Config = {
     extend: {
       colors: {
         brand: {
+          400: "#60a5fa",
+          500: "#1681c4",
           600: "#0b4a8b",
           700: "#083a70",
         },
@@ -65,6 +67,9 @@ const config: Config = {
         lg: "var(--radius)",
         md: "calc(var(--radius) - 2px)",
         sm: "calc(var(--radius) - 4px)",
+      },
+      backgroundImage: {
+        "brand-gradient": "linear-gradient(110deg, #0b4a8b 0%, #06b6d4 100%)",
       },
     },
   },

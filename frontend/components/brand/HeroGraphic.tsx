@@ -61,7 +61,17 @@ export function HeroGraphic({ labels, orbitLabel }: HeroGraphicProps) {
               ease: "easeInOut",
             }}
           >
-            <span className="mr-2 size-1.5 shrink-0 rounded-full bg-cyan-300 shadow-[0_0_12px_rgba(103,232,249,0.95)]" />
+            <motion.span
+              aria-hidden="true"
+              className="mr-2 size-1.5 shrink-0 rounded-full bg-cyan-300 shadow-[0_0_12px_rgba(103,232,249,0.95)]"
+              animate={{ scale: [1, 1.55, 1], opacity: [0.65, 1, 0.65] }}
+              transition={{
+                duration: 1.8 + (index % 3) * 0.35,
+                delay: index * 0.18,
+                repeat: Infinity,
+                ease: "easeInOut",
+              }}
+            />
             {label}
           </motion.span>
         </div>

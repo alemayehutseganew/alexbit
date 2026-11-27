@@ -107,6 +107,7 @@ export default async function LocaleLayout({
             quickLinksTitle: footer("quickLinksTitle"),
             contactTitle: footer("contactTitle"),
             portalsTitle: footer("portalsTitle"),
+            legalTitle: footer("legalTitle"),
             phoneLabel: footer("phoneLabel"),
             requestProposal: footer("requestProposal"),
             allRightsReserved: footer("allRightsReserved"),

@@ -5,7 +5,11 @@ import { ExpertiseGrid } from "@/components/brand/ExpertiseGrid";
 import { HeroGraphic } from "@/components/brand/HeroGraphic";
 import { TrustMarquee } from "@/components/brand/TrustMarquee";
 import { AnimatedCounter } from "@/components/AnimatedCounter";
-import { PulseOrb, RevealCard } from "@/components/MotionReveal";
+import {
+  PulseOrb,
+  RevealCard,
+  StaggeredReveal,
+} from "@/components/MotionReveal";
 
 type HomePageProps = {
   params: Promise<{ locale: string }>;
@@ -63,14 +67,14 @@ export default async function HomePage({ params }: HomePageProps) {
         />
         <PulseOrb className="absolute -right-36 top-24 -z-10 size-[30rem] rounded-full bg-cyan-400/15 blur-[120px]" />
         <div className="mx-auto grid min-h-[700px] max-w-7xl items-center gap-10 px-6 py-20 sm:px-8 sm:py-24 lg:grid-cols-[1.08fr_0.92fr]">
-          <div className="relative z-10 max-w-3xl">
+          <StaggeredReveal className="relative z-10 max-w-3xl">
             <p className="inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/[0.07] px-4 py-2 text-[11px] font-semibold uppercase tracking-[0.2em] text-blue-100 shadow-sm backdrop-blur">
               <span className="size-1.5 rounded-full bg-[#f2b632] shadow-[0_0_12px_rgba(242,182,50,.8)]" />
               {t("eyebrow")}
             </p>
-            <h1 className="mt-7 text-4xl font-semibold leading-[1.04] tracking-[-0.05em] sm:text-6xl lg:text-[4.5rem]">
+            <h1 className="mt-7 text-4xl font-semibold leading-[1.04] tracking-tight sm:text-6xl lg:text-[4.5rem]">
               {t("headline")}
-              <span className="mt-2 block bg-gradient-to-r from-blue-200 via-cyan-200 to-white bg-clip-text text-transparent">
+              <span className="mt-2 block bg-gradient-to-r from-white to-slate-400 bg-clip-text text-transparent">
                 {t("headlineAccent")}
               </span>
             </h1>
@@ -97,7 +101,7 @@ export default async function HomePage({ params }: HomePageProps) {
               <span className="size-1.5 rounded-full bg-emerald-400" aria-hidden="true" />
               {t("heroExpertiseLine")}
             </div>
-          </div>
+          </StaggeredReveal>
 
           <HeroGraphic
             orbitLabel={t("orbitLabel")}

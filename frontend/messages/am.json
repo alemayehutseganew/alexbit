@@ -25,6 +25,7 @@
     "quickLinksTitle": "ፈጣን አገናኞች",
     "contactTitle": "ያግኙን",
     "portalsTitle": "የፖርታል መግቢያ",
+    "legalTitle": "ሕጋዊ መረጃ",
     "phoneLabel": "ስልክ",
     "emailLabel": "ኢሜይል",
     "requestProposal": "የፕሮጀክት ጥያቄ ያቅርቡ",
@@ -130,7 +131,7 @@
       }
     },
     "timelineEyebrow": "ጉዞአችን",
-    "timelineTitle": "በእውቀት እና በጋራ ዓላማ የተቀረጸ ጉዞ።",
+    "timelineTitle": "የልህቀት ጉዞ",
     "journey": {
       "foundation": {
         "title": "ጠንካራ መሠረት",
@@ -384,6 +385,10 @@
     "heroTitle": "በአፍሪካ ቀጣይ የቴክኖሎጂ አድማስ ላይ ይሳተፉ",
     "heroSubtitle": "ፕራይም ሆራይዘን ግሩፕ ትሬዲንግ ኃ/የተ/የግ/ማህበር ዓለም አቀፍ የትምህርት ብቃትን ከጥልቅ የአካባቢ መሠረተ ልማት እውቀት ጋር እያገናኘ ነው። እያደግን ሲሄድ ይቀላቀሉን።",
     "ctaButton": "የኢንቨስተር ፕሮስፔክተስ ይጠይቁ",
+    "requestAccess": "የመዳረሻ ፈቃድ ይጠይቁ",
+    "growthTitle": "የእድገት ትንበያ",
+    "growthIndex": "ለማሳያ የቀረበ አሃዛዊ መለኪያ",
+    "growthNote": "እነዚህ ለማሳያ ብቻ የተዘጋጁ አሃዞች ናቸው፤ ትክክለኛ ወይም የተገመቱ የፋይናንስ ተመላሾችን አያመለክቱም።",
     "metrics": {
       "experts": "የቴክኖሎጂ ባለሙያዎች",
       "sectors": "ዋና ዋና ዘርፎች",

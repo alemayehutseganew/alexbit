@@ -57,9 +57,9 @@ export default async function ContactPage({ params }: ContactPageProps) {
           <div className="space-y-4">
             <a
               href={`tel:${brand("phone")}`}
-              className="flex min-h-16 items-center gap-4 rounded-xl border border-slate-200 p-4 transition hover:border-brand-600 dark:border-white/10 dark:bg-white/[0.03]"
+              className="group flex min-h-16 items-center gap-4 rounded-xl border border-slate-200 p-4 transition duration-200 hover:-translate-y-1 hover:border-cyan-300/50 hover:shadow-[0_0_28px_rgba(6,182,212,0.12)] dark:border-white/10 dark:bg-white/[0.03]"
             >
-              <span className="flex size-10 items-center justify-center rounded-lg bg-blue-50 text-brand-600">
+              <span className="flex size-10 items-center justify-center rounded-lg bg-blue-50 text-brand-600 transition group-hover:shadow-[0_0_18px_rgba(6,182,212,0.35)]">
                 <Phone size={18} aria-hidden="true" />
               </span>
               <span>
@@ -73,9 +73,9 @@ export default async function ContactPage({ params }: ContactPageProps) {
             </a>
             <a
               href="mailto:info@primehorizon.com"
-              className="flex min-h-16 items-center gap-4 rounded-xl border border-slate-200 p-4 transition hover:border-brand-600 dark:border-white/10 dark:bg-white/[0.03]"
+              className="group flex min-h-16 items-center gap-4 rounded-xl border border-slate-200 p-4 transition duration-200 hover:-translate-y-1 hover:border-cyan-300/50 hover:shadow-[0_0_28px_rgba(6,182,212,0.12)] dark:border-white/10 dark:bg-white/[0.03]"
             >
-              <span className="flex size-10 items-center justify-center rounded-lg bg-blue-50 text-brand-600">
+              <span className="flex size-10 items-center justify-center rounded-lg bg-blue-50 text-brand-600 transition group-hover:shadow-[0_0_18px_rgba(6,182,212,0.35)]">
                 <Mail size={18} aria-hidden="true" />
               </span>
               <span>
@@ -123,16 +123,18 @@ export default async function ContactPage({ params }: ContactPageProps) {
           </div>
         </aside>
 
-        <section className="order-1 rounded-3xl border border-slate-200 bg-white p-6 shadow-[0_24px_70px_rgba(15,23,42,0.07)] sm:p-9 lg:order-2 dark:border-white/10 dark:bg-slate-900">
-          <div className="mb-7">
-            <h2 className="text-2xl font-semibold tracking-tight text-slate-900 dark:text-white">
-              {t("formTitle")}
-            </h2>
-            <p className="mt-2 text-sm leading-6 text-slate-600 dark:text-slate-300">
-              {t("formDescription")}
-            </p>
+        <section className="order-1 rounded-3xl border border-cyan-300/20 bg-gradient-to-br from-cyan-300/20 via-blue-600/10 to-transparent p-px shadow-[0_0_44px_rgba(6,182,212,0.1)] sm:p-px lg:order-2">
+          <div className="h-full rounded-[calc(1.5rem-1px)] bg-white p-6 sm:p-9 dark:bg-slate-900/90">
+            <div className="mb-7">
+              <h2 className="text-2xl font-semibold tracking-tight text-slate-900 dark:text-white">
+                {t("formTitle")}
+              </h2>
+              <p className="mt-2 text-sm leading-6 text-slate-600 dark:text-slate-300">
+                {t("formDescription")}
+              </p>
+            </div>
+            <ContactForm />
           </div>
-          <ContactForm />
         </section>
       </div>
     </div>

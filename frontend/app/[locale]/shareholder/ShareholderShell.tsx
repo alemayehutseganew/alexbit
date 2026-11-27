@@ -76,7 +76,7 @@ export function ShareholderShell({ children, locale }: ShareholderShellProps) {
   }
 
   return (
-    <div className="min-h-screen w-full bg-[#07111f] text-slate-100">
+    <div className="portal-theme min-h-screen w-full bg-[#07111f] text-slate-100">
       <aside className="fixed inset-y-0 left-0 z-20 hidden w-72 flex-col border-r border-white/[0.07] bg-[#091426]/95 backdrop-blur-xl md:flex">
         <div className="border-b border-white/[0.07] px-7 py-7">
           <Link

@@ -11,6 +11,7 @@ type FooterProps = {
   quickLinksTitle: string;
   contactTitle: string;
   portalsTitle: string;
+  legalTitle: string;
   home: string;
   about: string;
   expertise: string;
@@ -35,6 +36,7 @@ export function Footer({
   quickLinksTitle,
   contactTitle,
   portalsTitle,
+  legalTitle,
   home,
   about,
   expertise,
@@ -111,7 +113,7 @@ export function Footer({
           </h2>
           <div className="mt-5 space-y-4">
             <a
-              className="inline-flex items-center gap-3 rounded-md text-sm transition hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-200 focus-visible:ring-offset-2 focus-visible:ring-offset-[#061426]"
+              className="inline-flex items-center gap-3 rounded-md text-sm transition hover:text-white hover:drop-shadow-[0_0_10px_rgba(34,211,238,0.65)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-200 focus-visible:ring-offset-2 focus-visible:ring-offset-[#061426]"
               href={`tel:${phone}`}
             >
               <Phone className="size-4 text-cyan-300" aria-hidden="true" />
@@ -123,7 +125,7 @@ export function Footer({
               </span>
             </a>
             <a
-              className="inline-flex items-center gap-3 rounded-md text-sm transition hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-200 focus-visible:ring-offset-2 focus-visible:ring-offset-[#061426]"
+              className="inline-flex items-center gap-3 rounded-md text-sm transition hover:text-white hover:drop-shadow-[0_0_10px_rgba(34,211,238,0.65)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-200 focus-visible:ring-offset-2 focus-visible:ring-offset-[#061426]"
               href={`mailto:${email}`}
             >
               <Mail className="size-4 text-cyan-300" aria-hidden="true" />
@@ -139,9 +141,18 @@ export function Footer({
 
         <div>
           <h2 className="text-xs font-semibold uppercase tracking-[0.18em] text-white">
-            {portalsTitle}
+            {legalTitle}
           </h2>
-          <div className="mt-5 grid gap-3">
+          <p className="mt-5 text-sm leading-6 text-slate-300/75">
+            {nameEn}
+          </p>
+          <p className="mt-2 text-sm leading-6 text-slate-400">
+            © {year} {allRightsReserved}
+          </p>
+          <h3 className="mt-6 text-xs font-semibold uppercase tracking-[0.18em] text-white">
+            {portalsTitle}
+          </h3>
+          <div className="mt-3 grid gap-3">
             {[
               { label: clientPortal, href: `/${locale}/client` },
               {

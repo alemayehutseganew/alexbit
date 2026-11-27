@@ -212,18 +212,30 @@ export default async function AboutPage({ params }: AboutPageProps) {
           <h2 className="mt-4 max-w-3xl text-3xl font-semibold tracking-tight sm:text-4xl">
             {t("timelineTitle")}
           </h2>
-          <div className="relative mt-12 grid gap-8 md:grid-cols-3 md:gap-6">
+          <div className="relative mx-auto mt-12 grid max-w-5xl gap-6 md:grid-cols-2 md:gap-x-16 md:gap-y-8">
             <div
               aria-hidden="true"
-              className="absolute left-0 right-0 top-5 hidden h-px bg-gradient-to-r from-blue-400/0 via-cyan-200/40 to-blue-400/0 md:block"
+              className="absolute bottom-4 left-5 top-4 w-px bg-gradient-to-b from-blue-400/0 via-cyan-200/50 to-blue-400/0 md:bottom-0 md:left-1/2 md:top-0 md:-translate-x-1/2"
             />
             {milestones.map((key, index) => (
               <RevealCard
                 key={key}
                 delay={index * 0.12}
-                className="relative rounded-2xl border border-white/10 bg-white/[0.04] p-6 backdrop-blur-sm"
+                direction={index % 2 === 0 ? "left" : "right"}
+                className={`relative ml-10 rounded-2xl border border-white/10 bg-white/[0.04] p-6 backdrop-blur-sm md:ml-0 ${
+                  index % 2 === 0
+                    ? "md:col-start-1 md:text-right"
+                    : "md:col-start-2"
+                }`}
               >
-                <span className="relative z-10 flex size-10 items-center justify-center rounded-xl border border-cyan-200/20 bg-brand-600/20 text-xs font-bold text-cyan-100 shadow-[0_0_24px_rgba(34,211,238,0.12)]">
+                <span
+                  className={`absolute left-[-1.25rem] top-7 size-2.5 rounded-full border border-cyan-200 bg-cyan-300 shadow-[0_0_16px_rgba(103,232,249,0.9)] md:left-auto ${
+                    index % 2 === 0
+                      ? "md:right-[-2.65rem]"
+                      : "md:left-[-2.65rem]"
+                  }`}
+                />
+                <span className="relative z-10 inline-flex size-10 items-center justify-center rounded-xl border border-cyan-200/20 bg-brand-600/20 text-xs font-bold text-cyan-100 shadow-[0_0_24px_rgba(34,211,238,0.12)]">
                   0{index + 1}
                 </span>
                 <h3 className="mt-6 text-lg font-semibold">

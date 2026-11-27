@@ -6,6 +6,15 @@ import { ArrowRight, ShieldCheck, TrendingUp, Users } from "lucide-react";
 import { motion, type Variants } from "framer-motion";
 import { BrandLogo } from "@/components/brand/BrandLogo";
 import { AnimatedCounter } from "@/components/AnimatedCounter";
+import {
+  Bar,
+  BarChart,
+  CartesianGrid,
+  ResponsiveContainer,
+  Tooltip,
+  XAxis,
+  YAxis,
+} from "recharts";
 
 type InvestorContentProps = {
   locale: string;
@@ -45,6 +54,14 @@ const cardVariants: Variants = {
     transition: { duration: 0.45, ease: "easeOut" },
   },
 };
+
+const projectedGrowth = [
+  { year: "2025", index: 34 },
+  { year: "2026", index: 48 },
+  { year: "2027", index: 67 },
+  { year: "2028", index: 86 },
+  { year: "2029", index: 100 },
+];
 
 export function InvestorContent({ locale }: InvestorContentProps) {
   const t = useTranslations("Investors");
@@ -121,7 +138,7 @@ export function InvestorContent({ locale }: InvestorContentProps) {
 
       <section className="bg-slate-50 py-16 transition-colors sm:py-20 dark:bg-slate-950">
         <div className="mx-auto max-w-6xl px-6">
-          <h2 className="text-2xl font-bold tracking-tight text-slate-900 sm:text-3xl dark:text-white">
+          <h2 className="bg-gradient-to-r from-white to-slate-400 bg-clip-text text-2xl font-bold tracking-tight text-transparent sm:text-3xl">
             {t("whyInvestTitle")}
           </h2>
           <motion.div
@@ -155,6 +172,80 @@ export function InvestorContent({ locale }: InvestorContentProps) {
               </motion.article>
             ))}
           </motion.div>
+        </div>
+      </section>
+
+      <section className="bg-slate-50 px-6 py-10 transition-colors sm:px-8 sm:py-14 dark:bg-slate-950">
+        <div className="mx-auto grid max-w-7xl gap-6 lg:grid-cols-[1.4fr_0.6fr]">
+          <article className="rounded-3xl border border-white/10 bg-white/[0.04] p-6 shadow-xl shadow-black/10 backdrop-blur-xl sm:p-8">
+            <div className="flex flex-wrap items-start justify-between gap-3">
+              <div>
+                <h2 className="text-xl font-semibold tracking-tight text-white sm:text-2xl">
+                  {t("growthTitle")}
+                </h2>
+                <p className="mt-2 text-sm text-slate-400">
+                  {t("growthNote")}
+                </p>
+              </div>
+              <span className="rounded-full border border-cyan-300/20 bg-cyan-300/10 px-3 py-1 text-xs font-medium text-cyan-100">
+                {t("growthIndex")}
+              </span>
+            </div>
+            <div
+              className="mt-6 h-64 w-full"
+              role="img"
+              aria-label={t("growthNote")}
+            >
+              <ResponsiveContainer width="100%" height="100%">
+                <BarChart
+                  data={projectedGrowth}
+                  margin={{ top: 8, right: 8, bottom: 0, left: -20 }}
+                >
+                  <CartesianGrid
+                    stroke="rgba(148,163,184,0.12)"
+                    vertical={false}
+                  />
+                  <XAxis
+                    dataKey="year"
+                    axisLine={false}
+                    tickLine={false}
+                    tick={{ fill: "#94a3b8", fontSize: 12 }}
+                  />
+                  <YAxis
+                    axisLine={false}
+                    tickLine={false}
+                    tick={{ fill: "#64748b", fontSize: 11 }}
+                  />
+                  <Tooltip
+                    contentStyle={{
+                      background: "#0f172a",
+                      border: "1px solid rgba(148,163,184,0.2)",
+                      borderRadius: 12,
+                      color: "#f8fafc",
+                    }}
+                  />
+                  <Bar
+                    dataKey="index"
+                    name={t("growthIndex")}
+                    fill="#06b6d4"
+                    radius={[6, 6, 0, 0]}
+                  />
+                </BarChart>
+              </ResponsiveContainer>
+            </div>
+          </article>
+          <aside className="flex flex-col justify-center rounded-3xl border border-cyan-300/20 bg-gradient-to-br from-blue-500/15 via-white/[0.04] to-cyan-400/10 p-7 shadow-[0_0_44px_rgba(6,182,212,0.08)] backdrop-blur-xl sm:p-8">
+            <p className="text-sm leading-6 text-slate-300">
+              {t("heroSubtitle")}
+            </p>
+            <Link
+              href={`/${locale}/login?role=shareholder`}
+              className="mt-7 inline-flex min-h-12 items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-brand-600 to-cyan-500 px-5 py-3 text-sm font-semibold text-white shadow-lg shadow-cyan-950/30 transition hover:-translate-y-0.5 hover:shadow-cyan-500/20 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-200"
+            >
+              {t("requestAccess")}
+              <ArrowRight aria-hidden="true" size={18} />
+            </Link>
+          </aside>
         </div>
       </section>
 

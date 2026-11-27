@@ -8,7 +8,7 @@ body {
 }
 
 html {
-  color-scheme: light;
+  color-scheme: dark;
   scroll-behavior: smooth;
 }
 
@@ -135,6 +135,74 @@ body {
   to {
     transform: translateX(-50%);
   }
+}
+
+.portal-theme {
+  color-scheme: dark;
+  background-color: #020617;
+  color: #f8fafc;
+}
+
+.portal-theme .bg-white {
+  background-color: rgb(255 255 255 / 0.05);
+}
+
+.portal-theme .bg-slate-50 {
+  background-color: rgb(255 255 255 / 0.035);
+}
+
+.portal-theme .border-slate-100,
+.portal-theme .border-slate-200 {
+  border-color: rgb(255 255 255 / 0.1);
+}
+
+.portal-theme .text-slate-900 {
+  color: #f8fafc;
+}
+
+.portal-theme .text-slate-800,
+.portal-theme .text-slate-700 {
+  color: #e2e8f0;
+}
+
+.portal-theme .text-slate-600,
+.portal-theme .text-slate-500 {
+  color: #94a3b8;
+}
+
+.portal-theme [class~="hover:bg-slate-50"]:hover,
+.portal-theme [class~="hover:bg-slate-100"]:hover {
+  background-color: rgb(255 255 255 / 0.1);
+}
+
+.portal-theme [data-slot="table"] {
+  background-color: rgb(255 255 255 / 0.035);
+}
+
+.portal-theme [data-slot="table-row"]:hover {
+  background-color: rgb(255 255 255 / 0.1);
+}
+
+.portal-theme table {
+  border-color: rgb(255 255 255 / 0.1);
+}
+
+.portal-theme tbody tr {
+  border-color: rgb(255 255 255 / 0.08);
+}
+
+.portal-theme tbody tr:hover {
+  background-color: rgb(255 255 255 / 0.1);
+}
+
+.portal-theme button,
+.portal-theme [role="button"] {
+  transition:
+    color 180ms ease,
+    background-color 180ms ease,
+    border-color 180ms ease,
+    box-shadow 180ms ease,
+    transform 180ms ease;
 }
 
 @media (prefers-reduced-motion: reduce) {

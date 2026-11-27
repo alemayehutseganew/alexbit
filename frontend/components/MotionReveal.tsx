@@ -1,6 +1,6 @@
 "use client";
 
-import type { ReactNode } from "react";
+import { Children, type ReactNode } from "react";
 import { motion } from "framer-motion";
 
 export function RevealCard({
@@ -9,17 +9,23 @@ export function RevealCard({
   delay = 0,
   hoverLift = false,
   tilt = false,
+  direction,
 }: {
   children: ReactNode;
   className?: string;
   delay?: number;
   hoverLift?: boolean;
   tilt?: boolean;
+  direction?: "left" | "right";
 }) {
   return (
     <motion.article
-      initial={{ opacity: 0, y: 22 }}
-      whileInView={{ opacity: 1, y: 0 }}
+      initial={
+        direction
+          ? { opacity: 0, x: direction === "left" ? -32 : 32 }
+          : { opacity: 0, y: 22 }
+      }
+      whileInView={{ opacity: 1, x: 0, y: 0 }}
       viewport={{ once: true, amount: 0.2 }}
       transition={{ duration: 0.45, delay }}
       whileHover={
@@ -32,7 +38,7 @@ export function RevealCard({
             }
           : hoverLift
             ? { y: -5 }
-            : undefined
+            : { scale: 1.02, y: -2 }
       }
       whileTap={{ scale: 0.98 }}
       style={tilt ? { transformStyle: "preserve-3d" } : undefined}
@@ -40,6 +46,41 @@ export function RevealCard({
     >
       {children}
     </motion.article>
+  );
+}
+
+export function StaggeredReveal({
+  children,
+  className,
+}: {
+  children: ReactNode;
+  className?: string;
+}) {
+  return (
+    <motion.div
+      initial="hidden"
+      animate="visible"
+      variants={{
+        hidden: { opacity: 0 },
+        visible: { opacity: 1, transition: { staggerChildren: 0.14 } },
+      }}
+      className={className}
+    >
+      {Children.map(children, (child) => (
+        <motion.div
+          variants={{
+            hidden: { opacity: 0, y: 16 },
+            visible: {
+              opacity: 1,
+              y: 0,
+              transition: { duration: 0.5, ease: "easeOut" },
+            },
+          }}
+        >
+          {child}
+        </motion.div>
+      ))}
+    </motion.div>
   );
 }
 

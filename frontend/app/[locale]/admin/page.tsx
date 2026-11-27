@@ -55,9 +55,13 @@ export default function AdminDashboardPage() {
           return (
             <article
               key={metric.label}
-              className="rounded-xl border border-slate-200 bg-white p-5 shadow-sm"
+              className="group relative overflow-hidden rounded-xl border border-white/10 bg-gradient-to-br from-blue-500/10 via-white/[0.04] to-cyan-400/[0.04] p-5 shadow-sm transition duration-200 hover:-translate-y-0.5 hover:border-cyan-300/30"
             >
-              <div className="flex items-start justify-between">
+              <span
+                aria-hidden="true"
+                className="pointer-events-none absolute -right-8 -top-8 size-28 rounded-full bg-cyan-400/10 blur-3xl transition group-hover:bg-cyan-300/20"
+              />
+              <div className="relative flex items-start justify-between">
                 <div>
                   <p className="text-sm font-medium text-slate-500">
                     {metric.label}
@@ -72,7 +76,9 @@ export default function AdminDashboardPage() {
                   <Icon className="h-5 w-5" aria-hidden="true" />
                 </span>
               </div>
-              <p className="mt-4 text-xs text-slate-500">{metric.detail}</p>
+              <p className="relative mt-4 text-xs text-slate-500">
+                {metric.detail}
+              </p>
             </article>
           );
         })}

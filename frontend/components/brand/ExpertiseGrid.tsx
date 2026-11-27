@@ -62,7 +62,7 @@ export function ExpertiseGrid({
             <p className="text-xs font-semibold uppercase tracking-[0.2em] text-brand-600 dark:text-cyan-300">
               {eyebrow}
             </p>
-            <h2 className="mt-4 text-3xl font-semibold tracking-tight sm:text-4xl">
+            <h2 className="mt-4 bg-gradient-to-r from-white to-slate-400 bg-clip-text text-3xl font-semibold tracking-tight text-transparent sm:text-4xl">
               {title}
             </h2>
           </div>
@@ -87,7 +87,7 @@ export function ExpertiseGrid({
                   whileHover={{ scale: 1.02 }}
                   whileTap={{ scale: 0.98 }}
                   transition={{ duration: 0.2 }}
-                  className="group relative h-full min-h-52 overflow-hidden rounded-[15px] bg-white p-6 shadow-sm sm:p-7 dark:bg-slate-900/95"
+                  className="group relative h-full min-h-52 overflow-hidden rounded-[15px] border border-white/10 bg-white/5 p-6 shadow-sm transition duration-300 hover:border-brand-500 hover:shadow-[0_0_36px_rgba(6,182,212,0.15)] sm:p-7"
                 >
                   <div
                     aria-hidden="true"

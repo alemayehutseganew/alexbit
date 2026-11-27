@@ -19,6 +19,7 @@ type PublicSiteShellProps = {
     quickLinksTitle: string;
     contactTitle: string;
     portalsTitle: string;
+    legalTitle: string;
     emailLabel: string;
     phoneLabel: string;
     requestProposal: string;

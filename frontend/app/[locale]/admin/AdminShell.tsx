@@ -38,12 +38,12 @@ export function AdminShell({ children, locale }: AdminShellProps) {
   const sidebarWidth = isCollapsed ? 76 : 256;
 
   return (
-    <div className="min-h-screen bg-slate-50 text-slate-900">
+    <div className="portal-theme min-h-screen bg-slate-950 text-white">
       {isMobileOpen && (
         <button
           type="button"
           aria-label="Close navigation"
-          className="fixed inset-0 z-20 cursor-default bg-slate-950/30 md:hidden"
+          className="fixed inset-0 z-20 cursor-default bg-slate-950/70 backdrop-blur-sm md:hidden"
           onClick={() => setIsMobileOpen(false)}
         />
       )}
@@ -51,7 +51,7 @@ export function AdminShell({ children, locale }: AdminShellProps) {
         initial={false}
         animate={{ width: sidebarWidth }}
         transition={{ duration: 0.22, ease: "easeInOut" }}
-        className={`fixed inset-y-0 left-0 z-30 flex flex-col overflow-hidden border-r border-slate-200 bg-white transition-transform duration-200 md:translate-x-0 ${
+        className={`fixed inset-y-0 left-0 z-30 flex flex-col overflow-hidden border-r border-white/10 bg-slate-950 transition-transform duration-200 md:translate-x-0 ${
           isMobileOpen ? "translate-x-0" : "-translate-x-full"
         }`}
       >
@@ -96,8 +96,8 @@ export function AdminShell({ children, locale }: AdminShellProps) {
                 onClick={() => setIsMobileOpen(false)}
                 className={`flex h-11 items-center gap-3 rounded-lg px-3 text-sm font-medium transition-colors ${
                   isActive
-                    ? "bg-brand-600 text-white"
-                    : "text-slate-600 hover:bg-slate-100 hover:text-slate-900"
+                    ? "bg-gradient-to-r from-brand-500/20 to-cyan-500/5 text-white shadow-[inset_3px_0_0_#06b6d4,0_0_20px_rgba(6,182,212,0.12)]"
+                    : "text-slate-400 hover:bg-white/10 hover:text-white"
                 }`}
               >
                 <Icon className="h-5 w-5 shrink-0" aria-hidden="true" />
@@ -147,7 +147,7 @@ export function AdminShell({ children, locale }: AdminShellProps) {
           isCollapsed ? "md:ml-[76px]" : "md:ml-64"
         }`}
       >
-        <header className="sticky top-0 z-20 flex h-16 items-center justify-between border-b border-slate-200 bg-white/95 px-5 backdrop-blur sm:px-8">
+        <header className="sticky top-0 z-20 flex h-16 items-center justify-between border-b border-white/10 bg-slate-950/90 px-5 backdrop-blur-xl sm:px-8">
           <div className="flex items-center gap-2">
             <Button
               type="button"
