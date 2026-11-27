@@ -174,6 +174,34 @@ describe('AuthService', () => {
     expect(typeof result.accessToken).toBe('string');
   });
 
+  it('returns the shareholder admin role with successful login', async () => {
+    const passwordHash = await bcrypt.hash('strong-password', 12);
+    userFindUnique.mockResolvedValue({
+      id: 'user-shareholder-admin',
+      tenantId: 'tenant-shareholder-admin',
+      email: 'shareholder-admin@example.com',
+      firstName: 'Shareholder',
+      lastName: 'Admin',
+      passwordHash,
+      role: 'SHAREHOLDER_ADMIN',
+    });
+
+    const result = await service.login({
+      email: 'shareholder-admin@example.com',
+      password: 'strong-password',
+    });
+
+    expect(result.user).toMatchObject({
+      id: 'user-shareholder-admin',
+      tenantId: 'tenant-shareholder-admin',
+      role: 'SHAREHOLDER_ADMIN',
+    });
+    expect(jwtSign).toHaveBeenCalledWith(
+      expect.objectContaining({ role: 'SHAREHOLDER_ADMIN' }),
+      expect.any(Object),
+    );
+  });
+
   it('authenticates a client user with the matching password', async () => {
     const passwordHash = await bcrypt.hash('strong-password', 12);
     userFindUnique.mockResolvedValue({
