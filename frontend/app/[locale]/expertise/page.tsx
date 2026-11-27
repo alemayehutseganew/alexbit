@@ -1,5 +1,6 @@
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import {
+  ArrowRight,
   Code2,
   GraduationCap,
   Headset,
@@ -7,6 +8,7 @@ import {
   Sun,
   Zap,
 } from "lucide-react";
+import Link from "next/link";
 import { RevealSection } from "@/components/MotionReveal";
 
 type ExpertisePageProps = {
@@ -25,21 +27,43 @@ const sectors = [
 export default async function ExpertisePage({ params }: ExpertisePageProps) {
   const { locale } = await params;
   setRequestLocale(locale);
-  const t = await getTranslations({ locale, namespace: "Expertise" });
+  const [t, home] = await Promise.all([
+    getTranslations({ locale, namespace: "Expertise" }),
+    getTranslations({ locale, namespace: "Home" }),
+  ]);
 
   return (
     <div className="bg-slate-50 text-slate-900 transition-colors dark:bg-slate-950 dark:text-white">
-      <section className="bg-slate-950 px-6 py-20 text-white sm:px-8 sm:py-28">
-        <div className="mx-auto max-w-7xl">
-          <p className="text-xs font-semibold uppercase tracking-[0.2em] text-blue-300">
+      <section className="relative isolate overflow-hidden bg-[#061426] px-6 py-20 text-white sm:px-8 sm:py-28">
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_78%_20%,rgba(11,74,139,0.55),transparent_44%),radial-gradient(ellipse_at_12%_100%,rgba(22,101,52,0.18),transparent_40%)]" />
+        <div
+          aria-hidden="true"
+          className="absolute inset-0 opacity-[0.1]"
+          style={{
+            backgroundImage:
+              "linear-gradient(rgba(255,255,255,.18) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,.18) 1px, transparent 1px)",
+            backgroundSize: "64px 64px",
+            maskImage: "linear-gradient(to bottom, black, transparent 90%)",
+          }}
+        />
+        <div className="relative mx-auto max-w-7xl">
+          <p className="inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/[0.07] px-4 py-2 text-[11px] font-semibold uppercase tracking-[0.2em] text-blue-100">
+            <span className="size-1.5 rounded-full bg-[#f2b632]" aria-hidden="true" />
             {t("eyebrow")}
           </p>
-          <h1 className="mt-5 max-w-4xl text-4xl font-semibold tracking-tight sm:text-6xl">
+          <h1 className="mt-6 max-w-4xl text-4xl font-semibold leading-[1.06] tracking-[-0.045em] sm:text-6xl">
             {t("title")}
           </h1>
-          <p className="mt-6 max-w-2xl text-lg leading-8 text-slate-300">
+          <p className="mt-6 max-w-2xl text-base leading-8 text-blue-50/75 sm:text-lg">
             {t("description")}
           </p>
+          <Link
+            href={`/${locale}/rfp`}
+            className="mt-8 inline-flex min-h-12 items-center gap-2 rounded-xl bg-brand-600 px-6 py-3 text-sm font-semibold text-white shadow-lg shadow-black/20 transition hover:-translate-y-0.5 hover:bg-blue-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-200 focus-visible:ring-offset-2 focus-visible:ring-offset-[#061426]"
+          >
+            {home("partnerCta")}
+            <ArrowRight size={17} aria-hidden="true" />
+          </Link>
         </div>
       </section>
 

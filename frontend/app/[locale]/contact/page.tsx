@@ -17,17 +17,26 @@ export default async function ContactPage({ params }: ContactPageProps) {
 
   return (
     <div className="bg-white text-slate-900 transition-colors dark:bg-slate-950 dark:text-white">
-      <section className="bg-slate-950 px-6 py-16 text-white sm:px-8 sm:py-20">
-        <div className="mx-auto max-w-7xl">
-          <p className="text-xs font-semibold uppercase tracking-[0.2em] text-blue-300">
+      <section className="relative isolate overflow-hidden bg-[#061426] px-6 py-16 text-white sm:px-8 sm:py-20">
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_78%_20%,rgba(11,74,139,0.5),transparent_44%)]" />
+        <div className="relative mx-auto max-w-7xl">
+          <p className="inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/[0.07] px-4 py-2 text-[11px] font-semibold uppercase tracking-[0.2em] text-blue-100">
+            <span className="size-1.5 rounded-full bg-[#f2b632]" aria-hidden="true" />
             {t("eyebrow")}
           </p>
-          <h1 className="mt-4 text-3xl font-semibold tracking-tight sm:text-4xl md:text-5xl">
+          <h1 className="mt-5 max-w-4xl text-3xl font-semibold leading-[1.06] tracking-[-0.045em] sm:text-4xl md:text-5xl">
             {t("title")}
           </h1>
-          <p className="mt-4 max-w-2xl text-base leading-7 text-slate-300">
+          <p className="mt-4 max-w-2xl text-base leading-7 text-blue-50/75">
             {t("description")}
           </p>
+          <a
+            href={`tel:${brand("phone")}`}
+            className="mt-6 inline-flex min-h-11 items-center gap-2 rounded-xl border border-white/20 bg-white/[0.06] px-4 py-2 text-sm font-semibold text-white backdrop-blur transition hover:border-cyan-200/60 hover:bg-white/[0.12]"
+          >
+            <Phone size={16} aria-hidden="true" />
+            {brand("phone")}
+          </a>
         </div>
       </section>
 

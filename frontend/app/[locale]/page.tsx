@@ -46,57 +46,55 @@ export default async function HomePage({ params }: HomePageProps) {
 
   return (
     <div className="overflow-hidden bg-white text-slate-900 transition-colors dark:bg-slate-950 dark:text-white">
-      <section className="relative isolate min-h-[680px] overflow-hidden">
+      <section className="relative isolate min-h-[700px] overflow-hidden bg-[#061426] text-white">
         <div
           aria-hidden="true"
-          className="absolute inset-0 -z-20 bg-slate-50 dark:bg-slate-950"
+          className="absolute inset-0 -z-20 bg-[radial-gradient(ellipse_at_75%_24%,rgba(11,74,139,0.58),transparent_44%),radial-gradient(ellipse_at_15%_90%,rgba(22,101,52,0.18),transparent_40%)]"
         />
         <div
           aria-hidden="true"
-          className="absolute inset-0 -z-20 bg-[radial-gradient(ellipse_at_55%_20%,rgba(11,74,139,0.13),transparent_58%)] dark:bg-[radial-gradient(ellipse_at_55%_20%,rgba(11,74,139,0.42),transparent_58%)]"
-        />
-        <div
-          aria-hidden="true"
-          className="absolute inset-0 -z-10 opacity-[0.09] dark:opacity-[0.16]"
+          className="absolute inset-0 -z-10 opacity-[0.12]"
           style={{
             backgroundImage:
-              "linear-gradient(rgba(71,85,105,.24) 1px, transparent 1px), linear-gradient(90deg, rgba(71,85,105,.24) 1px, transparent 1px)",
-            backgroundSize: "56px 56px",
+              "linear-gradient(rgba(255,255,255,.16) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,.16) 1px, transparent 1px)",
+            backgroundSize: "64px 64px",
             maskImage: "linear-gradient(to bottom, black, transparent 92%)",
           }}
         />
-        <PulseOrb className="absolute -right-36 top-24 -z-10 size-[30rem] rounded-full bg-blue-500/15 blur-[120px]" />
-        <div className="mx-auto grid min-h-[680px] max-w-7xl items-center gap-14 px-6 py-24 sm:px-8 lg:grid-cols-[1.15fr_0.85fr]">
+        <PulseOrb className="absolute -right-36 top-24 -z-10 size-[30rem] rounded-full bg-cyan-400/15 blur-[120px]" />
+        <div className="mx-auto grid min-h-[700px] max-w-7xl items-center gap-10 px-6 py-20 sm:px-8 sm:py-24 lg:grid-cols-[1.08fr_0.92fr]">
           <div className="relative z-10 max-w-3xl">
-            <p className="inline-flex items-center gap-2 rounded-full border border-blue-300/30 bg-blue-50 px-4 py-2 text-xs font-semibold uppercase tracking-[0.18em] text-brand-700 dark:border-blue-300/20 dark:bg-blue-300/[0.08] dark:text-blue-200">
-              <span className="size-1.5 rounded-full bg-cyan-300 shadow-[0_0_12px_rgba(103,232,249,.9)]" />
+            <p className="inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/[0.07] px-4 py-2 text-[11px] font-semibold uppercase tracking-[0.2em] text-blue-100 shadow-sm backdrop-blur">
+              <span className="size-1.5 rounded-full bg-[#f2b632] shadow-[0_0_12px_rgba(242,182,50,.8)]" />
               {t("eyebrow")}
             </p>
-            <h1 className="mt-7 text-4xl font-semibold leading-[1.06] tracking-[-0.045em] sm:text-6xl lg:text-7xl">
+            <h1 className="mt-7 text-4xl font-semibold leading-[1.04] tracking-[-0.05em] sm:text-6xl lg:text-[4.5rem]">
               {t("headline")}
-              <span className="mt-2 block bg-gradient-to-r from-brand-600 via-cyan-600 to-slate-700 bg-clip-text text-transparent dark:from-blue-300 dark:via-cyan-200 dark:to-white">
+              <span className="mt-2 block bg-gradient-to-r from-blue-200 via-cyan-200 to-white bg-clip-text text-transparent">
                 {t("headlineAccent")}
               </span>
             </h1>
-            <p className="mt-7 max-w-2xl text-lg leading-8 text-slate-600 dark:text-slate-300">
+            <p className="mt-7 max-w-2xl text-base leading-8 text-blue-50/80 sm:text-lg">
               {t("description")}
             </p>
             <div className="mt-9 flex flex-wrap gap-3">
               <Link
                 href={`/${locale}/rfp`}
-                className="inline-flex min-h-12 items-center gap-2 rounded-lg bg-brand-600 px-5 py-3 text-sm font-semibold text-white shadow-lg shadow-brand-600/25 transition hover:-translate-y-0.5 hover:bg-brand-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-600 focus-visible:ring-offset-2"
+                className="inline-flex min-h-12 items-center gap-2 rounded-xl bg-brand-600 px-6 py-3 text-sm font-semibold text-white shadow-lg shadow-brand-950/30 transition hover:-translate-y-0.5 hover:bg-blue-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-200 focus-visible:ring-offset-2 focus-visible:ring-offset-[#061426]"
               >
                 {t("partnerCta")}
                 <ArrowRight size={17} aria-hidden="true" />
               </Link>
               <Link
                 href={`/${locale}/expertise`}
-                className="inline-flex min-h-12 items-center rounded-lg border border-slate-300 bg-white/70 px-5 py-3 text-sm font-semibold text-slate-800 transition hover:border-brand-600 hover:bg-blue-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-600 focus-visible:ring-offset-2 dark:border-white/15 dark:bg-white/[0.04] dark:text-white dark:hover:border-blue-300/50 dark:hover:bg-white/[0.08]"
+                className="inline-flex min-h-12 items-center gap-2 rounded-xl border border-white/20 bg-white/[0.06] px-6 py-3 text-sm font-semibold text-white backdrop-blur transition hover:border-cyan-200/60 hover:bg-white/[0.12] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-200 focus-visible:ring-offset-2 focus-visible:ring-offset-[#061426]"
               >
                 {t("expertiseCta")}
+                <ArrowRight size={16} aria-hidden="true" />
               </Link>
             </div>
-            <div className="mt-12 text-xs font-medium tracking-wide text-slate-500 dark:text-slate-400">
+            <div className="mt-8 inline-flex items-center gap-2 rounded-lg border border-white/10 bg-white/[0.04] px-3 py-2 text-xs font-medium tracking-wide text-blue-100/75">
+              <span className="size-1.5 rounded-full bg-emerald-400" aria-hidden="true" />
               {t("heroExpertiseLine")}
             </div>
           </div>
@@ -113,14 +111,14 @@ export default async function HomePage({ params }: HomePageProps) {
         partners={["EEP", "CBE", "Ethio Telecom", "INSA"]}
       />
 
-      <section className="border-y border-slate-200 bg-slate-50 transition-colors dark:border-white/10 dark:bg-slate-900/70">
+      <section className="border-y border-blue-950/10 bg-[#071b32] text-white">
         <div className="mx-auto grid max-w-7xl grid-cols-2 divide-x divide-y divide-white/10 px-6 sm:px-8 md:grid-cols-4 md:divide-y-0">
           {stats.map((stat) => (
             <div key={stat.label} className="px-5 py-8 text-center sm:py-10">
-              <p className="text-3xl font-semibold tracking-tight text-slate-900 sm:text-4xl dark:text-white">
+              <p className="text-3xl font-semibold tracking-tight text-white sm:text-4xl">
                 <AnimatedCounter value={stat.value} suffix={stat.suffix} />
               </p>
-              <p className="mt-2 text-xs font-medium text-slate-600 sm:text-sm dark:text-slate-400">
+              <p className="mt-2 text-xs font-medium text-blue-100/65 sm:text-sm">
                 {stat.label}
               </p>
             </div>
@@ -128,10 +126,11 @@ export default async function HomePage({ params }: HomePageProps) {
         </div>
       </section>
 
-      <section className="bg-white px-6 py-24 transition-colors sm:px-8 sm:py-28 dark:bg-slate-950">
+      <section className="bg-[#f6f8fb] px-6 py-24 transition-colors sm:px-8 sm:py-28 dark:bg-slate-950">
         <div className="mx-auto max-w-7xl">
           <div className="max-w-2xl">
-            <p className="text-xs font-semibold uppercase tracking-[0.2em] text-brand-600 dark:text-blue-300">
+            <p className="inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.2em] text-brand-600 dark:text-blue-300">
+              <span className="h-px w-8 bg-[#d49a16]" aria-hidden="true" />
               {t("credibilityEyebrow")}
             </p>
             <h2 className="mt-4 text-3xl font-semibold tracking-tight sm:text-4xl">
@@ -143,9 +142,9 @@ export default async function HomePage({ params }: HomePageProps) {
               <RevealCard
                 key={key}
                 delay={index * 0.08}
-                className={`group relative overflow-hidden rounded-2xl border border-slate-200 bg-slate-50 p-7 backdrop-blur-md transition hover:border-blue-400/50 hover:bg-blue-50 dark:border-white/10 dark:bg-white/[0.045] dark:hover:bg-white/[0.07] ${size}`}
+                className={`group relative overflow-hidden rounded-3xl border border-slate-200/80 bg-white p-8 shadow-[0_16px_50px_rgba(7,27,50,0.06)] backdrop-blur-md transition duration-300 hover:-translate-y-1 hover:border-blue-300 hover:shadow-[0_24px_60px_rgba(7,27,50,0.12)] dark:border-white/10 dark:bg-white/[0.045] dark:hover:bg-white/[0.07] ${size}`}
               >
-                <div className="absolute -right-10 -top-10 size-40 rounded-full bg-brand-600/10 blur-3xl transition group-hover:bg-brand-600/25" />
+                <div className="absolute -right-10 -top-10 size-40 rounded-full bg-brand-600/10 blur-3xl transition group-hover:bg-emerald-500/15" />
                 <Icon
                   className="relative size-6 text-brand-600 dark:text-blue-300"
                   aria-hidden="true"
@@ -171,14 +170,15 @@ export default async function HomePage({ params }: HomePageProps) {
       />
 
       <section className="bg-white px-6 py-24 transition-colors sm:px-8 sm:py-28 dark:bg-slate-950">
-        <div className="relative mx-auto max-w-7xl overflow-hidden rounded-3xl border border-blue-200 bg-gradient-to-br from-blue-50 via-white to-slate-50 px-7 py-14 text-center shadow-2xl shadow-blue-950/10 sm:px-14 sm:py-20 dark:border-blue-300/20 dark:from-brand-600/35 dark:via-slate-900 dark:to-slate-950 dark:shadow-blue-950/30">
-          <div className="absolute -right-12 -top-32 size-72 rounded-full bg-cyan-300/10 blur-3xl" />
+        <div className="relative mx-auto max-w-7xl overflow-hidden rounded-[2rem] border border-blue-950/10 bg-[#061426] px-7 py-14 text-center text-white shadow-[0_30px_90px_rgba(7,27,50,0.2)] sm:px-14 sm:py-20">
+          <div className="absolute -right-12 -top-32 size-72 rounded-full bg-cyan-300/15 blur-3xl" />
+          <div className="absolute -bottom-36 -left-12 size-72 rounded-full bg-emerald-400/10 blur-3xl" />
           <h2 className="relative mx-auto max-w-3xl text-2xl font-semibold tracking-tight sm:text-4xl md:text-5xl">
             {t("closingTitle")}
           </h2>
           <Link
             href={`/${locale}/contact`}
-            className="relative mt-8 inline-flex min-h-12 items-center gap-2 rounded-lg bg-brand-600 px-5 py-3 text-sm font-semibold text-white transition hover:-translate-y-0.5 hover:bg-brand-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-600 focus-visible:ring-offset-2 dark:bg-white dark:text-brand-600 dark:hover:bg-blue-50"
+            className="relative mt-8 inline-flex min-h-12 items-center gap-2 rounded-xl bg-brand-600 px-6 py-3 text-sm font-semibold text-white shadow-lg shadow-black/20 transition hover:-translate-y-0.5 hover:bg-blue-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-200 focus-visible:ring-offset-2 focus-visible:ring-offset-[#061426]"
           >
             {t("closingCta")}
             <ArrowRight size={17} aria-hidden="true" />
