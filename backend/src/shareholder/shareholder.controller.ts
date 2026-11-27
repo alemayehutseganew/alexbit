@@ -29,19 +29,17 @@ export class ShareholderController {
   constructor(private readonly shareholderService: ShareholderService) {}
 
   @Get('profile')
-  @Roles('SHAREHOLDER')
   findProfileForTenant(@Req() request: AuthenticatedRequest) {
     return this.shareholderService.findProfileForTenant(request.user.tenantId);
   }
 
   @Get('all')
-  @Roles('SHAREHOLDER', 'ADMIN', 'SUPER_ADMIN', 'PROJECT_MANAGER')
   findAllShareholders() {
     return this.shareholderService.findAllShareholders();
   }
 
   @Patch(':id')
-  @Roles('ADMIN', 'SUPER_ADMIN')
+  @Roles('ADMIN')
   updateShareholder(
     @Param('id') id: string,
     @Body() data: UpdateShareholderDto,
@@ -50,7 +48,7 @@ export class ShareholderController {
   }
 
   @Post(':id/documents')
-  @Roles('SHAREHOLDER', 'ADMIN', 'SUPER_ADMIN')
+  @Roles('ADMIN')
   addDocument(
     @Param('id') id: string,
     @Body() data: CreateShareholderDocumentDto,
@@ -60,7 +58,7 @@ export class ShareholderController {
   }
 
   @Post(':id/documents/upload')
-  @Roles('SHAREHOLDER', 'ADMIN', 'SUPER_ADMIN')
+  @Roles('ADMIN')
   async addUploadedDocument(
     @Param('id') id: string,
     @Req() request: AuthenticatedRequest,
@@ -73,7 +71,6 @@ export class ShareholderController {
   }
 
   @Get(':profileId/documents/:documentId/file')
-  @Roles('SHAREHOLDER', 'ADMIN', 'SUPER_ADMIN', 'PROJECT_MANAGER')
   async downloadDocument(
     @Param('profileId') profileId: string,
     @Param('documentId') documentId: string,
@@ -95,13 +92,12 @@ export class ShareholderController {
   }
 
   @Get('company-documents')
-  @Roles('SHAREHOLDER', 'ADMIN', 'SUPER_ADMIN', 'PROJECT_MANAGER')
   getCompanyDocuments() {
     return this.shareholderService.getCompanyDocuments();
   }
 
   @Post('company-documents/upload')
-  @Roles('ADMIN', 'SUPER_ADMIN', 'SHAREHOLDER')
+  @Roles('ADMIN')
   async addCompanyDocument(@Req() request: AuthenticatedRequest) {
     const upload = await request.file();
     if (!upload) {
@@ -111,7 +107,6 @@ export class ShareholderController {
   }
 
   @Get('company-documents/:documentId/file')
-  @Roles('SHAREHOLDER', 'ADMIN', 'SUPER_ADMIN', 'PROJECT_MANAGER')
   async downloadCompanyDocument(
     @Param('documentId') documentId: string,
     @Req() request: AuthenticatedRequest,
@@ -129,7 +124,7 @@ export class ShareholderController {
   }
 
   @Delete(':profileId/documents/:documentId')
-  @Roles('SHAREHOLDER', 'ADMIN', 'SUPER_ADMIN', 'PROJECT_MANAGER')
+  @Roles('ADMIN')
   deleteDocument(
     @Param('profileId') profileId: string,
     @Param('documentId') documentId: string,

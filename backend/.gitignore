@@ -4,5 +4,7 @@ coverage/
 .env
 .env.*
 !.env.example
+uploads/*
+!uploads/.gitkeep
 .DS_Store
 npm-debug.log*

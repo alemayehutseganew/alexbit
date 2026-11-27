@@ -132,6 +132,13 @@ describe('RfpService', () => {
       include: { tenant: true },
       orderBy: { createdAt: 'desc' },
     });
+
+    await service.findAll('SHAREHOLDER', 'tenant-2');
+    expect(rfpRequest.findMany).toHaveBeenCalledWith({
+      where: { tenantId: 'tenant-2' },
+      include: { tenant: true },
+      orderBy: { createdAt: 'desc' },
+    });
   });
 
   it('updates and returns an RFP status with tenant data', async () => {

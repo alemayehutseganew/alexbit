@@ -18,6 +18,8 @@ import { ClientService } from './client.service';
 
 type AuthenticatedRequest = FastifyRequest & { user: AuthenticatedUser };
 
+const maxDocumentSize = 5 * 1024 * 1024;
+
 @Controller('api/client')
 @UseGuards(AuthGuard('jwt'), RolesGuard)
 @Roles('CLIENT', 'CLIENT_ADMIN', 'ADMIN', 'SUPER_ADMIN', 'PROJECT_MANAGER')
@@ -31,7 +33,9 @@ export class ClientController {
 
   @Post('documents/upload')
   async uploadDocument(@Req() request: AuthenticatedRequest) {
-    const upload = await request.file();
+    const upload = await request.file({
+      limits: { fileSize: maxDocumentSize },
+    });
     if (!upload) throw new BadRequestException('A document file is required');
     return this.clientService.addDocument(upload, request.user);
   }

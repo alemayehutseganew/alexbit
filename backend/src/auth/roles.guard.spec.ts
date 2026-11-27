@@ -31,10 +31,10 @@ describe('RolesGuard', () => {
   });
 
   it('allows only users with an explicitly permitted role', () => {
-    getAllAndOverride.mockReturnValue(['SHAREHOLDER']);
+    getAllAndOverride.mockReturnValue(['ADMIN']);
 
-    expect(guard.canActivate(executionContext('SHAREHOLDER'))).toBe(true);
-    expect(guard.canActivate(executionContext('CLIENT'))).toBe(false);
+    expect(guard.canActivate(executionContext('ADMIN'))).toBe(true);
+    expect(guard.canActivate(executionContext('SHAREHOLDER'))).toBe(false);
     expect(guard.canActivate(executionContext())).toBe(false);
   });
 });

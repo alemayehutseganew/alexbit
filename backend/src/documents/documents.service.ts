@@ -158,10 +158,11 @@ export class DocumentService {
         },
       });
 
+      const canViewAcrossTenants = role === 'ADMIN' || role === 'SUPER_ADMIN';
       if (
         !rfp ||
         rfp.status !== 'ACCEPTED' ||
-        (role === 'PROJECT_MANAGER' && rfp.tenantId !== tenantId)
+        (!canViewAcrossTenants && rfp.tenantId !== tenantId)
       ) {
         throw new NotFoundException('Accepted RFP not found');
       }

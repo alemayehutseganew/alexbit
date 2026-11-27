@@ -43,6 +43,7 @@ async function main() {
     async (transaction) => {
       // 🛑 PROPER WIPE ORDER (Children first, Parents last) 🛑
       console.log("Wiping old data...");
+      await transaction.contactMessage.deleteMany();
       await transaction.supportTicket.deleteMany();
       await transaction.clientInvoice.deleteMany();
       await transaction.clientDocument.deleteMany();

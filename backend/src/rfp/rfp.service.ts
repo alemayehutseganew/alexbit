@@ -33,7 +33,9 @@ export class RfpService {
   async findAll(role: AppRole, tenantId: string) {
     try {
       return await this.prisma.rfpRequest.findMany({
-        ...(role === 'PROJECT_MANAGER' ? { where: { tenantId } } : {}),
+        ...(role === 'ADMIN' || role === 'SUPER_ADMIN'
+          ? {}
+          : { where: { tenantId } }),
         include: { tenant: true },
         orderBy: { createdAt: 'desc' },
       });
