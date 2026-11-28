@@ -130,20 +130,16 @@ export function LoginActions({
     }
 
     const session = await getSession();
-    if (session?.user?.role === "SUPER_ADMIN") {
+
+    if (session?.user?.role === 'SUPER_ADMIN' || session?.user?.role === 'ADMIN') {
       router.push(`/${locale}/admin`);
-    } else if (session?.user?.role === "CLIENT") {
+    } else if (session?.user?.role === 'CLIENT') {
       router.push(`/${locale}/client`);
-    } else if (
-      ["SHAREHOLDER", "SHAREHOLDER_ADMIN", "SHAREHOLDER_MANAGER"].includes(
-        session?.user?.role as string,
-      )
-    ) {
+    } else if (session?.user?.role === 'SHAREHOLDER' || session?.user?.role === 'SHAREHOLDER_ADMIN') {
       router.push(`/${locale}/shareholder`);
     } else {
       router.push(`/${locale}`);
     }
-
     router.refresh();
     return true;
   }

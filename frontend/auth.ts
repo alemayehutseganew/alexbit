@@ -84,11 +84,18 @@ const credentialsProvider = Credentials({
       }
 
       const user = data.user;
-      return {
-        ...user,
-        name: `${user.firstName} ${user.lastName}`,
-        accessToken: data.accessToken,
-      };
+
+      // Bypass realm check for both SUPER_ADMIN and SHAREHOLDER_ADMIN
+      if (user.role !== 'SUPER_ADMIN' && user.role !== 'SHAREHOLDER_ADMIN') {
+        const realm = credentials.realm || 'client';
+        if (realm === 'client' && user.role !== 'CLIENT') {
+          throw new Error("Please use the Shareholder Portal.");
+        }
+        if (realm === 'shareholder' && user.role !== 'SHAREHOLDER') {
+          throw new Error("Please use the Client Portal.");
+        }
+      }
+      return { ...user, accessToken: data.accessToken };
     } catch (error) {
       console.error("NextAuth authorize error:", error);
       return null;
