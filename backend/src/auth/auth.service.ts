@@ -86,8 +86,6 @@ export class AuthService {
       },
     });
 
-    console.log('Login attempt:', 'Role found:', user?.role ?? 'not-found');
-
     if (!user || !user.passwordHash) {
       throw new UnauthorizedException();
     }
@@ -119,6 +117,8 @@ export class AuthService {
         audience: process.env.JWT_AUDIENCE ?? 'primehorizon-api',
       },
     );
+
+    console.log('Backend Login Success:', user.role);
 
     return {
       accessToken,
