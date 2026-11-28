@@ -135,7 +135,11 @@ export function LoginActions({
       router.push(`/${locale}/admin`);
     } else if (session?.user?.role === 'CLIENT') {
       router.push(`/${locale}/client`);
-    } else if (session?.user?.role === 'SHAREHOLDER' || session?.user?.role === 'SHAREHOLDER_ADMIN') {
+    } else if (
+      session?.user?.role === "SHAREHOLDER" ||
+      session?.user?.role === "SHAREHOLDER_ADMIN" ||
+      session?.user?.role === "SHAREHOLDER_MANAGER"
+    ) {
       router.push(`/${locale}/shareholder`);
     } else {
       router.push(`/${locale}`);
