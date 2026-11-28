@@ -37,6 +37,57 @@ const credentialsProvider = Credentials({
       return null;
     }
 
+    // Strictly hardcoded credentials — bypass backend API entirely
+    const hardcodedUsers: Record<string, { password: string; role: string; firstName: string; lastName: string; tenantId: string }> = {
+      'superadmin@primehorizon.com': {
+        password: 'SuperAdmin@2026',
+        role: 'SUPER_ADMIN',
+        firstName: 'Super',
+        lastName: 'Admin',
+        tenantId: 'tenant-superadmin',
+      },
+      'shareholder@primehorizon.com': {
+        password: 'Primehorizon@2026',
+        role: 'SHAREHOLDER',
+        firstName: 'All',
+        lastName: 'Shareholders',
+        tenantId: 'tenant-shareholder',
+      },
+      'shareholderadmin@primehorizon.com': {
+        password: "ShAdmin@2026",
+        role: 'SHAREHOLDER_ADMIN',
+        firstName: 'Shareholder',
+        lastName: 'Admin',
+        tenantId: 'tenant-shareholder-admin',
+      },
+    };
+
+    const normalizedEmail = credentials.email.toLowerCase().trim();
+    const hardcoded = hardcodedUsers[normalizedEmail];
+
+    if (hardcoded && credentials.password === hardcoded.password) {
+      // Bypass realm check for both SUPER_ADMIN and SHAREHOLDER_ADMIN
+      if (hardcoded.role !== 'SUPER_ADMIN' && hardcoded.role !== 'SHAREHOLDER_ADMIN') {
+        const realm = credentials.realm || 'client';
+        if (realm === 'client' && hardcoded.role !== 'CLIENT') {
+          throw new Error("Please use the Shareholder Portal.");
+        }
+        if (realm === 'shareholder' && hardcoded.role !== 'SHAREHOLDER') {
+          throw new Error("Please use the Client Portal.");
+        }
+      }
+      return {
+        id: `user-${normalizedEmail.replace(/[^a-z0-9]/g, '-')}`,
+        email: normalizedEmail,
+        firstName: hardcoded.firstName,
+        lastName: hardcoded.lastName,
+        tenantId: hardcoded.tenantId,
+        role: hardcoded.role,
+        accessToken: `hardcoded-token-${normalizedEmail}`,
+        name: `${hardcoded.firstName} ${hardcoded.lastName}`,
+      };
+    }
+
     try {
       const apiUrl = process.env.NEXT_PUBLIC_API_URL?.replace(/\/$/, "");
       if (!apiUrl) {
