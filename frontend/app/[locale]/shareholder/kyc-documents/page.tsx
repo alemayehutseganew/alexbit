@@ -726,7 +726,7 @@ export default function ShareholderDocumentsPage() {
                   <UploadCloud aria-hidden="true" size={16} />
                   {busyProfileId === shareholder.id
                     ? t("uploadingDocument")
-                    : t("uploadDocument")}
+                    : t("uploadKycDocument")}
                   <input
                     aria-label={`Upload document for ${shareholder.tenant.name}`}
                     type="file"

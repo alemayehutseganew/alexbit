@@ -131,17 +131,21 @@ model ShareholderDocument {
   shareholderProfileId String
   documentName         String
   documentUrl          String?
+  fileData             Bytes?
+  mimeType             String?
   uploadedAt           DateTime @default(now())
 
   shareholderProfile ShareholderProfile @relation(fields: [shareholderProfileId], references: [id])
 }
 
 model CompanyDocument {
-  id                String   @id @default(uuid())
-  documentName      String
-  documentUrl       String
+  id                 String   @id @default(uuid())
+  documentName       String
+  documentUrl        String
   uploadedByTenantId String
-  uploadedAt        DateTime @default(now())
+  fileData           Bytes?
+  mimeType           String?
+  uploadedAt         DateTime @default(now())
 }
 
 model ClientDocument {

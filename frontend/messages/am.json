@@ -374,7 +374,7 @@
     "shareholderDocumentsLoading": "የባለአክሲዮን ሰነዶች በመጫን ላይ...",
     "documentManagementPermission": "የባለአክሲዮን ሰነዶችን መጫንና መሰረዝ ይችላሉ።",
     "documentCount": "{count, plural, one {# ሰነድ} other {# ሰነዶች}}",
-    "uploadDocument": "ሰነድ ይጫኑ",
+    "uploadKycDocument": "ሰነድ ይጫኑ",
     "uploadingDocument": "በመጫን ላይ...",
     "openDocument": "ሰነድ ክፈት",
     "deleteDocumentConfirm": "{name} ሰነድ ይሰረዝ?",

@@ -375,7 +375,7 @@
     "shareholderDocumentsLoading": "Loading shareholder documents...",
     "documentManagementPermission": "You can upload and delete shareholder documents.",
     "documentCount": "{count, plural, one {# document} other {# documents}}",
-    "uploadDocument": "Upload document",
+    "uploadKycDocument": "Upload document",
     "uploadingDocument": "Uploading...",
     "openDocument": "Open document",
     "deleteDocumentConfirm": "Delete {name}?",

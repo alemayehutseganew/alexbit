@@ -12,10 +12,9 @@ import type { CreateShareholderDto } from './dto/create-shareholder.dto';
 import type { CreateShareholderDocumentDto } from './dto/create-shareholder-document.dto';
 import type { UpdateShareholderDto } from './dto/update-shareholder.dto';
 import type { MultipartFile } from '@fastify/multipart';
-import { mkdir, readFile, unlink, writeFile } from 'node:fs/promises';
+import { readFile, unlink } from 'node:fs/promises';
 import { existsSync } from 'node:fs';
 import { join, resolve } from 'node:path';
-import { randomUUID } from 'node:crypto';
 
 @Injectable()
 export class ShareholderService {
@@ -27,9 +26,8 @@ export class ShareholderService {
     'shareholder-documents',
   );
 
-  private async saveUpload(upload: MultipartFile): Promise<{
-    fileName: string;
-    documentUrl: string;
+  private async prepareUpload(upload: MultipartFile): Promise<{
+    fileData: Buffer;
     mimeType: string;
   }> {
     const allowedTypes = new Set([
@@ -41,20 +39,8 @@ export class ShareholderService {
       throw new BadRequestException('Only PDF, PNG, and JPG files are allowed');
     }
 
-    await mkdir(this.uploadDirectory, { recursive: true });
-    const extension =
-      upload.filename
-        .split('.')
-        .pop()
-        ?.toLowerCase()
-        .replace(/[^a-z0-9]/g, '') || 'bin';
-    const storedName = `${randomUUID()}.${extension}`;
-    const storedPath = join(this.uploadDirectory, storedName);
-    await writeFile(storedPath, await upload.toBuffer());
-
     return {
-      fileName: upload.filename,
-      documentUrl: `local://${storedName}`,
+      fileData: await upload.toBuffer(),
       mimeType: upload.mimetype,
     };
   }
@@ -91,7 +77,16 @@ export class ShareholderService {
         where: { tenant: { type: 'SHAREHOLDER' } },
         include: {
           tenant: { select: { id: true, name: true } },
-          documents: { orderBy: { uploadedAt: 'desc' } },
+          documents: {
+            orderBy: { uploadedAt: 'desc' },
+            select: {
+              id: true,
+              shareholderProfileId: true,
+              documentName: true,
+              documentUrl: true,
+              uploadedAt: true,
+            },
+          },
         },
         orderBy: { tenant: { name: 'asc' } },
       });
@@ -334,12 +329,21 @@ export class ShareholderService {
       );
     }
 
-    const saved = await this.saveUpload(upload);
+    const saved = await this.prepareUpload(upload);
     return this.prisma.shareholderDocument.create({
       data: {
         shareholderProfileId: profile.id,
         documentName: upload.filename,
-        documentUrl: saved.documentUrl,
+        documentUrl: 'database://stored',
+        fileData: new Uint8Array(saved.fileData),
+        mimeType: saved.mimeType,
+      },
+      select: {
+        id: true,
+        shareholderProfileId: true,
+        documentName: true,
+        documentUrl: true,
+        uploadedAt: true,
       },
     });
   }
@@ -372,6 +376,14 @@ export class ShareholderService {
     ) {
       throw new ForbiddenException('You cannot view this document');
     }
+    if (document.fileData) {
+      return {
+        buffer: Buffer.from(document.fileData),
+        mimeType:
+          document.mimeType ?? this.getMimeType(document.documentName),
+        fileName: document.documentName,
+      };
+    }
     if (!document.documentUrl?.startsWith('local://')) {
       throw new NotFoundException('This document is a hosted link');
     }
@@ -381,16 +393,9 @@ export class ShareholderService {
     if (!existsSync(filePath)) {
       throw new NotFoundException('Document file not found');
     }
-    const extension = storedName.split('.').pop()?.toLowerCase();
-    const mimeType =
-      extension === 'pdf'
-        ? 'application/pdf'
-        : extension === 'png'
-          ? 'image/png'
-          : 'image/jpeg';
     return {
       buffer: await readFile(filePath),
-      mimeType,
+      mimeType: this.getMimeType(storedName),
       fileName: document.documentName,
     };
   }
@@ -398,16 +403,32 @@ export class ShareholderService {
   async getCompanyDocuments() {
     return this.prisma.companyDocument.findMany({
       orderBy: { uploadedAt: 'desc' },
+      select: {
+        id: true,
+        documentName: true,
+        documentUrl: true,
+        uploadedByTenantId: true,
+        uploadedAt: true,
+      },
     });
   }
 
   async addCompanyDocument(upload: MultipartFile, user: AuthenticatedUser) {
-    const saved = await this.saveUpload(upload);
+    const saved = await this.prepareUpload(upload);
     return this.prisma.companyDocument.create({
       data: {
         documentName: upload.filename,
-        documentUrl: saved.documentUrl,
+        documentUrl: 'database://stored',
         uploadedByTenantId: user.tenantId,
+        fileData: new Uint8Array(saved.fileData),
+        mimeType: saved.mimeType,
+      },
+      select: {
+        id: true,
+        documentName: true,
+        documentUrl: true,
+        uploadedByTenantId: true,
+        uploadedAt: true,
       },
     });
   }
@@ -415,8 +436,26 @@ export class ShareholderService {
   async getCompanyDocumentFile(documentId: string) {
     const document = await this.prisma.companyDocument.findUnique({
       where: { id: documentId },
+      select: {
+        id: true,
+        documentName: true,
+        documentUrl: true,
+        fileData: true,
+        mimeType: true,
+      },
     });
-    if (!document?.documentUrl.startsWith('local://')) {
+    if (!document) {
+      throw new NotFoundException('Company document not found');
+    }
+    if (document.fileData) {
+      return {
+        buffer: Buffer.from(document.fileData),
+        mimeType:
+          document.mimeType ?? this.getMimeType(document.documentName),
+        fileName: document.documentName,
+      };
+    }
+    if (!document.documentUrl.startsWith('local://')) {
       throw new NotFoundException('Company document not found');
     }
     const storedName = document.documentUrl.slice('local://'.length);
@@ -424,18 +463,20 @@ export class ShareholderService {
     if (!existsSync(filePath)) {
       throw new NotFoundException('Company document file not found');
     }
-    const extension = storedName.split('.').pop()?.toLowerCase();
-    const mimeType =
-      extension === 'pdf'
-        ? 'application/pdf'
-        : extension === 'png'
-          ? 'image/png'
-          : 'image/jpeg';
     return {
       buffer: await readFile(filePath),
-      mimeType,
+      mimeType: this.getMimeType(storedName),
       fileName: document.documentName,
     };
+  }
+
+  private getMimeType(fileName: string): string {
+    const extension = fileName.split('.').pop()?.toLowerCase();
+    return extension === 'pdf'
+      ? 'application/pdf'
+      : extension === 'png'
+        ? 'image/png'
+        : 'image/jpeg';
   }
 
   async deleteDocument(

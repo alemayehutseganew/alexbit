@@ -4,6 +4,7 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
+import type { MultipartFile } from '@fastify/multipart';
 import { PrismaService } from '../prisma.service';
 import { ShareholderService } from './shareholder.service';
 
@@ -16,6 +17,8 @@ describe('ShareholderService', () => {
   let deleteProfile: jest.Mock;
   let createDocument: jest.Mock;
   let findDocument: jest.Mock;
+  let findCompanyDocuments: jest.Mock;
+  let createCompanyDocument: jest.Mock;
   let deleteDocument: jest.Mock;
   let deleteManyDocuments: jest.Mock;
   let transaction: jest.Mock;
@@ -28,6 +31,8 @@ describe('ShareholderService', () => {
     deleteProfile = jest.fn();
     createDocument = jest.fn();
     findDocument = jest.fn();
+    findCompanyDocuments = jest.fn();
+    createCompanyDocument = jest.fn();
     deleteDocument = jest.fn();
     deleteManyDocuments = jest.fn();
     transaction = jest.fn(
@@ -60,6 +65,10 @@ describe('ShareholderService', () => {
               findUnique: findDocument,
               delete: deleteDocument,
               deleteMany: deleteManyDocuments,
+            },
+            companyDocument: {
+              findMany: findCompanyDocuments,
+              create: createCompanyDocument,
             },
             $transaction: transaction,
           },
@@ -98,9 +107,134 @@ describe('ShareholderService', () => {
       where: { tenant: { type: 'SHAREHOLDER' } },
       include: {
         tenant: { select: { id: true, name: true } },
-        documents: { orderBy: { uploadedAt: 'desc' } },
+        documents: {
+          orderBy: { uploadedAt: 'desc' },
+          select: {
+            id: true,
+            shareholderProfileId: true,
+            documentName: true,
+            documentUrl: true,
+            uploadedAt: true,
+          },
+        },
       },
       orderBy: { tenant: { name: 'asc' } },
+    });
+  });
+
+  it('stores KYC uploads in the database without returning binary content', async () => {
+    const fileData = Buffer.from('sample PDF contents');
+    const upload = {
+      filename: 'identity.pdf',
+      mimetype: 'application/pdf',
+      toBuffer: jest.fn().mockResolvedValue(fileData),
+    } as MultipartFile;
+    findUnique.mockResolvedValue({
+      id: 'profile-1',
+      tenantId: 'tenant-1',
+      tenant: { type: 'SHAREHOLDER' },
+    });
+    createDocument.mockResolvedValue({ id: 'document-1' });
+
+    await service.addUploadedDocument('profile-1', upload, {
+      userId: 'admin-1',
+      tenantId: 'tenant-admin',
+      role: 'SHAREHOLDER_ADMIN',
+    });
+
+    expect(createDocument).toHaveBeenCalledWith({
+      data: {
+        shareholderProfileId: 'profile-1',
+        documentName: 'identity.pdf',
+        documentUrl: 'database://stored',
+        fileData: new Uint8Array(fileData),
+        mimeType: 'application/pdf',
+      },
+      select: {
+        id: true,
+        shareholderProfileId: true,
+        documentName: true,
+        documentUrl: true,
+        uploadedAt: true,
+      },
+    });
+  });
+
+  it('stores company uploads in the database without returning binary content', async () => {
+    const fileData = Buffer.from('company notice');
+    const upload = {
+      filename: 'notice.pdf',
+      mimetype: 'application/pdf',
+      toBuffer: jest.fn().mockResolvedValue(fileData),
+    } as MultipartFile;
+    createCompanyDocument.mockResolvedValue({ id: 'company-document-1' });
+
+    await service.addCompanyDocument(upload, {
+      userId: 'admin-1',
+      tenantId: 'tenant-admin',
+      role: 'SHAREHOLDER_ADMIN',
+    });
+
+    expect(createCompanyDocument).toHaveBeenCalledWith({
+      data: {
+        documentName: 'notice.pdf',
+        documentUrl: 'database://stored',
+        uploadedByTenantId: 'tenant-admin',
+        fileData: new Uint8Array(fileData),
+        mimeType: 'application/pdf',
+      },
+      select: {
+        id: true,
+        documentName: true,
+        documentUrl: true,
+        uploadedByTenantId: true,
+        uploadedAt: true,
+      },
+    });
+  });
+
+  it('serves database-stored KYC files with the correct MIME type', async () => {
+    const fileData = Buffer.from('sample PDF contents');
+    findDocument.mockResolvedValue({
+      id: 'document-1',
+      shareholderProfileId: 'profile-1',
+      documentName: 'identity.pdf',
+      documentUrl: 'database://stored',
+      fileData,
+      mimeType: 'application/pdf',
+      shareholderProfile: {
+        tenantId: 'tenant-1',
+        tenant: { type: 'SHAREHOLDER' },
+      },
+    });
+
+    await expect(
+      service.getDocumentFile('profile-1', 'document-1', {
+        userId: 'shareholder-1',
+        tenantId: 'tenant-1',
+        role: 'SHAREHOLDER',
+      }),
+    ).resolves.toEqual({
+      buffer: fileData,
+      mimeType: 'application/pdf',
+      fileName: 'identity.pdf',
+    });
+  });
+
+  it('does not select binary file data when listing company documents', async () => {
+    findCompanyDocuments.mockResolvedValue([]);
+
+    await service.getCompanyDocuments();
+
+    expect(findCompanyDocuments).toHaveBeenCalledWith({
+      orderBy: { uploadedAt: 'desc' },
+      select: {
+        id: true,
+        documentName: true,
+        documentUrl: true,
+        uploadedByTenantId: true,
+        uploadedAt: true,
+      },
     });
   });
 

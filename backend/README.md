@@ -79,6 +79,13 @@ Build command: npm run build
 Start command: npm start
 ```
 
+`npm start` applies pending Prisma migrations before starting the API. Keep
+`DATABASE_URL` set to the direct PostgreSQL connection URL so migrations can
+run; `DATABASE_URL_POOLED` remains optional for runtime queries.
+New shareholder KYC and company document uploads are stored in PostgreSQL so
+they remain available across app redeployments. Existing local-file records
+continue to use the legacy download path while those files remain on disk.
+
 The package `postinstall` script runs `prisma generate`. AletCloud supplies
 `PORT`; the API binds to that port on `0.0.0.0`. Do not replace it with a
 fixed port or a localhost-only binding. AletCloud checks for a TCP listener,
