@@ -221,6 +221,59 @@ describe('ShareholderService', () => {
     });
   });
 
+  it('lets the shared read-only shareholder view documents from other profiles', async () => {
+    const fileData = Buffer.from('sample PDF contents');
+    findDocument.mockResolvedValue({
+      id: 'document-1',
+      shareholderProfileId: 'profile-1',
+      documentName: 'identity.pdf',
+      documentUrl: 'database://stored',
+      fileData,
+      mimeType: 'application/pdf',
+      shareholderProfile: {
+        tenantId: 'individual-shareholder',
+        tenant: { type: 'SHAREHOLDER' },
+      },
+    });
+
+    await expect(
+      service.getDocumentFile('profile-1', 'document-1', {
+        userId: 'shared-shareholder',
+        tenantId: 'shared-shareholders',
+        role: 'SHAREHOLDER',
+        email: 'Shareholder@primehorizon.com',
+      }),
+    ).resolves.toEqual({
+      buffer: fileData,
+      mimeType: 'application/pdf',
+      fileName: 'identity.pdf',
+    });
+  });
+
+  it('keeps individual shareholders from viewing documents for other tenants', async () => {
+    findDocument.mockResolvedValue({
+      id: 'document-1',
+      shareholderProfileId: 'profile-1',
+      documentName: 'identity.pdf',
+      documentUrl: 'database://stored',
+      fileData: Buffer.from('sample PDF contents'),
+      mimeType: 'application/pdf',
+      shareholderProfile: {
+        tenantId: 'individual-shareholder',
+        tenant: { type: 'SHAREHOLDER' },
+      },
+    });
+
+    await expect(
+      service.getDocumentFile('profile-1', 'document-1', {
+        userId: 'other-shareholder',
+        tenantId: 'other-shareholder-tenant',
+        role: 'SHAREHOLDER',
+        email: 'other@primehorizon.com',
+      }),
+    ).rejects.toThrow(ForbiddenException);
+  });
+
   it('does not select binary file data when listing company documents', async () => {
     findCompanyDocuments.mockResolvedValue([]);
 
