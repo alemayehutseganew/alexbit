@@ -90,23 +90,23 @@ Set these environment variables in the AletCloud app settings:
   `KEYCLOAK_API_AUDIENCE`: only when using the corresponding Keycloak flows.
 - `OPENAI_API_KEY` and `CHAPA_SECRET_KEY`: only when enabling those integrations.
 
-To provision the superadmin, shared shareholder, and shareholder admin accounts
-on the deployed database, temporarily add `BOOTSTRAP_SUPERADMIN_PASSWORD`,
-`BOOTSTRAP_SHAREHOLDER_PASSWORD`, and
-`BOOTSTRAP_SHAREHOLDER_ADMIN_PASSWORD` as private app environment secrets. Use
-strong, unique passwords of at least 12 characters, then run either command
-from the backend app root with the intended database connection configured:
+To provision accounts on the deployed database, temporarily add the desired
+`BOOTSTRAP_*_PASSWORD` variables as private app environment secrets. Set only
+the accounts you want to create or update; each password must be at least 12
+characters. For example, to provision only the shareholder admin, set
+`BOOTSTRAP_SHAREHOLDER_ADMIN_PASSWORD`, then run either command from the backend
+app root with the intended database connection configured:
 
 ```bash
 npx prisma db seed
 # Or: npm run provision:accounts
 ```
 
-The command only creates or updates these three accounts; it does not wipe or
-modify other records. It hashes passwords before storing them. Running it again
-will reset their passwords to the configured values, so remove the bootstrap
-secrets from the app settings after it succeeds. Do not commit the passwords to
-the repository. The command should be run against the intended database, not
+The command only creates or updates accounts whose password variables are set;
+it does not wipe or modify other records. It hashes passwords before storing
+them. Running it again resets selected accounts' passwords to the configured
+values, so remove bootstrap secrets from app settings after it succeeds. Do not
+commit passwords to the repository. Run it against the intended database, not
 just during the build, so it only changes the intended environment.
 
 `npx prisma db seed` is intentionally configured for this non-destructive
