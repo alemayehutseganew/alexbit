@@ -52,7 +52,11 @@ function portalForRole(role: string | undefined): Portal | null {
   if (role === "CLIENT") {
     return "client";
   }
-  if (role === "SHAREHOLDER") {
+  if (
+    role === "SHAREHOLDER" ||
+    role === "SHAREHOLDER_ADMIN" ||
+    role === "SHAREHOLDER_MANAGER"
+  ) {
     return "shareholder";
   }
   return null;

@@ -21,9 +21,7 @@ function isRecord(value: unknown): value is Record<string, unknown> {
   return typeof value === "object" && value !== null;
 }
 
-function isShareholderDocument(
-  value: unknown,
-): value is ShareholderDocument {
+function isShareholderDocument(value: unknown): value is ShareholderDocument {
   return (
     isRecord(value) &&
     typeof value.id === "string" &&
@@ -70,12 +68,14 @@ export default function ShareholderDocumentsPage() {
   const canViewDocuments = [
     "SHAREHOLDER",
     "SHAREHOLDER_ADMIN",
+    "SHAREHOLDER_MANAGER",
     "ADMIN",
     "SUPER_ADMIN",
     "PROJECT_MANAGER",
   ].includes(role ?? "");
   const canManageDocuments =
     role === "SHAREHOLDER_ADMIN" ||
+    role === "SHAREHOLDER_MANAGER" ||
     role === "SUPER_ADMIN" ||
     role === "ADMIN";
 
@@ -118,7 +118,9 @@ export default function ShareholderDocumentsPage() {
       } catch (error) {
         if (!signal.aborted) {
           setLoadError(
-            error instanceof Error ? error.message : "Unable to load documents.",
+            error instanceof Error
+              ? error.message
+              : "Unable to load documents.",
           );
         }
       } finally {
@@ -181,7 +183,10 @@ export default function ShareholderDocumentsPage() {
     }
   }
 
-  async function deleteDocument(profileId: string, document: ShareholderDocument) {
+  async function deleteDocument(
+    profileId: string,
+    document: ShareholderDocument,
+  ) {
     if (!canManageDocuments || !accessToken) {
       return;
     }
@@ -235,7 +240,10 @@ export default function ShareholderDocumentsPage() {
 
   if (!canViewDocuments) {
     return (
-      <p role="alert" className="rounded-xl border border-red-200 bg-red-50 p-4 text-sm text-red-800">
+      <p
+        role="alert"
+        className="rounded-xl border border-red-200 bg-red-50 p-4 text-sm text-red-800"
+      >
         You do not have permission to view shareholder documents.
       </p>
     );
@@ -261,17 +269,26 @@ export default function ShareholderDocumentsPage() {
         </p>
       )}
       {loadError && (
-        <p role="alert" className="rounded-xl border border-red-200 bg-red-50 p-4 text-sm text-red-800">
+        <p
+          role="alert"
+          className="rounded-xl border border-red-200 bg-red-50 p-4 text-sm text-red-800"
+        >
           {loadError}
         </p>
       )}
       {mutationError && (
-        <p role="alert" className="rounded-xl border border-red-200 bg-red-50 p-4 text-sm text-red-800">
+        <p
+          role="alert"
+          className="rounded-xl border border-red-200 bg-red-50 p-4 text-sm text-red-800"
+        >
           {mutationError}
         </p>
       )}
       {mutationMessage && (
-        <p role="status" className="rounded-xl border border-emerald-200 bg-emerald-50 p-4 text-sm text-emerald-800">
+        <p
+          role="status"
+          className="rounded-xl border border-emerald-200 bg-emerald-50 p-4 text-sm text-emerald-800"
+        >
           {mutationMessage}
         </p>
       )}
@@ -334,9 +351,7 @@ export default function ShareholderDocumentsPage() {
                       }
                       className="rounded-lg border border-red-200 px-3 py-2 text-sm font-medium text-red-700 transition hover:bg-red-50 disabled:opacity-50"
                     >
-                      {busyDocumentId === document.id
-                        ? "Deleting…"
-                        : "Delete"}
+                      {busyDocumentId === document.id ? "Deleting…" : "Delete"}
                     </button>
                   )}
                 </li>

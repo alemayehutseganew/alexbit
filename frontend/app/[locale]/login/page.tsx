@@ -5,24 +5,10 @@ import { LoginActions } from './LoginActions';
 type LoginPageProps = {
   params: Promise<{ locale: string }>;
   searchParams?: Promise<{
-    callbackUrl?: string;
     realm?: string;
     role?: string;
   }>;
 };
-
-function isLocalPortalCallback(
-  callbackUrl: string | undefined,
-  locale: string,
-  portal: 'admin' | 'client' | 'shareholder',
-): callbackUrl is string {
-  return (
-    callbackUrl === `/${locale}/${portal}` ||
-    callbackUrl?.startsWith(`/${locale}/${portal}/`) === true ||
-    callbackUrl === `/${portal}` ||
-    callbackUrl?.startsWith(`/${portal}/`) === true
-  );
-}
 
 export default async function LoginPage({
   params,
@@ -31,7 +17,6 @@ export default async function LoginPage({
   const [{ locale }, query] = await Promise.all([
     params,
     searchParams ?? Promise.resolve<{
-      callbackUrl?: string;
       realm?: string;
       role?: string;
     }>({}),
@@ -43,27 +28,6 @@ export default async function LoginPage({
     getTranslations({ locale, namespace: 'Login' }),
   ]);
 
-  const clientCallbackUrl = isLocalPortalCallback(
-    query.callbackUrl,
-    locale,
-    'client',
-  )
-    ? query.callbackUrl
-    : `/${locale}/client`;
-  const shareholderCallbackUrl = isLocalPortalCallback(
-    query.callbackUrl,
-    locale,
-    'shareholder',
-  )
-    ? query.callbackUrl
-    : `/${locale}/shareholder`;
-  const adminCallbackUrl = isLocalPortalCallback(
-    query.callbackUrl,
-    locale,
-    'admin',
-  )
-    ? query.callbackUrl
-    : `/${locale}/admin`;
   const requestedRealm = query.role ?? query.realm;
   const preferredRealm =
     requestedRealm === 'client' || requestedRealm === 'shareholder'
@@ -109,9 +73,6 @@ export default async function LoginPage({
         <section className='flex w-full items-center justify-center py-4 lg:py-10'>
           <div className='flex w-full max-w-md items-center justify-center'>
             <LoginActions
-              clientCallbackUrl={clientCallbackUrl}
-              shareholderCallbackUrl={shareholderCallbackUrl}
-              adminCallbackUrl={adminCallbackUrl}
               preferredRealm={preferredRealm}
             />
           </div>

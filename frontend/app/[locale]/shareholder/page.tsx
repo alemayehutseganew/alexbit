@@ -1,16 +1,22 @@
 import { auth } from "@/auth";
+import ShareholderRecordsManager from "./ShareholderRecordsManager";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { redirect } from "next/navigation";
-import { FileText, Landmark, Users, Wallet } from "lucide-react";
+import { Landmark, Users, Wallet } from "lucide-react";
 
 type ShareholderRecord = {
   id: string;
   contactNo: string | null;
   tinNumber: string | null;
   numberOfShares: number;
+  shareValue: string | number;
   totalContribution: string | number;
   datePaid: string | null;
-  tenant: { name: string };
+  remarks: string | null;
+  shareClass: string;
+  isAccredited: boolean;
+  kycStatus: "PENDING" | "UNDER_REVIEW" | "APPROVED" | "REJECTED";
+  tenant: { id: string; name: string };
 };
 
 type ShareholderPageProps = {
@@ -30,11 +36,21 @@ function isShareholder(value: unknown): value is ShareholderRecord {
     (typeof value.tinNumber === "string" || value.tinNumber === null) &&
     typeof value.numberOfShares === "number" &&
     Number.isFinite(value.numberOfShares) &&
+    (typeof value.shareValue === "string" ||
+      typeof value.shareValue === "number") &&
+    Number.isFinite(Number(value.shareValue)) &&
     (typeof value.totalContribution === "string" ||
       typeof value.totalContribution === "number") &&
     Number.isFinite(Number(value.totalContribution)) &&
     (typeof value.datePaid === "string" || value.datePaid === null) &&
+    (typeof value.remarks === "string" || value.remarks === null) &&
+    typeof value.shareClass === "string" &&
+    typeof value.isAccredited === "boolean" &&
+    ["PENDING", "UNDER_REVIEW", "APPROVED", "REJECTED"].includes(
+      String(value.kycStatus),
+    ) &&
     isRecord(value.tenant) &&
+    typeof value.tenant.id === "string" &&
     typeof value.tenant.name === "string"
   );
 }
@@ -49,22 +65,6 @@ function formatCurrency(value: number, locale: string): string {
   ).format(value);
 
   return `ETB ${formattedAmount}`;
-}
-
-function formatDate(value: string | null, locale: string): string {
-  if (!value) {
-    return "—";
-  }
-
-  const date = new Date(value);
-  if (Number.isNaN(date.getTime())) {
-    return "—";
-  }
-
-  return new Intl.DateTimeFormat(locale === "am" ? "am-ET" : "en-ET", {
-    dateStyle: "medium",
-    timeZone: "UTC",
-  }).format(date);
 }
 
 export default async function ShareholderOverview({
@@ -123,20 +123,11 @@ export default async function ShareholderOverview({
     (sum, shareholder) => sum + Number(shareholder.totalContribution),
     0,
   );
-  const search = (
-    Array.isArray(searchParamsValue.search)
+  const search =
+    (Array.isArray(searchParamsValue.search)
       ? searchParamsValue.search[0]
       : searchParamsValue.search
-  )
-    ?.trim()
-    .toLocaleLowerCase(locale === "am" ? "am-ET" : "en-ET") ?? "";
-  const filteredShareholders = shareholders.filter(
-    (shareholder) =>
-      shareholder.tenant.name
-        .toLocaleLowerCase(locale === "am" ? "am-ET" : "en-ET")
-        .includes(search) ||
-      (shareholder.tinNumber?.toLocaleLowerCase().includes(search) ?? false),
-  );
+    )?.trim() ?? "";
   const name = session.user?.name?.trim() || t("shareholderFallback");
 
   const statCards = [
@@ -195,102 +186,13 @@ export default async function ShareholderOverview({
         ))}
       </section>
 
-      <section
-        id="cap-table"
-        className="scroll-mt-28 overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm"
-      >
-        <div className="flex flex-col justify-between gap-4 border-b border-slate-200 p-6 md:flex-row md:items-center">
-          <div>
-            <h2 className="flex items-center gap-2 text-lg font-semibold text-slate-900">
-              <FileText
-                aria-hidden="true"
-                className="text-brand-600"
-                size={20}
-              />
-              {t("capTable")}
-            </h2>
-            <p className="mt-1 text-sm text-slate-500">
-              Read-only ownership, contribution, and KYC details for all
-              shareholders.
-            </p>
-          </div>
-
-          <form method="get" role="search" className="w-full md:w-72">
-            <label htmlFor="shareholder-search" className="sr-only">
-              Search by shareholder name or TIN
-            </label>
-            <input
-              id="shareholder-search"
-              name="search"
-              type="search"
-              placeholder="Search by name or TIN..."
-              defaultValue={
-                Array.isArray(searchParamsValue.search)
-                  ? searchParamsValue.search[0]
-                  : searchParamsValue.search
-              }
-              className="w-full rounded-lg border border-slate-300 bg-white px-4 py-2 text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-brand-600"
-            />
-          </form>
-        </div>
-
-        <div className="overflow-x-auto">
-          <table className="w-full min-w-[760px] border-collapse text-left">
-            <thead>
-              <tr className="border-b border-slate-200 bg-slate-50 text-sm text-slate-600">
-                <th scope="col" className="p-4 font-medium">Name</th>
-                <th scope="col" className="p-4 font-medium">Contact</th>
-                <th scope="col" className="p-4 font-medium">TIN</th>
-                <th scope="col" className="p-4 font-medium">Shares</th>
-                <th scope="col" className="p-4 font-medium">Contribution</th>
-                <th scope="col" className="p-4 font-medium">Date Paid</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-slate-100">
-              {filteredShareholders.map((shareholder) => (
-                <tr
-                  key={shareholder.id}
-                  className="transition-colors hover:bg-slate-50"
-                >
-                  <td className="p-4 font-medium text-slate-900">
-                    {shareholder.tenant.name}
-                  </td>
-                  <td className="p-4 text-slate-600">
-                    {shareholder.contactNo || "—"}
-                  </td>
-                  <td className="p-4 text-slate-600">
-                    {shareholder.tinNumber || "—"}
-                  </td>
-                  <td className="p-4 font-semibold text-slate-900">
-                    {shareholder.numberOfShares.toLocaleString(
-                      locale === "am" ? "am-ET" : "en-ET",
-                    )}
-                  </td>
-                  <td className="p-4 font-medium text-brand-600">
-                    {formatCurrency(
-                      Number(shareholder.totalContribution),
-                      locale,
-                    )}
-                  </td>
-                  <td className="p-4 text-slate-600">
-                    {formatDate(shareholder.datePaid, locale)}
-                  </td>
-                </tr>
-              ))}
-              {filteredShareholders.length === 0 && (
-                <tr>
-                  <td
-                    colSpan={6}
-                    className="p-8 text-center text-sm text-slate-500"
-                  >
-                    {t("noShareholders")}
-                  </td>
-                </tr>
-              )}
-            </tbody>
-          </table>
-        </div>
-      </section>
+      <ShareholderRecordsManager
+        initialShareholders={shareholders}
+        accessToken={session.accessToken}
+        role={session.user?.role ?? session.role ?? ""}
+        locale={locale}
+        initialSearch={search}
+      />
     </div>
   );
 }

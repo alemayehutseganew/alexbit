@@ -14,7 +14,7 @@ import type {
 import { AnimatePresence, motion } from "framer-motion";
 import { ArrowLeft, LoaderCircle } from "lucide-react";
 import { getSession, signIn } from "next-auth/react";
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
@@ -26,9 +26,6 @@ type View = "login" | "register" | "forgot";
 type Realm = "client" | "shareholder";
 
 type LoginActionsProps = {
-  clientCallbackUrl: string;
-  shareholderCallbackUrl: string;
-  adminCallbackUrl: string;
   preferredRealm: Realm | null;
 };
 
@@ -67,12 +64,10 @@ async function getBackendError(response: Response): Promise<string> {
 }
 
 export function LoginActions({
-  clientCallbackUrl,
-  shareholderCallbackUrl,
-  adminCallbackUrl,
   preferredRealm,
 }: LoginActionsProps) {
   const t = useTranslations("Login");
+  const locale = useLocale();
   const router = useRouter();
   const searchParams = useSearchParams();
   const [view, setView] = useState<View>("login");
@@ -135,23 +130,20 @@ export function LoginActions({
     }
 
     const session = await getSession();
-    const role = session?.user?.role ?? session?.role;
-    const isPrivilegedRole =
-      role === "ADMIN" || role === "SUPER_ADMIN" || role === "PROJECT_MANAGER";
-    const destination = isPrivilegedRole
-      ? adminCallbackUrl
-      : role === "CLIENT" || role === "CLIENT_ADMIN"
-        ? clientCallbackUrl
-        : role === "SHAREHOLDER" || role === "SHAREHOLDER_ADMIN"
-          ? shareholderCallbackUrl
-          : null;
-
-    if (!destination) {
-      setFormError(t("loginError"));
-      return false;
+    if (session?.user?.role === "SUPER_ADMIN") {
+      router.push(`/${locale}/admin`);
+    } else if (session?.user?.role === "CLIENT") {
+      router.push(`/${locale}/client`);
+    } else if (
+      ["SHAREHOLDER", "SHAREHOLDER_ADMIN", "SHAREHOLDER_MANAGER"].includes(
+        session?.user?.role as string,
+      )
+    ) {
+      router.push(`/${locale}/shareholder`);
+    } else {
+      router.push(`/${locale}`);
     }
 
-    router.push(destination);
     router.refresh();
     return true;
   }
@@ -237,14 +229,11 @@ export function LoginActions({
     }
 
     try {
-      const response = await fetch(
-        `${apiUrl}/api/auth/forgot-password`,
-        {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(data),
-        },
-      );
+      const response = await fetch(`${apiUrl}/api/auth/forgot-password`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(data),
+      });
 
       if (!response.ok) {
         setFormError(t("resetError"));
@@ -300,379 +289,373 @@ export function LoginActions({
             {title}
           </h2>
 
-            <>
-              {view === "login" && (
-                <form
-                  className="mt-6 space-y-4"
-                  onSubmit={loginForm.handleSubmit(submitLogin)}
-                  noValidate
+          <>
+            {view === "login" && (
+              <form
+                className="mt-6 space-y-4"
+                onSubmit={loginForm.handleSubmit(submitLogin)}
+                noValidate
+              >
+                <div>
+                  <Label htmlFor="login-email" className="mb-2 block">
+                    {t("emailLabel")}
+                  </Label>
+                  <Input
+                    id="login-email"
+                    type="email"
+                    autoComplete="username"
+                    aria-invalid={Boolean(loginForm.formState.errors.email)}
+                    aria-describedby={
+                      loginForm.formState.errors.email
+                        ? "login-email-error"
+                        : undefined
+                    }
+                    className={fieldClassName(
+                      Boolean(loginForm.formState.errors.email),
+                    )}
+                    {...loginForm.register("email")}
+                  />
+                  <div id="login-email-error">
+                    <FieldError>
+                      {loginForm.formState.errors.email?.message}
+                    </FieldError>
+                  </div>
+                </div>
+                <div>
+                  <Label htmlFor="login-password" className="mb-2 block">
+                    {t("passwordLabel")}
+                  </Label>
+                  <Input
+                    id="login-password"
+                    type="password"
+                    autoComplete="current-password"
+                    aria-invalid={Boolean(loginForm.formState.errors.password)}
+                    aria-describedby={
+                      loginForm.formState.errors.password
+                        ? "login-password-error"
+                        : undefined
+                    }
+                    className={fieldClassName(
+                      Boolean(loginForm.formState.errors.password),
+                    )}
+                    {...loginForm.register("password")}
+                  />
+                  <div id="login-password-error">
+                    <FieldError>
+                      {loginForm.formState.errors.password?.message}
+                    </FieldError>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={() => changeView("forgot")}
+                    className="mt-2 text-sm font-semibold text-brand-700 hover:text-blue-900 dark:text-cyan-300 dark:hover:text-cyan-100"
+                  >
+                    {t("forgotLink")}
+                  </button>
+                </div>
+                {formError && (
+                  <p
+                    role="alert"
+                    className="text-sm text-red-700 dark:text-red-300"
+                  >
+                    {formError}
+                  </p>
+                )}
+                <motion.div
+                  className="w-full"
+                  whileHover={{ scale: 1.02 }}
+                  whileTap={{ scale: 0.98 }}
                 >
+                  <Button
+                    type="submit"
+                    disabled={loginForm.formState.isSubmitting}
+                    className="min-h-11 w-full gap-2 bg-brand-600 px-4 py-2 text-sm font-semibold text-white shadow-[0_8px_24px_rgba(11,74,139,0.18)] transition-colors hover:bg-brand-700 motion-safe:hover:scale-100 active:scale-100 dark:bg-cyan-400 dark:text-slate-950 dark:hover:bg-cyan-300"
+                  >
+                    {loginForm.formState.isSubmitting && (
+                      <LoaderCircle
+                        aria-hidden="true"
+                        className="animate-spin"
+                        size={17}
+                      />
+                    )}
+                    {t("signInButton")}
+                  </Button>
+                </motion.div>
+                {realm === "client" && (
+                  <p className="pt-1 text-center text-sm text-slate-600 dark:text-slate-300">
+                    {t("noAccount")}{" "}
+                    <button
+                      type="button"
+                      onClick={() => changeView("register")}
+                      className="font-semibold text-brand-700 hover:text-blue-900 dark:text-cyan-300 dark:hover:text-cyan-100"
+                    >
+                      {t("signUpLink")}
+                    </button>
+                  </p>
+                )}
+              </form>
+            )}
+
+            {realm === "client" && view === "register" && (
+              <form
+                className="mt-6 space-y-4"
+                onSubmit={registerForm.handleSubmit(submitRegister)}
+                noValidate
+              >
+                <div className="grid gap-4 sm:grid-cols-2">
                   <div>
-                    <Label htmlFor="login-email" className="mb-2 block">
-                      {t("emailLabel")}
+                    <Label htmlFor="register-first-name" className="mb-2 block">
+                      {t("firstNameLabel")}
                     </Label>
                     <Input
-                      id="login-email"
-                      type="email"
-                      autoComplete="username"
-                      aria-invalid={Boolean(loginForm.formState.errors.email)}
-                      aria-describedby={
-                        loginForm.formState.errors.email
-                          ? "login-email-error"
-                          : undefined
-                      }
-                      className={fieldClassName(
-                        Boolean(loginForm.formState.errors.email),
+                      id="register-first-name"
+                      autoComplete="given-name"
+                      aria-invalid={Boolean(
+                        registerForm.formState.errors.firstName,
                       )}
-                      {...loginForm.register("email")}
+                      className={fieldClassName(
+                        Boolean(registerForm.formState.errors.firstName),
+                      )}
+                      {...registerForm.register("firstName")}
                     />
-                    <div id="login-email-error">
-                      <FieldError>
-                        {loginForm.formState.errors.email?.message}
-                      </FieldError>
-                    </div>
+                    <FieldError>
+                      {registerForm.formState.errors.firstName?.message}
+                    </FieldError>
                   </div>
                   <div>
-                    <Label htmlFor="login-password" className="mb-2 block">
+                    <Label htmlFor="register-last-name" className="mb-2 block">
+                      {t("lastNameLabel")}
+                    </Label>
+                    <Input
+                      id="register-last-name"
+                      autoComplete="family-name"
+                      aria-invalid={Boolean(
+                        registerForm.formState.errors.lastName,
+                      )}
+                      className={fieldClassName(
+                        Boolean(registerForm.formState.errors.lastName),
+                      )}
+                      {...registerForm.register("lastName")}
+                    />
+                    <FieldError>
+                      {registerForm.formState.errors.lastName?.message}
+                    </FieldError>
+                  </div>
+                </div>
+                <div>
+                  <Label htmlFor="register-organization" className="mb-2 block">
+                    {t("organizationLabel")}
+                  </Label>
+                  <Input
+                    id="register-organization"
+                    autoComplete="organization"
+                    aria-invalid={Boolean(
+                      registerForm.formState.errors.organization,
+                    )}
+                    className={fieldClassName(
+                      Boolean(registerForm.formState.errors.organization),
+                    )}
+                    {...registerForm.register("organization")}
+                  />
+                  <FieldError>
+                    {registerForm.formState.errors.organization?.message}
+                  </FieldError>
+                </div>
+                <div>
+                  <Label htmlFor="register-email" className="mb-2 block">
+                    {t("emailLabel")}
+                  </Label>
+                  <Input
+                    id="register-email"
+                    type="email"
+                    autoComplete="email"
+                    aria-invalid={Boolean(registerForm.formState.errors.email)}
+                    className={fieldClassName(
+                      Boolean(registerForm.formState.errors.email),
+                    )}
+                    {...registerForm.register("email")}
+                  />
+                  <FieldError>
+                    {registerForm.formState.errors.email?.message}
+                  </FieldError>
+                </div>
+                <div className="grid gap-4 sm:grid-cols-2">
+                  <div>
+                    <Label htmlFor="register-password" className="mb-2 block">
                       {t("passwordLabel")}
                     </Label>
                     <Input
-                      id="login-password"
+                      id="register-password"
                       type="password"
-                      autoComplete="current-password"
+                      autoComplete="new-password"
                       aria-invalid={Boolean(
-                        loginForm.formState.errors.password,
+                        registerForm.formState.errors.password,
                       )}
-                      aria-describedby={
-                        loginForm.formState.errors.password
-                          ? "login-password-error"
-                          : undefined
-                      }
                       className={fieldClassName(
-                        Boolean(loginForm.formState.errors.password),
+                        Boolean(registerForm.formState.errors.password),
                       )}
-                      {...loginForm.register("password")}
+                      {...registerForm.register("password")}
                     />
-                    <div id="login-password-error">
-                      <FieldError>
-                        {loginForm.formState.errors.password?.message}
-                      </FieldError>
-                    </div>
-                    <button
-                      type="button"
-                      onClick={() => changeView("forgot")}
-                      className="mt-2 text-sm font-semibold text-brand-700 hover:text-blue-900 dark:text-cyan-300 dark:hover:text-cyan-100"
-                    >
-                      {t("forgotLink")}
-                    </button>
-                  </div>
-                  {formError && (
-                    <p role="alert" className="text-sm text-red-700 dark:text-red-300">
-                      {formError}
-                    </p>
-                  )}
-                  <motion.div
-                    className="w-full"
-                    whileHover={{ scale: 1.02 }}
-                    whileTap={{ scale: 0.98 }}
-                  >
-                    <Button
-                      type="submit"
-                      disabled={loginForm.formState.isSubmitting}
-                      className="min-h-11 w-full gap-2 bg-brand-600 px-4 py-2 text-sm font-semibold text-white shadow-[0_8px_24px_rgba(11,74,139,0.18)] transition-colors hover:bg-brand-700 motion-safe:hover:scale-100 active:scale-100 dark:bg-cyan-400 dark:text-slate-950 dark:hover:bg-cyan-300"
-                    >
-                      {loginForm.formState.isSubmitting && (
-                        <LoaderCircle
-                          aria-hidden="true"
-                          className="animate-spin"
-                          size={17}
-                        />
-                      )}
-                      {t("signInButton")}
-                    </Button>
-                  </motion.div>
-                  {realm === "client" && (
-                    <p className="pt-1 text-center text-sm text-slate-600 dark:text-slate-300">
-                      {t("noAccount")}{" "}
-                      <button
-                        type="button"
-                        onClick={() => changeView("register")}
-                        className="font-semibold text-brand-700 hover:text-blue-900 dark:text-cyan-300 dark:hover:text-cyan-100"
-                      >
-                        {t("signUpLink")}
-                      </button>
-                    </p>
-                  )}
-                </form>
-              )}
-
-              {realm === "client" && view === "register" && (
-                <form
-                  className="mt-6 space-y-4"
-                  onSubmit={registerForm.handleSubmit(submitRegister)}
-                  noValidate
-                >
-                  <div className="grid gap-4 sm:grid-cols-2">
-                    <div>
-                      <Label
-                        htmlFor="register-first-name"
-                        className="mb-2 block"
-                      >
-                        {t("firstNameLabel")}
-                      </Label>
-                      <Input
-                        id="register-first-name"
-                        autoComplete="given-name"
-                        aria-invalid={Boolean(
-                          registerForm.formState.errors.firstName,
-                        )}
-                        className={fieldClassName(
-                          Boolean(registerForm.formState.errors.firstName),
-                        )}
-                        {...registerForm.register("firstName")}
-                      />
-                      <FieldError>
-                        {registerForm.formState.errors.firstName?.message}
-                      </FieldError>
-                    </div>
-                    <div>
-                      <Label
-                        htmlFor="register-last-name"
-                        className="mb-2 block"
-                      >
-                        {t("lastNameLabel")}
-                      </Label>
-                      <Input
-                        id="register-last-name"
-                        autoComplete="family-name"
-                        aria-invalid={Boolean(
-                          registerForm.formState.errors.lastName,
-                        )}
-                        className={fieldClassName(
-                          Boolean(registerForm.formState.errors.lastName),
-                        )}
-                        {...registerForm.register("lastName")}
-                      />
-                      <FieldError>
-                        {registerForm.formState.errors.lastName?.message}
-                      </FieldError>
-                    </div>
+                    <FieldError>
+                      {registerForm.formState.errors.password?.message}
+                    </FieldError>
                   </div>
                   <div>
                     <Label
-                      htmlFor="register-organization"
+                      htmlFor="register-confirm-password"
                       className="mb-2 block"
                     >
-                      {t("organizationLabel")}
+                      {t("confirmPasswordLabel")}
                     </Label>
                     <Input
-                      id="register-organization"
-                      autoComplete="organization"
+                      id="register-confirm-password"
+                      type="password"
+                      autoComplete="new-password"
                       aria-invalid={Boolean(
-                        registerForm.formState.errors.organization,
+                        registerForm.formState.errors.confirmPassword,
                       )}
                       className={fieldClassName(
-                        Boolean(registerForm.formState.errors.organization),
+                        Boolean(registerForm.formState.errors.confirmPassword),
                       )}
-                      {...registerForm.register("organization")}
+                      {...registerForm.register("confirmPassword")}
                     />
                     <FieldError>
-                      {registerForm.formState.errors.organization?.message}
+                      {registerForm.formState.errors.confirmPassword?.message}
                     </FieldError>
                   </div>
-                  <div>
-                    <Label htmlFor="register-email" className="mb-2 block">
-                      {t("emailLabel")}
-                    </Label>
-                    <Input
-                      id="register-email"
-                      type="email"
-                      autoComplete="email"
+                </div>
+                <div>
+                  <Label className="flex items-start gap-2 text-sm leading-5">
+                    <input
+                      type="checkbox"
+                      className="mt-1 h-4 w-4 rounded border-slate-300 accent-brand-600 focus-visible:ring-2 focus-visible:ring-brand-600"
                       aria-invalid={Boolean(
-                        registerForm.formState.errors.email,
+                        registerForm.formState.errors.acceptTerms,
                       )}
-                      className={fieldClassName(
-                        Boolean(registerForm.formState.errors.email),
-                      )}
-                      {...registerForm.register("email")}
+                      {...registerForm.register("acceptTerms")}
                     />
-                    <FieldError>
-                      {registerForm.formState.errors.email?.message}
-                    </FieldError>
-                  </div>
-                  <div className="grid gap-4 sm:grid-cols-2">
-                    <div>
-                      <Label htmlFor="register-password" className="mb-2 block">
-                        {t("passwordLabel")}
-                      </Label>
-                      <Input
-                        id="register-password"
-                        type="password"
-                        autoComplete="new-password"
-                        aria-invalid={Boolean(
-                          registerForm.formState.errors.password,
-                        )}
-                        className={fieldClassName(
-                          Boolean(registerForm.formState.errors.password),
-                        )}
-                        {...registerForm.register("password")}
-                      />
-                      <FieldError>
-                        {registerForm.formState.errors.password?.message}
-                      </FieldError>
-                    </div>
-                    <div>
-                      <Label
-                        htmlFor="register-confirm-password"
-                        className="mb-2 block"
-                      >
-                        {t("confirmPasswordLabel")}
-                      </Label>
-                      <Input
-                        id="register-confirm-password"
-                        type="password"
-                        autoComplete="new-password"
-                        aria-invalid={Boolean(
-                          registerForm.formState.errors.confirmPassword,
-                        )}
-                        className={fieldClassName(
-                          Boolean(
-                            registerForm.formState.errors.confirmPassword,
-                          ),
-                        )}
-                        {...registerForm.register("confirmPassword")}
-                      />
-                      <FieldError>
-                        {registerForm.formState.errors.confirmPassword?.message}
-                      </FieldError>
-                    </div>
-                  </div>
-                  <div>
-                    <Label className="flex items-start gap-2 text-sm leading-5">
-                      <input
-                        type="checkbox"
-                        className="mt-1 h-4 w-4 rounded border-slate-300 accent-brand-600 focus-visible:ring-2 focus-visible:ring-brand-600"
-                        aria-invalid={Boolean(
-                          registerForm.formState.errors.acceptTerms,
-                        )}
-                        {...registerForm.register("acceptTerms")}
-                      />
-                      <span>{t("acceptTermsLabel")}</span>
-                    </Label>
-                    <FieldError>
-                      {registerForm.formState.errors.acceptTerms?.message}
-                    </FieldError>
-                  </div>
-                  {formError && (
-                    <p role="alert" className="text-sm text-red-700 dark:text-red-300">
-                      {formError}
-                    </p>
-                  )}
-                  <motion.div
-                    className="w-full"
-                    whileHover={{ scale: 1.02 }}
-                    whileTap={{ scale: 0.98 }}
+                    <span>{t("acceptTermsLabel")}</span>
+                  </Label>
+                  <FieldError>
+                    {registerForm.formState.errors.acceptTerms?.message}
+                  </FieldError>
+                </div>
+                {formError && (
+                  <p
+                    role="alert"
+                    className="text-sm text-red-700 dark:text-red-300"
                   >
-                    <Button
-                      type="submit"
-                      disabled={registerForm.formState.isSubmitting}
-                      className="min-h-11 w-full gap-2 bg-brand-600 px-4 py-2 text-sm font-semibold text-white shadow-[0_8px_24px_rgba(11,74,139,0.18)] transition-colors hover:bg-brand-700 motion-safe:hover:scale-100 active:scale-100 dark:bg-cyan-400 dark:text-slate-950 dark:hover:bg-cyan-300"
-                    >
-                      {registerForm.formState.isSubmitting && (
-                        <LoaderCircle
-                          aria-hidden="true"
-                          className="animate-spin"
-                          size={17}
-                        />
-                      )}
-                      {t("registerButton")}
-                    </Button>
-                  </motion.div>
-                  <p className="pt-1 text-center text-sm text-slate-600 dark:text-slate-300">
-                    {t("haveAccount")}{" "}
-                    <button
-                      type="button"
-                      onClick={() => changeView("login")}
-                      className="font-semibold text-brand-700 hover:text-blue-900 dark:text-cyan-300 dark:hover:text-cyan-100"
-                    >
-                      {t("signInLink")}
-                    </button>
+                    {formError}
                   </p>
-                </form>
-              )}
-
-              {view === "forgot" && (
-                <form
-                  className="mt-6 space-y-4"
-                  onSubmit={forgotForm.handleSubmit(submitForgotPassword)}
-                  noValidate
+                )}
+                <motion.div
+                  className="w-full"
+                  whileHover={{ scale: 1.02 }}
+                  whileTap={{ scale: 0.98 }}
                 >
-                  <p className="text-sm leading-6 text-slate-600 dark:text-slate-300">
-                    {t("forgotDescription")}
-                  </p>
-                  <div>
-                    <Label htmlFor="forgot-email" className="mb-2 block">
-                      {t("emailLabel")}
-                    </Label>
-                    <Input
-                      id="forgot-email"
-                      type="email"
-                      autoComplete="email"
-                      aria-invalid={Boolean(forgotForm.formState.errors.email)}
-                      className={fieldClassName(
-                        Boolean(forgotForm.formState.errors.email),
-                      )}
-                      {...forgotForm.register("email")}
-                    />
-                    <FieldError>
-                      {forgotForm.formState.errors.email?.message}
-                    </FieldError>
-                  </div>
-                  {resetSent && (
-                    <p
-                      role="status"
-                      aria-live="polite"
-                      className="fixed bottom-6 left-1/2 z-50 w-[calc(100%-2rem)] max-w-md -translate-x-1/2 rounded-lg border border-green-200 bg-green-50 px-4 py-3 text-sm text-green-800 shadow-lg dark:border-green-800 dark:bg-green-950 dark:text-green-200"
-                    >
-                      {t("resetSuccess")}
-                    </p>
-                  )}
-                  {formError && (
-                    <p role="alert" className="text-sm text-red-700 dark:text-red-300">
-                      {formError}
-                    </p>
-                  )}
-                  <motion.div
-                    className="w-full"
-                    whileHover={{ scale: 1.02 }}
-                    whileTap={{ scale: 0.98 }}
+                  <Button
+                    type="submit"
+                    disabled={registerForm.formState.isSubmitting}
+                    className="min-h-11 w-full gap-2 bg-brand-600 px-4 py-2 text-sm font-semibold text-white shadow-[0_8px_24px_rgba(11,74,139,0.18)] transition-colors hover:bg-brand-700 motion-safe:hover:scale-100 active:scale-100 dark:bg-cyan-400 dark:text-slate-950 dark:hover:bg-cyan-300"
                   >
-                    <Button
-                      type="submit"
-                      disabled={forgotForm.formState.isSubmitting}
-                      className="min-h-11 w-full gap-2 bg-brand-600 px-4 py-2 text-sm font-semibold text-white shadow-[0_8px_24px_rgba(11,74,139,0.18)] transition-colors hover:bg-brand-700 motion-safe:hover:scale-100 active:scale-100 dark:bg-cyan-400 dark:text-slate-950 dark:hover:bg-cyan-300"
-                    >
-                      {forgotForm.formState.isSubmitting && (
-                        <LoaderCircle
-                          aria-hidden="true"
-                          className="animate-spin"
-                          size={17}
-                        />
-                      )}
-                      {t("sendResetButton")}
-                    </Button>
-                  </motion.div>
+                    {registerForm.formState.isSubmitting && (
+                      <LoaderCircle
+                        aria-hidden="true"
+                        className="animate-spin"
+                        size={17}
+                      />
+                    )}
+                    {t("registerButton")}
+                  </Button>
+                </motion.div>
+                <p className="pt-1 text-center text-sm text-slate-600 dark:text-slate-300">
+                  {t("haveAccount")}{" "}
                   <button
                     type="button"
                     onClick={() => changeView("login")}
-                    className="flex min-h-10 items-center gap-2 text-sm font-semibold text-brand-700 hover:text-blue-900 dark:text-cyan-300 dark:hover:text-cyan-100"
+                    className="font-semibold text-brand-700 hover:text-blue-900 dark:text-cyan-300 dark:hover:text-cyan-100"
                   >
-                    <ArrowLeft aria-hidden="true" size={16} />
-                    {t("backToLogin")}
+                    {t("signInLink")}
                   </button>
-                </form>
-              )}
-            </>
+                </p>
+              </form>
+            )}
+
+            {view === "forgot" && (
+              <form
+                className="mt-6 space-y-4"
+                onSubmit={forgotForm.handleSubmit(submitForgotPassword)}
+                noValidate
+              >
+                <p className="text-sm leading-6 text-slate-600 dark:text-slate-300">
+                  {t("forgotDescription")}
+                </p>
+                <div>
+                  <Label htmlFor="forgot-email" className="mb-2 block">
+                    {t("emailLabel")}
+                  </Label>
+                  <Input
+                    id="forgot-email"
+                    type="email"
+                    autoComplete="email"
+                    aria-invalid={Boolean(forgotForm.formState.errors.email)}
+                    className={fieldClassName(
+                      Boolean(forgotForm.formState.errors.email),
+                    )}
+                    {...forgotForm.register("email")}
+                  />
+                  <FieldError>
+                    {forgotForm.formState.errors.email?.message}
+                  </FieldError>
+                </div>
+                {resetSent && (
+                  <p
+                    role="status"
+                    aria-live="polite"
+                    className="fixed bottom-6 left-1/2 z-50 w-[calc(100%-2rem)] max-w-md -translate-x-1/2 rounded-lg border border-green-200 bg-green-50 px-4 py-3 text-sm text-green-800 shadow-lg dark:border-green-800 dark:bg-green-950 dark:text-green-200"
+                  >
+                    {t("resetSuccess")}
+                  </p>
+                )}
+                {formError && (
+                  <p
+                    role="alert"
+                    className="text-sm text-red-700 dark:text-red-300"
+                  >
+                    {formError}
+                  </p>
+                )}
+                <motion.div
+                  className="w-full"
+                  whileHover={{ scale: 1.02 }}
+                  whileTap={{ scale: 0.98 }}
+                >
+                  <Button
+                    type="submit"
+                    disabled={forgotForm.formState.isSubmitting}
+                    className="min-h-11 w-full gap-2 bg-brand-600 px-4 py-2 text-sm font-semibold text-white shadow-[0_8px_24px_rgba(11,74,139,0.18)] transition-colors hover:bg-brand-700 motion-safe:hover:scale-100 active:scale-100 dark:bg-cyan-400 dark:text-slate-950 dark:hover:bg-cyan-300"
+                  >
+                    {forgotForm.formState.isSubmitting && (
+                      <LoaderCircle
+                        aria-hidden="true"
+                        className="animate-spin"
+                        size={17}
+                      />
+                    )}
+                    {t("sendResetButton")}
+                  </Button>
+                </motion.div>
+                <button
+                  type="button"
+                  onClick={() => changeView("login")}
+                  className="flex min-h-10 items-center gap-2 text-sm font-semibold text-brand-700 hover:text-blue-900 dark:text-cyan-300 dark:hover:text-cyan-100"
+                >
+                  <ArrowLeft aria-hidden="true" size={16} />
+                  {t("backToLogin")}
+                </button>
+              </form>
+            )}
+          </>
         </motion.div>
       </AnimatePresence>
     </div>
