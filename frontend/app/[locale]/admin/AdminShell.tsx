@@ -8,12 +8,14 @@ import {
   ChevronRight,
   FileText,
   LayoutDashboard,
+  LogOut,
   Mail,
   Menu,
   Settings,
 } from "lucide-react";
 import { AnimatePresence, motion } from "framer-motion";
 import Link from "next/link";
+import { signOut } from "next-auth/react";
 import { usePathname } from "next/navigation";
 import { useState, type ReactNode } from "react";
 import { BrandLogo } from "@/components/brand/BrandLogo";
@@ -124,6 +126,16 @@ export function AdminShell({ children, locale }: AdminShellProps) {
               Internal workspace
             </p>
           )}
+          <Button
+            type="button"
+            variant="ghost"
+            aria-label="Sign out"
+            className="mb-2 w-full justify-start gap-3 text-slate-600 hover:text-slate-900"
+            onClick={() => void signOut({ redirectTo: `/${locale}/login` })}
+          >
+            <LogOut aria-hidden="true" className="h-5 w-5 shrink-0" />
+            {!isCollapsed && <span>Sign Out</span>}
+          </Button>
           <Button
             type="button"
             variant="ghost"

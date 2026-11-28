@@ -94,9 +94,11 @@ const credentialsProvider = Credentials({
       }
 
       const user = data.user;
+      console.info("Backend login response received", { role: user.role });
       if (
         user.role !== 'ADMIN' &&
         user.role !== 'SUPER_ADMIN' &&
+        user.role !== 'SHAREHOLDER_ADMIN' &&
         user.role !== 'PROJECT_MANAGER'
       ) {
         const realm =
@@ -108,9 +110,17 @@ const credentialsProvider = Credentials({
           user.role !== 'CLIENT' &&
           user.role !== 'CLIENT_ADMIN'
         ) {
+          console.warn("Login blocked by portal realm", {
+            role: user.role,
+            realm,
+          });
           throw new CustomAuthError('Please use the Shareholder Portal.');
         }
         if (realm === 'shareholder' && user.role !== 'SHAREHOLDER') {
+          console.warn("Login blocked by portal realm", {
+            role: user.role,
+            realm,
+          });
           throw new CustomAuthError('Please use the Client Portal.');
         }
       }
@@ -132,6 +142,7 @@ type CredentialRole =
   | 'CLIENT'
   | 'CLIENT_ADMIN'
   | 'SHAREHOLDER'
+  | 'SHAREHOLDER_ADMIN'
   | 'ADMIN'
   | 'SUPER_ADMIN'
   | 'PROJECT_MANAGER';
@@ -139,7 +150,7 @@ type CredentialRole =
 type PortalRole = 'CLIENT' | 'SHAREHOLDER' | 'ADMIN';
 
 function portalRole(role: CredentialRole): PortalRole {
-  if (role === 'SHAREHOLDER') {
+  if (role === 'SHAREHOLDER' || role === 'SHAREHOLDER_ADMIN') {
     return 'SHAREHOLDER';
   }
   if (role === 'ADMIN' || role === 'SUPER_ADMIN') {
@@ -181,6 +192,7 @@ function isCredentialResponse(value: unknown): value is {
       'CLIENT',
       'CLIENT_ADMIN',
       'SHAREHOLDER',
+      'SHAREHOLDER_ADMIN',
       'ADMIN',
       'SUPER_ADMIN',
       'PROJECT_MANAGER',

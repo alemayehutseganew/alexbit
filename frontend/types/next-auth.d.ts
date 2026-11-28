@@ -8,6 +8,7 @@ type AuthRole =
   | "CLIENT"
   | "CLIENT_ADMIN"
   | "SHAREHOLDER"
+  | "SHAREHOLDER_ADMIN"
   | "ADMIN"
   | "SUPER_ADMIN"
   | "PROJECT_MANAGER";

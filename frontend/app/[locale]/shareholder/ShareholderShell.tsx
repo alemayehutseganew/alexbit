@@ -1,15 +1,14 @@
 "use client";
 
 import Link from "next/link";
-import { signOut } from "next-auth/react";
+import { SessionProvider, signOut } from "next-auth/react";
 import { useTranslations } from "next-intl";
+import { usePathname } from "next/navigation";
 import {
-  ChartNoAxesCombined,
   FileCheck2,
   Landmark,
   LayoutDashboard,
   LogOut,
-  ScrollText,
   Menu,
   X,
 } from "lucide-react";
@@ -26,29 +25,26 @@ export function ShareholderShell({ children, locale }: ShareholderShellProps) {
   const t = useTranslations("ShareholderPortal");
   const [mobileNavOpen, setMobileNavOpen] = useState(false);
   const [activeHref, setActiveHref] = useState("#overview");
+  const pathname = usePathname();
+  const documentsHref = `/${locale}/shareholder/kyc-documents`;
   const items = [
     { href: "#overview", label: t("overview"), Icon: LayoutDashboard },
-    { href: "#my-holdings", label: t("holdings"), Icon: ChartNoAxesCombined },
     { href: "#cap-table", label: t("capTable"), Icon: Landmark },
-    { href: "#governance", label: t("governance"), Icon: ScrollText },
-    { href: "#kyc-documents", label: t("kycDocuments"), Icon: FileCheck2 },
   ];
 
   useEffect(() => {
     const syncActiveSection = () => {
-      setActiveHref(window.location.hash || "#overview");
+      setActiveHref(
+        pathname === documentsHref
+          ? documentsHref
+          : window.location.hash || "#overview",
+      );
     };
 
     syncActiveSection();
     window.addEventListener("hashchange", syncActiveSection);
 
-    const sections = [
-      "#overview",
-      "#my-holdings",
-      "#cap-table",
-      "#governance",
-      "#kyc-documents",
-    ]
+    const sections = ["#overview", "#my-holdings", "#cap-table"]
       .map((href) => document.querySelector(href))
       .filter((section): section is Element => section !== null);
     const observer = new IntersectionObserver(
@@ -68,7 +64,7 @@ export function ShareholderShell({ children, locale }: ShareholderShellProps) {
       window.removeEventListener("hashchange", syncActiveSection);
       observer.disconnect();
     };
-  }, []);
+  }, [documentsHref, pathname]);
 
   function navigateToSection(href: string) {
     setActiveHref(href);
@@ -76,6 +72,7 @@ export function ShareholderShell({ children, locale }: ShareholderShellProps) {
   }
 
   return (
+    <SessionProvider>
     <div className="portal-theme min-h-screen w-full bg-slate-50 text-slate-900">
       <aside className="fixed inset-y-0 left-0 z-20 hidden w-72 flex-col border-r border-slate-200 bg-white backdrop-blur-xl md:flex">
         <div className="border-b border-slate-200 px-7 py-7">
@@ -130,6 +127,17 @@ export function ShareholderShell({ children, locale }: ShareholderShellProps) {
               )}
             </a>
           ))}
+          <Link
+            href={documentsHref}
+            onClick={() => setMobileNavOpen(false)}
+            aria-current={pathname === documentsHref ? "page" : undefined}
+            className="group relative flex items-center gap-3 rounded-xl px-3 py-3 text-sm font-medium text-slate-600 transition-all hover:bg-slate-50 hover:text-slate-900"
+          >
+            <span className="grid size-8 place-items-center rounded-lg bg-slate-100 text-slate-500">
+              <FileCheck2 aria-hidden="true" size={17} />
+            </span>
+            {t("kycDocuments")}
+          </Link>
         </nav>
         <div className="border-t border-slate-200 px-7 py-5">
           <button
@@ -218,6 +226,14 @@ export function ShareholderShell({ children, locale }: ShareholderShellProps) {
                       {label}
                     </a>
                   ))}
+                  <Link
+                    href={documentsHref}
+                    onClick={() => setMobileNavOpen(false)}
+                    className="flex min-h-11 items-center gap-3 rounded-xl px-3 text-sm font-medium text-slate-600 transition hover:bg-slate-50 hover:text-slate-900"
+                  >
+                    <FileCheck2 aria-hidden="true" size={18} />
+                    {t("kycDocuments")}
+                  </Link>
                   <button
                     type="button"
                     onClick={() =>
@@ -236,5 +252,6 @@ export function ShareholderShell({ children, locale }: ShareholderShellProps) {
         <main className="mx-auto max-w-7xl px-5 py-8 sm:px-8">{children}</main>
       </div>
     </div>
+    </SessionProvider>
   );
 }

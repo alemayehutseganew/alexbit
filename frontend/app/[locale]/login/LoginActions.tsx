@@ -142,7 +142,7 @@ export function LoginActions({
       ? adminCallbackUrl
       : role === "CLIENT" || role === "CLIENT_ADMIN"
         ? clientCallbackUrl
-        : role === "SHAREHOLDER"
+        : role === "SHAREHOLDER" || role === "SHAREHOLDER_ADMIN"
           ? shareholderCallbackUrl
           : null;
 
