@@ -1,4 +1,3 @@
-import * as bcrypt from 'bcrypt';
 import { PrismaClient } from '@prisma/client';
 
 const prisma = new PrismaClient();
@@ -25,57 +24,77 @@ const shareholders = [
 ];
 
 async function main() {
-  console.log("Connecting to database...");
-  
-  // 1. Create 18 Shareholders
-  for (const s of shareholders) {
-    const tenant = await prisma.tenant.create({ data: { name: s.name, type: "SHAREHOLDER" } });
-    await prisma.shareholderProfile.create({
-      data: {
-        tenantId: tenant.id,
-        contactNo: s.contact || null,
-        tinNumber: s.tin || null,
-        numberOfShares: s.shares,
-        totalContribution: s.contribution,
-        datePaid: new Date(`${s.date}T00:00:00.000Z`),
-      },
-    });
-    console.log(`Inserted: ${s.name}`);
-  }
+  const result = await prisma.$transaction(async (transaction) => {
+    let created = 0;
+    let updated = 0;
 
-  // 2. Create Superadmin
-  const adminHash = await bcrypt.hash("SuperAdmin@2026", 10);
-  const adminTenant = await prisma.tenant.create({ data: { name: "PrimeHorizon Admin", type: "INTERNAL" } });
-  await prisma.user.create({
-    data: {
-      tenantId: adminTenant.id,
-      email: "superadmin@primehorizon.com",
-      firstName: "Super",
-      lastName: "Admin",
-      passwordHash: adminHash,
-      role: "SUPER_ADMIN",
-    },
+    for (const shareholder of shareholders) {
+      const tenants = await transaction.tenant.findMany({
+        where: { name: shareholder.name, type: "SHAREHOLDER" },
+        select: { id: true },
+        take: 2,
+      });
+
+      if (tenants.length > 1) {
+        throw new Error(
+          `Multiple shareholder tenants found for ${shareholder.name}; import aborted.`,
+        );
+      }
+
+      const profileData = {
+        contactNo: shareholder.contact || null,
+        tinNumber: shareholder.tin || null,
+        numberOfShares: shareholder.shares,
+        totalContribution: shareholder.contribution,
+        datePaid: new Date(`${shareholder.date}T00:00:00.000Z`),
+      };
+
+      if (tenants.length === 0) {
+        const tenant = await transaction.tenant.create({
+          data: { name: shareholder.name, type: "SHAREHOLDER" },
+        });
+        await transaction.shareholderProfile.create({
+          data: { tenantId: tenant.id, ...profileData },
+        });
+        created++;
+        continue;
+      }
+
+      const tenantId = tenants[0].id;
+      const existingProfile =
+        await transaction.shareholderProfile.findUnique({
+          where: { tenantId },
+          select: { id: true },
+        });
+
+      if (existingProfile) {
+        await transaction.shareholderProfile.update({
+          where: { tenantId },
+          data: profileData,
+        });
+        updated++;
+      } else {
+        await transaction.shareholderProfile.create({
+          data: { tenantId, ...profileData },
+        });
+        created++;
+      }
+    }
+
+    return { created, updated };
+  }, {
+    maxWait: 10_000,
+    timeout: 120_000,
   });
-  console.log("Inserted Superadmin");
 
-  // 3. Create Shareholder User
-  const shHash = await bcrypt.hash("Primehorizon@2026", 10);
-  const shTenant = await prisma.tenant.create({ data: { name: "PrimeHorizon Shareholders", type: "SHAREHOLDER" } });
-  await prisma.user.create({
-    data: {
-      tenantId: shTenant.id,
-      email: "shareholder@primehorizon.com",
-      firstName: "All",
-      lastName: "Shareholders",
-      passwordHash: shHash,
-      role: "SHAREHOLDER",
-    },
-  });
-  console.log("Inserted Shareholder User");
-
-  console.log("✅ All data inserted successfully!");
+  console.log(
+    `Shareholder import committed: ${result.created} created, ${result.updated} updated.`,
+  );
 }
 
 main()
-  .catch((e) => { console.error(e); process.exit(1); })
+  .catch((error: unknown) => {
+    console.error("Shareholder import failed; transaction rolled back.", error);
+    process.exitCode = 1;
+  })
   .finally(async () => { await prisma.$disconnect(); });
