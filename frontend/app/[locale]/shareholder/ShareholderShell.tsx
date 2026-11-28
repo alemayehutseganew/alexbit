@@ -27,9 +27,20 @@ export function ShareholderShell({ children, locale }: ShareholderShellProps) {
   const [activeHref, setActiveHref] = useState("#overview");
   const pathname = usePathname();
   const documentsHref = `/${locale}/shareholder/kyc-documents`;
+  const overviewHref = `/${locale}/shareholder`;
   const items = [
-    { href: "#overview", label: t("overview"), Icon: LayoutDashboard },
-    { href: "#cap-table", label: t("capTable"), Icon: Landmark },
+    {
+      href: `${overviewHref}#overview`,
+      section: "#overview",
+      label: t("overview"),
+      Icon: LayoutDashboard,
+    },
+    {
+      href: `${overviewHref}#cap-table`,
+      section: "#cap-table",
+      label: t("capTable"),
+      Icon: Landmark,
+    },
   ];
 
   useEffect(() => {
@@ -97,21 +108,21 @@ export function ShareholderShell({ children, locale }: ShareholderShellProps) {
           className="flex-1 space-y-1 px-4 py-6"
           aria-label={t("portalName")}
         >
-          {items.map(({ href, label, Icon }) => (
-            <a
-              key={href}
+          {items.map(({ href, section, label, Icon }) => (
+            <Link
+              key={section}
               href={href}
-              onClick={() => navigateToSection(href)}
-              aria-current={activeHref === href ? "page" : undefined}
+              onClick={() => navigateToSection(section)}
+              aria-current={activeHref === section ? "page" : undefined}
               className={`group relative flex items-center gap-3 rounded-xl px-3 py-3 text-sm font-medium transition-all ${
-                activeHref === href
+                activeHref === section
                   ? "border-r-4 border-brand-600 bg-brand-50 text-brand-700"
                   : "text-slate-600 hover:translate-x-0.5 hover:bg-slate-50 hover:text-slate-900"
               }`}
             >
               <span
                 className={`grid size-8 place-items-center rounded-lg transition ${
-                  activeHref === href
+                  activeHref === section
                     ? "bg-brand-100 text-brand-700"
                     : "bg-slate-100 text-slate-500 group-hover:text-slate-700"
                 }`}
@@ -125,7 +136,7 @@ export function ShareholderShell({ children, locale }: ShareholderShellProps) {
                   className="ml-auto size-1.5 rounded-full bg-brand-600 shadow-[0_0_12px_#93c5fd]"
                 />
               )}
-            </a>
+            </Link>
           ))}
           <Link
             href={documentsHref}
@@ -210,21 +221,23 @@ export function ShareholderShell({ children, locale }: ShareholderShellProps) {
                   transition={{ duration: 0.18 }}
                   className="absolute inset-x-3 top-[calc(100%-0.25rem)] z-40 rounded-2xl border border-slate-200 bg-white p-3 shadow-xl md:hidden"
                 >
-                  {items.map(({ href, label, Icon }) => (
-                    <a
-                      key={href}
+                  {items.map(({ href, section, label, Icon }) => (
+                    <Link
+                      key={section}
                       href={href}
-                      onClick={() => navigateToSection(href)}
-                      aria-current={activeHref === href ? "page" : undefined}
+                      onClick={() => navigateToSection(section)}
+                      aria-current={
+                        activeHref === section ? "page" : undefined
+                      }
                       className={`flex min-h-11 items-center gap-3 rounded-xl px-3 text-sm font-medium transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-300 ${
-                        activeHref === href
+                        activeHref === section
                           ? "bg-brand-50 text-brand-700"
                           : "text-slate-600 hover:bg-slate-50 hover:text-slate-900"
                       }`}
                     >
                       <Icon aria-hidden="true" size={18} />
                       {label}
-                    </a>
+                    </Link>
                   ))}
                   <Link
                     href={documentsHref}

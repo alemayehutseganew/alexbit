@@ -73,7 +73,7 @@ export default async function ContactPage({ params }: ContactPageProps) {
               </span>
             </a>
             <a
-              href="mailto:info@primehorizon.com"
+              href={`mailto:${t("email")}`}
               className="premium-card group flex min-h-16 items-center gap-4 p-4 hover:-translate-y-1 hover:border-brand-200"
             >
               <span className="flex size-10 items-center justify-center rounded-lg bg-blue-50 text-brand-600 transition group-hover:shadow-[0_0_18px_rgba(6,182,212,0.35)]">
@@ -84,7 +84,7 @@ export default async function ContactPage({ params }: ContactPageProps) {
                   {t("email")}
                 </span>
                 <span className="mt-1 block text-sm font-semibold text-slate-900 dark:text-white">
-                  info@primehorizon.com
+                  {t("email")}
                 </span>
               </span>
             </a>
