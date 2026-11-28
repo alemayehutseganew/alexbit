@@ -4,11 +4,24 @@ import { PrismaClient } from '@prisma/client';
 const prisma = new PrismaClient();
 const SALT_ROUNDS = 12;
 
+function requireBootstrapPassword(name: string): string {
+  const password = process.env[name];
+  if (!password || password.length < 12) {
+    throw new Error(`${name} must be set to at least 12 characters.`);
+  }
+  return password;
+}
+
 async function main() {
-  // Use environment variables if available, otherwise fallback to the specified credentials
-  const superAdminPassword = process.env.BOOTSTRAP_SUPERADMIN_PASSWORD || 'SuperAdmin@2026';
-  const shareholderPassword = process.env.BOOTSTRAP_SHAREHOLDER_PASSWORD || 'Primehorizon@2026';
-  const shareholderAdminPassword = process.env.BOOTSTRAP_SHAREHOLDER_ADMIN_PASSWORD || 'ShAdmin@2026';
+  const superAdminPassword = requireBootstrapPassword(
+    'BOOTSTRAP_SUPERADMIN_PASSWORD',
+  );
+  const shareholderPassword = requireBootstrapPassword(
+    'BOOTSTRAP_SHAREHOLDER_PASSWORD',
+  );
+  const shareholderAdminPassword = requireBootstrapPassword(
+    'BOOTSTRAP_SHAREHOLDER_ADMIN_PASSWORD',
+  );
 
   const [
     superAdminPasswordHash,
