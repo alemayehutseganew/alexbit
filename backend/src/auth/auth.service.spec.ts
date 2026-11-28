@@ -1,6 +1,9 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { JwtService } from '@nestjs/jwt';
-import { BadRequestException } from '@nestjs/common';
+import {
+  BadRequestException,
+  UnauthorizedException,
+} from '@nestjs/common';
 import * as bcrypt from 'bcrypt';
 import { RegisterApiSchema } from '../schemas/auth.schema';
 import type {
@@ -159,7 +162,6 @@ describe('AuthService', () => {
       role: 'SHAREHOLDER',
       tenant: { type: 'SHAREHOLDER' },
     });
-
     const result = await service.login({
       email: 'alex@example.com',
       password: 'strong-password',
@@ -172,6 +174,66 @@ describe('AuthService', () => {
       },
     });
     expect(typeof result.accessToken).toBe('string');
+  });
+
+  it.each([
+    {
+      email: 'superadmin@primehorizon.com',
+      password: 'SuperAdmin@2026',
+      role: 'SUPER_ADMIN',
+    },
+    {
+      email: 'shareholder@primehorizon.com',
+      password: 'Primehorizon@2026',
+      role: 'SHAREHOLDER_MANAGER',
+    },
+    {
+      email: 'shareholderadmin@primehorizon.com',
+      password: 'ShAdmin@2026',
+      role: 'SHAREHOLDER_ADMIN',
+    },
+  ])(
+    'authenticates the fixed $role account from its database record',
+    async ({ email, password, role }) => {
+      userFindUnique.mockResolvedValue({
+        id: `user-${role.toLowerCase()}`,
+        tenantId: `tenant-${role.toLowerCase()}`,
+        email,
+        firstName: 'Fixed',
+        lastName: 'Account',
+        passwordHash: null,
+        role,
+      });
+
+      const result = await service.login({ email, password });
+
+      expect(result.user.role).toBe(role);
+      expect(result.accessToken).toBe('signed-test-token');
+      expect(jwtSign).toHaveBeenCalledWith(
+        expect.objectContaining({ role }),
+        expect.any(Object),
+      );
+    },
+  );
+
+  it('rejects an incorrect password for a fixed account', async () => {
+    userFindUnique.mockResolvedValue({
+      id: 'user-shareholder',
+      tenantId: 'tenant-shareholder',
+      email: 'shareholder@primehorizon.com',
+      firstName: 'All',
+      lastName: 'Shareholders',
+      passwordHash: null,
+      role: 'SHAREHOLDER_MANAGER',
+    });
+
+    await expect(
+      service.login({
+        email: 'shareholder@primehorizon.com',
+        password: 'incorrect-password',
+      }),
+    ).rejects.toBeInstanceOf(UnauthorizedException);
+    expect(jwtSign).not.toHaveBeenCalled();
   });
 
   it('returns the shareholder admin role with successful login', async () => {
