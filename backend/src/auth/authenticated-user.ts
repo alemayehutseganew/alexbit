@@ -5,7 +5,8 @@ export type AppRole =
   | 'SUPER_ADMIN'
   | 'PROJECT_MANAGER'
   | 'CLIENT_ADMIN'
-  | 'SHAREHOLDER_ADMIN';
+  | 'SHAREHOLDER_ADMIN'
+  | 'SHAREHOLDER_MANAGER';
 
 export type AuthenticatedUser = {
   userId: string;

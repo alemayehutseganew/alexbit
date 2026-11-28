@@ -17,6 +17,7 @@ import type { FastifyReply } from 'fastify';
 import type { AuthenticatedUser } from '../auth/authenticated-user';
 import { Roles } from '../auth/roles.decorator';
 import { RolesGuard } from '../auth/roles.guard';
+import { CreateShareholderDto } from './dto/create-shareholder.dto';
 import { CreateShareholderDocumentDto } from './dto/create-shareholder-document.dto';
 import { UpdateShareholderDto } from './dto/update-shareholder.dto';
 import { ShareholderService } from './shareholder.service';
@@ -38,17 +39,33 @@ export class ShareholderController {
     return this.shareholderService.findAllShareholders();
   }
 
+  @Post()
+  @Roles('ADMIN', 'SUPER_ADMIN', 'SHAREHOLDER_ADMIN', 'SHAREHOLDER_MANAGER')
+  createShareholder(@Body() data: CreateShareholderDto) {
+    return this.shareholderService.createShareholder(data);
+  }
+
   @Patch(':id')
-  @Roles('ADMIN', 'SUPER_ADMIN', 'SHAREHOLDER_ADMIN')
+  @Roles('ADMIN', 'SUPER_ADMIN', 'SHAREHOLDER_ADMIN', 'SHAREHOLDER_MANAGER')
   updateShareholder(
     @Param('id') id: string,
     @Body() data: UpdateShareholderDto,
+    @Req() request: AuthenticatedRequest,
   ) {
-    return this.shareholderService.updateShareholder(id, data);
+    return this.shareholderService.updateShareholder(id, data, request.user);
+  }
+
+  @Delete(':id')
+  @Roles('ADMIN', 'SUPER_ADMIN', 'SHAREHOLDER_ADMIN', 'SHAREHOLDER_MANAGER')
+  deleteShareholder(
+    @Param('id') id: string,
+    @Req() request: AuthenticatedRequest,
+  ) {
+    return this.shareholderService.deleteShareholder(id, request.user);
   }
 
   @Post(':id/documents')
-  @Roles('ADMIN', 'SUPER_ADMIN', 'SHAREHOLDER_ADMIN')
+  @Roles('ADMIN', 'SUPER_ADMIN', 'SHAREHOLDER_ADMIN', 'SHAREHOLDER_MANAGER')
   addDocument(
     @Param('id') id: string,
     @Body() data: CreateShareholderDocumentDto,
@@ -58,7 +75,7 @@ export class ShareholderController {
   }
 
   @Post(':id/documents/upload')
-  @Roles('ADMIN', 'SUPER_ADMIN', 'SHAREHOLDER_ADMIN')
+  @Roles('ADMIN', 'SUPER_ADMIN', 'SHAREHOLDER_ADMIN', 'SHAREHOLDER_MANAGER')
   async addUploadedDocument(
     @Param('id') id: string,
     @Req() request: AuthenticatedRequest,
@@ -67,7 +84,11 @@ export class ShareholderController {
     if (!upload) {
       throw new BadRequestException('A document file is required');
     }
-    return this.shareholderService.addUploadedDocument(id, upload, request.user);
+    return this.shareholderService.addUploadedDocument(
+      id,
+      upload,
+      request.user,
+    );
   }
 
   @Get(':profileId/documents/:documentId/file')
@@ -124,7 +145,7 @@ export class ShareholderController {
   }
 
   @Delete(':profileId/documents/:documentId')
-  @Roles('ADMIN', 'SUPER_ADMIN', 'SHAREHOLDER_ADMIN')
+  @Roles('ADMIN', 'SUPER_ADMIN', 'SHAREHOLDER_ADMIN', 'SHAREHOLDER_MANAGER')
   deleteDocument(
     @Param('profileId') profileId: string,
     @Param('documentId') documentId: string,

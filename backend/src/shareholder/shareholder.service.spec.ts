@@ -12,29 +12,56 @@ describe('ShareholderService', () => {
   let findUnique: jest.Mock;
   let findMany: jest.Mock;
   let update: jest.Mock;
+  let createProfile: jest.Mock;
+  let deleteProfile: jest.Mock;
   let createDocument: jest.Mock;
   let findDocument: jest.Mock;
   let deleteDocument: jest.Mock;
+  let deleteManyDocuments: jest.Mock;
+  let transaction: jest.Mock;
 
   beforeEach(async () => {
     findUnique = jest.fn();
     findMany = jest.fn();
     update = jest.fn();
+    createProfile = jest.fn();
+    deleteProfile = jest.fn();
     createDocument = jest.fn();
     findDocument = jest.fn();
     deleteDocument = jest.fn();
+    deleteManyDocuments = jest.fn();
+    transaction = jest.fn(
+      (
+        callback: (tx: {
+          shareholderDocument: { deleteMany: jest.Mock };
+          shareholderProfile: { delete: jest.Mock };
+        }) => Promise<unknown>,
+      ) =>
+        callback({
+          shareholderDocument: { deleteMany: deleteManyDocuments },
+          shareholderProfile: { delete: deleteProfile },
+        }),
+    );
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         ShareholderService,
         {
           provide: PrismaService,
           useValue: {
-            shareholderProfile: { findUnique, findMany, update },
+            shareholderProfile: {
+              findUnique,
+              findMany,
+              update,
+              create: createProfile,
+              delete: deleteProfile,
+            },
             shareholderDocument: {
               create: createDocument,
               findUnique: findDocument,
               delete: deleteDocument,
+              deleteMany: deleteManyDocuments,
             },
+            $transaction: transaction,
           },
         },
       ],
@@ -78,12 +105,24 @@ describe('ShareholderService', () => {
   });
 
   it('updates profile details and converts a paid date', async () => {
+    findUnique.mockResolvedValue({
+      id: 'profile-1',
+      tenant: { type: 'SHAREHOLDER' },
+    });
     update.mockResolvedValue({ id: 'profile-1' });
 
-    await service.updateShareholder('profile-1', {
-      numberOfShares: 50,
-      datePaid: '2026-08-18T00:00:00.000Z',
-    });
+    await service.updateShareholder(
+      'profile-1',
+      {
+        numberOfShares: 50,
+        datePaid: '2026-08-18T00:00:00.000Z',
+      },
+      {
+        userId: 'shareholder-1',
+        tenantId: 'shared-shareholders',
+        role: 'SHAREHOLDER_ADMIN',
+      },
+    );
 
     expect(update).toHaveBeenCalledWith(
       expect.objectContaining({
@@ -96,14 +135,107 @@ describe('ShareholderService', () => {
     );
   });
 
+  it('allows the scoped shareholder manager to update shareholder profiles', async () => {
+    findUnique.mockResolvedValue({
+      id: 'profile-1',
+      tenant: { type: 'SHAREHOLDER' },
+    });
+    update.mockResolvedValue({ id: 'profile-1' });
+
+    await expect(
+      service.updateShareholder(
+        'profile-1',
+        { numberOfShares: 25 },
+        {
+          userId: 'shared-shareholder-1',
+          tenantId: 'shared-shareholders',
+          role: 'SHAREHOLDER_MANAGER',
+        },
+      ),
+    ).resolves.toEqual({ id: 'profile-1' });
+  });
+
   it('rejects an empty profile update', async () => {
-    await expect(service.updateShareholder('profile-1', {})).rejects.toThrow(
-      BadRequestException,
+    await expect(
+      service.updateShareholder(
+        'profile-1',
+        {},
+        {
+          userId: 'shareholder-1',
+          tenantId: 'shared-shareholders',
+          role: 'SHAREHOLDER_ADMIN',
+        },
+      ),
+    ).rejects.toThrow(BadRequestException);
+  });
+
+  it('keeps ordinary shareholders from editing shareholder profiles', async () => {
+    findUnique.mockResolvedValue({
+      id: 'profile-1',
+      tenant: { type: 'SHAREHOLDER' },
+    });
+
+    await expect(
+      service.updateShareholder(
+        'profile-1',
+        { numberOfShares: 25 },
+        {
+          userId: 'shareholder-1',
+          tenantId: 'shared-shareholders',
+          role: 'SHAREHOLDER',
+        },
+      ),
+    ).rejects.toThrow(ForbiddenException);
+  });
+
+  it('creates profiles only under a shareholder tenant', async () => {
+    createProfile.mockResolvedValue({ id: 'profile-new' });
+
+    await expect(
+      service.createShareholder({ tenantName: 'New Shareholder' }),
+    ).resolves.toEqual({ id: 'profile-new' });
+    expect(createProfile).toHaveBeenCalledWith(
+      expect.objectContaining({
+        data: expect.objectContaining({
+          tenant: {
+            create: { name: 'New Shareholder', type: 'SHAREHOLDER' },
+          },
+        }),
+      }),
     );
   });
 
+  it('deletes a shareholder profile and its documents but leaves its tenant', async () => {
+    findUnique.mockResolvedValue({
+      id: 'profile-1',
+      tenant: { type: 'SHAREHOLDER' },
+      documents: [],
+    });
+    deleteManyDocuments.mockResolvedValue({ count: 0 });
+    deleteProfile.mockResolvedValue({ id: 'profile-1' });
+
+    await expect(
+      service.deleteShareholder('profile-1', {
+        userId: 'shareholder-1',
+        tenantId: 'shared-shareholders',
+        role: 'SHAREHOLDER_ADMIN',
+      }),
+    ).resolves.toEqual({ success: true });
+
+    expect(deleteManyDocuments).toHaveBeenCalledWith({
+      where: { shareholderProfileId: 'profile-1' },
+    });
+    expect(deleteProfile).toHaveBeenCalledWith({
+      where: { id: 'profile-1' },
+    });
+  });
+
   it('allows a shareholder admin to add a document to any profile', async () => {
-    findUnique.mockResolvedValue({ id: 'profile-1', tenantId: 'tenant-1' });
+    findUnique.mockResolvedValue({
+      id: 'profile-1',
+      tenantId: 'tenant-1',
+      tenant: { type: 'SHAREHOLDER' },
+    });
     createDocument.mockResolvedValue({ id: 'document-1' });
 
     await expect(
@@ -122,8 +254,33 @@ describe('ShareholderService', () => {
     ).resolves.toEqual({ id: 'document-1' });
   });
 
+  it('allows the scoped shareholder manager to add shareholder documents', async () => {
+    findUnique.mockResolvedValue({
+      id: 'profile-1',
+      tenantId: 'tenant-1',
+      tenant: { type: 'SHAREHOLDER' },
+    });
+    createDocument.mockResolvedValue({ id: 'document-1' });
+
+    await expect(
+      service.addDocument(
+        'profile-1',
+        { documentName: 'KYC record' },
+        {
+          userId: 'shared-shareholder-1',
+          tenantId: 'shared-shareholders',
+          role: 'SHAREHOLDER_MANAGER',
+        },
+      ),
+    ).resolves.toEqual({ id: 'document-1' });
+  });
+
   it('allows a shareholder admin to add a document without a hosted URL', async () => {
-    findUnique.mockResolvedValue({ id: 'profile-1', tenantId: 'tenant-1' });
+    findUnique.mockResolvedValue({
+      id: 'profile-1',
+      tenantId: 'tenant-1',
+      tenant: { type: 'SHAREHOLDER' },
+    });
     createDocument.mockResolvedValue({ id: 'document-1' });
 
     await expect(
@@ -147,8 +304,13 @@ describe('ShareholderService', () => {
     });
   });
 
-  it('keeps regular shareholders read-only for documents on their own profile', async () => {
-    findUnique.mockResolvedValue({ id: 'profile-1', tenantId: 'tenant-1' });
+  it('keeps ordinary shareholders from adding documents to shareholder profiles', async () => {
+    findUnique.mockResolvedValue({
+      id: 'profile-1',
+      tenantId: 'tenant-1',
+      tenant: { type: 'SHAREHOLDER' },
+    });
+    createDocument.mockResolvedValue({ id: 'document-1' });
 
     await expect(
       service.addDocument(
@@ -157,7 +319,11 @@ describe('ShareholderService', () => {
           documentName: 'Receipt',
           documentUrl: 'https://files.example.test/receipt.pdf',
         },
-        { userId: 'user-1', tenantId: 'tenant-1', role: 'SHAREHOLDER' },
+        {
+          userId: 'user-1',
+          tenantId: 'shared-shareholders',
+          role: 'SHAREHOLDER',
+        },
       ),
     ).rejects.toThrow(ForbiddenException);
   });
@@ -166,7 +332,10 @@ describe('ShareholderService', () => {
     findDocument.mockResolvedValue({
       id: 'document-1',
       shareholderProfileId: 'profile-1',
-      shareholderProfile: { tenantId: 'tenant-1' },
+      shareholderProfile: {
+        tenantId: 'tenant-1',
+        tenant: { type: 'SHAREHOLDER' },
+      },
     });
     deleteDocument.mockResolvedValue({ id: 'document-1' });
 
@@ -183,7 +352,10 @@ describe('ShareholderService', () => {
     findDocument.mockResolvedValue({
       id: 'document-1',
       shareholderProfileId: 'profile-1',
-      shareholderProfile: { tenantId: 'tenant-1' },
+      shareholderProfile: {
+        tenantId: 'tenant-1',
+        tenant: { type: 'SHAREHOLDER' },
+      },
     });
     deleteDocument.mockResolvedValue({ id: 'document-1' });
 
@@ -196,18 +368,40 @@ describe('ShareholderService', () => {
     ).resolves.toEqual({ success: true });
   });
 
-  it('keeps regular shareholders read-only for documents on their own profile', async () => {
+  it('keeps ordinary shareholders from deleting documents in shareholder tenants', async () => {
     findDocument.mockResolvedValue({
       id: 'document-1',
       shareholderProfileId: 'profile-1',
-      shareholderProfile: { tenantId: 'tenant-1' },
+      shareholderProfile: {
+        tenantId: 'tenant-1',
+        tenant: { type: 'SHAREHOLDER' },
+      },
     });
 
     await expect(
       service.deleteDocument('profile-1', 'document-1', {
         userId: 'user-1',
-        tenantId: 'tenant-1',
+        tenantId: 'shared-shareholders',
         role: 'SHAREHOLDER',
+      }),
+    ).rejects.toThrow(ForbiddenException);
+  });
+
+  it('prevents shareholder admins from deleting documents in other tenant types', async () => {
+    findDocument.mockResolvedValue({
+      id: 'document-1',
+      shareholderProfileId: 'profile-1',
+      shareholderProfile: {
+        tenantId: 'tenant-1',
+        tenant: { type: 'CLIENT' },
+      },
+    });
+
+    await expect(
+      service.deleteDocument('profile-1', 'document-1', {
+        userId: 'user-1',
+        tenantId: 'shared-shareholders',
+        role: 'SHAREHOLDER_ADMIN',
       }),
     ).rejects.toThrow(ForbiddenException);
   });

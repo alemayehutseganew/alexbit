@@ -1,14 +1,25 @@
 import {
   IsDateString,
+  IsBoolean,
   IsIn,
   IsInt,
   IsNumber,
   IsOptional,
   IsString,
+  Matches,
+  MaxLength,
   Min,
+  MinLength,
 } from 'class-validator';
 
 export class UpdateShareholderDto {
+  @IsOptional()
+  @IsString()
+  @MinLength(1)
+  @Matches(/\S/)
+  @MaxLength(120)
+  tenantName?: string;
+
   @IsOptional()
   @IsString()
   contactNo?: string | null;
@@ -39,6 +50,15 @@ export class UpdateShareholderDto {
   @IsOptional()
   @IsString()
   remarks?: string | null;
+
+  @IsOptional()
+  @IsString()
+  @MaxLength(40)
+  shareClass?: string;
+
+  @IsOptional()
+  @IsBoolean()
+  isAccredited?: boolean;
 
   @IsOptional()
   @IsIn(['PENDING', 'UNDER_REVIEW', 'APPROVED', 'REJECTED'])

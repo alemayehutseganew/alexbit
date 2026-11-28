@@ -122,4 +122,20 @@ describe('JwtStrategy', () => {
       role: 'SHAREHOLDER_ADMIN',
     });
   });
+
+  it('accepts shareholder manager as a recognized application role', () => {
+    const strategy = new JwtStrategy();
+
+    expect(
+      strategy.validate({
+        sub: 'user-3',
+        tenantId: 'tenant-shared-shareholders',
+        role: 'SHAREHOLDER_MANAGER',
+      }),
+    ).toEqual({
+      userId: 'user-3',
+      tenantId: 'tenant-shared-shareholders',
+      role: 'SHAREHOLDER_MANAGER',
+    });
+  });
 });

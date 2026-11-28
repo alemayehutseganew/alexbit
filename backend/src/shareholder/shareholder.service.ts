@@ -8,6 +8,7 @@ import {
 import { Prisma } from '@prisma/client';
 import type { AuthenticatedUser } from '../auth/authenticated-user';
 import { PrismaService } from '../prisma.service';
+import type { CreateShareholderDto } from './dto/create-shareholder.dto';
 import type { CreateShareholderDocumentDto } from './dto/create-shareholder-document.dto';
 import type { UpdateShareholderDto } from './dto/update-shareholder.dto';
 import type { MultipartFile } from '@fastify/multipart';
@@ -42,8 +43,11 @@ export class ShareholderService {
 
     await mkdir(this.uploadDirectory, { recursive: true });
     const extension =
-      upload.filename.split('.').pop()?.toLowerCase().replace(/[^a-z0-9]/g, '') ||
-      'bin';
+      upload.filename
+        .split('.')
+        .pop()
+        ?.toLowerCase()
+        .replace(/[^a-z0-9]/g, '') || 'bin';
     const storedName = `${randomUUID()}.${extension}`;
     const storedPath = join(this.uploadDirectory, storedName);
     await writeFile(storedPath, await upload.toBuffer());
@@ -102,22 +106,40 @@ export class ShareholderService {
     }
   }
 
-  async updateShareholder(id: string, data: UpdateShareholderDto) {
-    if (Object.keys(data).length === 0) {
-      throw new BadRequestException('At least one field must be provided');
-    }
+  private canManageProfile(
+    user: AuthenticatedUser,
+    tenantType: string,
+  ): boolean {
+    return (
+      ['ADMIN', 'SUPER_ADMIN'].includes(user.role) ||
+      (['SHAREHOLDER_ADMIN', 'SHAREHOLDER_MANAGER'].includes(user.role) &&
+        tenantType === 'SHAREHOLDER')
+    );
+  }
 
+  async createShareholder(data: CreateShareholderDto) {
     try {
-      return await this.prisma.shareholderProfile.update({
-        where: { id },
+      return await this.prisma.shareholderProfile.create({
         data: {
-          ...data,
+          contactNo: data.contactNo,
+          tinNumber: data.tinNumber,
+          numberOfShares: data.numberOfShares,
+          shareValue: data.shareValue,
+          totalContribution: data.totalContribution,
           datePaid:
-            data.datePaid === undefined
-              ? undefined
-              : data.datePaid === null
-                ? null
-                : new Date(data.datePaid),
+            data.datePaid === undefined || data.datePaid === null
+              ? data.datePaid
+              : new Date(data.datePaid),
+          remarks: data.remarks,
+          shareClass: data.shareClass,
+          isAccredited: data.isAccredited,
+          kycStatus: data.kycStatus,
+          tenant: {
+            create: {
+              name: data.tenantName,
+              type: 'SHAREHOLDER',
+            },
+          },
         },
         include: {
           tenant: { select: { id: true, name: true } },
@@ -125,6 +147,67 @@ export class ShareholderService {
         },
       });
     } catch (error) {
+      if (error instanceof Prisma.PrismaClientKnownRequestError) {
+        throw new InternalServerErrorException(
+          'Unable to create shareholder profile',
+        );
+      }
+
+      throw error;
+    }
+  }
+
+  async updateShareholder(
+    id: string,
+    data: UpdateShareholderDto,
+    user: AuthenticatedUser,
+  ) {
+    if (Object.keys(data).length === 0) {
+      throw new BadRequestException('At least one field must be provided');
+    }
+
+    try {
+      const profile = await this.prisma.shareholderProfile.findUnique({
+        where: { id },
+        select: { id: true, tenant: { select: { type: true } } },
+      });
+      if (!profile) {
+        throw new NotFoundException('Shareholder profile not found');
+      }
+      if (!this.canManageProfile(user, profile.tenant.type)) {
+        throw new ForbiddenException(
+          'You are not allowed to update this shareholder profile',
+        );
+      }
+
+      const { tenantName, ...profileData } = data;
+      return await this.prisma.shareholderProfile.update({
+        where: { id },
+        data: {
+          ...profileData,
+          datePaid:
+            data.datePaid === undefined
+              ? undefined
+              : data.datePaid === null
+                ? null
+                : new Date(data.datePaid),
+          ...(tenantName === undefined
+            ? {}
+            : { tenant: { update: { name: tenantName } } }),
+        },
+        include: {
+          tenant: { select: { id: true, name: true } },
+          documents: { orderBy: { uploadedAt: 'desc' } },
+        },
+      });
+    } catch (error) {
+      if (
+        error instanceof NotFoundException ||
+        error instanceof ForbiddenException
+      ) {
+        throw error;
+      }
+
       if (
         error instanceof Prisma.PrismaClientKnownRequestError &&
         error.code === 'P2025'
@@ -142,6 +225,43 @@ export class ShareholderService {
     }
   }
 
+  async deleteShareholder(id: string, user: AuthenticatedUser) {
+    const profile = await this.prisma.shareholderProfile.findUnique({
+      where: { id },
+      include: {
+        tenant: { select: { type: true } },
+        documents: { select: { documentUrl: true } },
+      },
+    });
+    if (!profile) {
+      throw new NotFoundException('Shareholder profile not found');
+    }
+    if (!this.canManageProfile(user, profile.tenant.type)) {
+      throw new ForbiddenException(
+        'You are not allowed to delete this shareholder profile',
+      );
+    }
+
+    await this.prisma.$transaction(async (transaction) => {
+      await transaction.shareholderDocument.deleteMany({
+        where: { shareholderProfileId: id },
+      });
+      await transaction.shareholderProfile.delete({ where: { id } });
+    });
+
+    for (const document of profile.documents) {
+      if (document.documentUrl?.startsWith('local://')) {
+        const storedName = document.documentUrl.slice('local://'.length);
+        const filePath = join(this.uploadDirectory, storedName);
+        if (existsSync(filePath)) {
+          await unlink(filePath);
+        }
+      }
+    }
+
+    return { success: true };
+  }
+
   async addDocument(
     profileId: string,
     data: CreateShareholderDocumentDto,
@@ -150,16 +270,18 @@ export class ShareholderService {
     try {
       const profile = await this.prisma.shareholderProfile.findUnique({
         where: { id: profileId },
-        select: { id: true, tenantId: true },
+        select: {
+          id: true,
+          tenantId: true,
+          tenant: { select: { type: true } },
+        },
       });
 
       if (!profile) {
         throw new NotFoundException('Shareholder profile not found');
       }
 
-      if (
-        !['ADMIN', 'SUPER_ADMIN', 'SHAREHOLDER_ADMIN'].includes(user.role)
-      ) {
+      if (!this.canManageProfile(user, profile.tenant.type)) {
         throw new ForbiddenException(
           'You are not allowed to add shareholder documents',
         );
@@ -197,14 +319,16 @@ export class ShareholderService {
   ) {
     const profile = await this.prisma.shareholderProfile.findUnique({
       where: { id: profileId },
-      select: { id: true, tenantId: true },
+      select: {
+        id: true,
+        tenantId: true,
+        tenant: { select: { type: true } },
+      },
     });
     if (!profile) {
       throw new NotFoundException('Shareholder profile not found');
     }
-    if (
-      !['ADMIN', 'SUPER_ADMIN', 'SHAREHOLDER_ADMIN'].includes(user.role)
-    ) {
+    if (!this.canManageProfile(user, profile.tenant.type)) {
       throw new ForbiddenException(
         'You are not allowed to add shareholder documents',
       );
@@ -227,7 +351,11 @@ export class ShareholderService {
   ) {
     const document = await this.prisma.shareholderDocument.findUnique({
       where: { id: documentId },
-      include: { shareholderProfile: { select: { tenantId: true } } },
+      include: {
+        shareholderProfile: {
+          select: { tenantId: true, tenant: { select: { type: true } } },
+        },
+      },
     });
     if (!document || document.shareholderProfileId !== profileId) {
       throw new NotFoundException('Shareholder document not found');
@@ -235,7 +363,10 @@ export class ShareholderService {
     if (
       user.role !== 'ADMIN' &&
       user.role !== 'SUPER_ADMIN' &&
-      user.role !== 'SHAREHOLDER_ADMIN' &&
+      !(
+        ['SHAREHOLDER_ADMIN', 'SHAREHOLDER_MANAGER'].includes(user.role) &&
+        document.shareholderProfile.tenant.type === 'SHAREHOLDER'
+      ) &&
       user.role !== 'PROJECT_MANAGER' &&
       user.tenantId !== document.shareholderProfile.tenantId
     ) {
@@ -317,7 +448,10 @@ export class ShareholderService {
         where: { id: documentId },
         include: {
           shareholderProfile: {
-            select: { tenantId: true },
+            select: {
+              tenantId: true,
+              tenant: { select: { type: true } },
+            },
           },
         },
       });
@@ -326,12 +460,9 @@ export class ShareholderService {
         throw new NotFoundException('Shareholder document not found');
       }
 
-      const canManageDocuments = [
-        'ADMIN',
-        'SUPER_ADMIN',
-        'SHAREHOLDER_ADMIN',
-      ].includes(user.role);
-      if (!canManageDocuments) {
+      if (
+        !this.canManageProfile(user, document.shareholderProfile.tenant.type)
+      ) {
         throw new ForbiddenException(
           'You are not allowed to delete shareholder documents',
         );

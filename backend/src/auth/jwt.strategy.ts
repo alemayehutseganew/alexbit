@@ -24,6 +24,7 @@ const appRoles: readonly AppRole[] = [
   'PROJECT_MANAGER',
   'CLIENT_ADMIN',
   'SHAREHOLDER_ADMIN',
+  'SHAREHOLDER_MANAGER',
 ];
 
 function isAppRole(value: unknown): value is AppRole {
@@ -55,10 +56,7 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
           ? payload.tenant_id
           : undefined;
 
-    if (
-      typeof payload.sub !== 'string' ||
-      !tenantId?.trim()
-    ) {
+    if (typeof payload.sub !== 'string' || !tenantId?.trim()) {
       throw new UnauthorizedException('Invalid access token claims');
     }
 

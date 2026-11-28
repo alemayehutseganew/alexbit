@@ -25,6 +25,16 @@
 
 [Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
 
+## Shareholder management permissions
+
+The shared `shareholder@primehorizon.com` login is provisioned with the
+`SHAREHOLDER_MANAGER` role by setting `BOOTSTRAP_SHAREHOLDER_PASSWORD`. It can
+create, update, and delete profiles and upload/delete their documents for
+records whose tenant type is `SHAREHOLDER`. Individual `SHAREHOLDER` accounts
+remain read-only. Profile deletion removes its profile and document
+records/files, but intentionally retains the tenant and any user accounts.
+Global company documents remain restricted to administrator roles.
+
 ## Project setup
 
 ```bash
@@ -93,9 +103,11 @@ Set these environment variables in the AletCloud app settings:
 To provision accounts on the deployed database, temporarily add the desired
 `BOOTSTRAP_*_PASSWORD` variables as private app environment secrets. Set only
 the accounts you want to create or update; each password must be at least 12
-characters. For example, to provision only the shareholder admin, set
-`BOOTSTRAP_SHAREHOLDER_ADMIN_PASSWORD`, then run either command from the backend
-app root with the intended database connection configured:
+characters. To promote the shared shareholder login to its scoped manager role
+and set its password, set
+`BOOTSTRAP_SHAREHOLDER_PASSWORD`. This only updates that account. Run either
+command from the backend app root with the intended database connection
+configured:
 
 ```bash
 npx prisma db seed
