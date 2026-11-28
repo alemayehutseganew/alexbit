@@ -58,7 +58,7 @@ const emptyForm: ProfileForm = {
 };
 
 const fieldClassName =
-  "mt-1 w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-brand-600";
+  "mt-1 w-full rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm text-slate-900 shadow-sm outline-none transition placeholder:text-slate-400 focus:border-brand-500 focus:ring-4 focus:ring-brand-100";
 
 function isRecord(value: unknown): value is Record<string, unknown> {
   return typeof value === "object" && value !== null;
@@ -294,18 +294,24 @@ export default function ShareholderRecordsManager({
   return (
     <section
       id="cap-table"
-      className="scroll-mt-28 overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm"
+      className="scroll-mt-28 overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-xl shadow-slate-900/5"
     >
-      <div className="flex flex-col justify-between gap-4 border-b border-slate-200 p-6 md:flex-row md:items-center">
+      <div className="flex flex-col justify-between gap-5 border-b border-slate-200 bg-gradient-to-br from-slate-50 via-white to-blue-50/60 p-6 md:flex-row md:items-end md:p-8">
         <div>
-          <h2 className="flex items-center gap-2 text-lg font-semibold text-slate-900">
+          <p className="text-xs font-bold uppercase tracking-[0.18em] text-brand-700">
+            {t("capTableEyebrow")}
+          </p>
+          <h2 className="mt-2 flex items-center gap-2 text-xl font-bold tracking-tight text-slate-950 md:text-2xl">
             {t("manageShareholderRecords")}
           </h2>
-          <p className="mt-1 text-sm text-slate-500">
+          <p className="mt-2 max-w-2xl text-sm leading-6 text-slate-600">
             {t("manageShareholderRecordsDescription")}
           </p>
+          <span className="mt-4 inline-flex rounded-full border border-blue-100 bg-white px-3 py-1 text-xs font-semibold text-slate-600 shadow-sm">
+            {t("shareholderCount", { count: shareholders.length })}
+          </span>
         </div>
-        <div className="flex flex-col gap-3 sm:flex-row">
+        <div className="flex w-full flex-col gap-3 sm:flex-row md:w-auto">
           <label htmlFor="shareholder-search" className="sr-only">
             {t("searchShareholders")}
           </label>
@@ -315,13 +321,13 @@ export default function ShareholderRecordsManager({
             placeholder={t("searchShareholders")}
             value={search}
             onChange={(event) => setSearch(event.currentTarget.value)}
-            className={fieldClassName}
+            className={`${fieldClassName} sm:min-w-64`}
           />
           {canManage && (
             <button
               type="button"
               onClick={openCreateForm}
-              className="shrink-0 rounded-lg bg-brand-600 px-4 py-2 text-sm font-semibold text-white hover:bg-brand-700"
+              className="shrink-0 rounded-xl bg-gradient-to-r from-brand-700 to-blue-700 px-5 py-3 text-sm font-semibold text-white shadow-lg shadow-brand-900/15 transition hover:-translate-y-0.5 hover:shadow-xl focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-brand-200"
             >
               {t("addShareholder")}
             </button>
@@ -340,69 +346,75 @@ export default function ShareholderRecordsManager({
       {message && (
         <p
           role="status"
-          className="m-4 rounded-lg bg-emerald-50 p-3 text-sm text-emerald-800"
+          className="mx-6 mt-5 rounded-xl border border-emerald-200 bg-emerald-50 p-4 text-sm text-emerald-800 md:mx-8"
         >
           {message}
         </p>
       )}
 
-      <div className="overflow-x-auto">
-        <table className="w-full min-w-[980px] border-collapse text-left">
+      <div className="overflow-x-auto px-2 pb-3 md:px-4">
+        <table className="w-full min-w-[980px] border-separate border-spacing-0 text-left">
           <thead>
-            <tr className="border-b border-slate-200 bg-slate-50 text-sm text-slate-600">
-              <th scope="col" className="p-4 font-medium">
+            <tr className="bg-slate-50 text-[11px] font-bold uppercase tracking-[0.12em] text-slate-500">
+              <th scope="col" className="rounded-l-xl px-4 py-4 font-bold">
+                {t("columnSerial")}
+              </th>
+              <th scope="col" className="px-4 py-4 font-bold">
                 {t("columnName")}
               </th>
-              <th scope="col" className="p-4 font-medium">
+              <th scope="col" className="px-4 py-4 font-bold">
                 {t("columnContact")}
               </th>
-              <th scope="col" className="p-4 font-medium">
+              <th scope="col" className="px-4 py-4 font-bold">
                 {t("columnTin")}
               </th>
-              <th scope="col" className="p-4 font-medium">
+              <th scope="col" className="px-4 py-4 text-right font-bold">
                 {t("columnShares")}
               </th>
-              <th scope="col" className="p-4 font-medium">
+              <th scope="col" className="px-4 py-4 text-right font-bold">
                 {t("columnContribution")}
               </th>
-              <th scope="col" className="p-4 font-medium">
+              <th scope="col" className="px-4 py-4 font-bold">
                 {t("columnDatePaid")}
               </th>
               {canManage && (
-                <th scope="col" className="p-4 font-medium">
+                <th scope="col" className="rounded-r-xl px-4 py-4 font-bold">
                   {t("columnActionsManage")}
                 </th>
               )}
             </tr>
           </thead>
-          <tbody className="divide-y divide-slate-100">
-            {filteredShareholders.map((shareholder) => (
+          <tbody>
+            {filteredShareholders.map((shareholder, index) => (
               <tr
                 key={shareholder.id}
-                className="transition-colors hover:bg-slate-50"
+                className="group transition-colors hover:bg-blue-50/60"
               >
-                <td className="p-4 font-medium text-slate-900">
+                <td className="border-b border-slate-100 px-4 py-4 text-sm font-semibold tabular-nums text-slate-400 group-hover:text-brand-700">
+                  {index + 1}
+                </td>
+                <td className="border-b border-slate-100 px-4 py-4 font-semibold text-slate-900">
                   {shareholder.tenant.name}
                 </td>
-                <td className="p-4 text-slate-600">
+                <td className="border-b border-slate-100 px-4 py-4 text-sm text-slate-600">
                   {shareholder.contactNo || "—"}
                 </td>
-                <td className="p-4 text-slate-600">
+                <td className="border-b border-slate-100 px-4 py-4 text-sm text-slate-600">
                   {shareholder.tinNumber || "—"}
                 </td>
-                <td className="p-4 font-semibold text-slate-900">
+                <td className="border-b border-slate-100 px-4 py-4 text-right font-semibold tabular-nums text-slate-900">
                   {shareholder.numberOfShares.toLocaleString(
                     locale === "am" ? "am-ET" : "en-ET",
                   )}
                 </td>
-                <td className="p-4 font-medium text-brand-600">
+                <td className="border-b border-slate-100 px-4 py-4 text-right font-semibold tabular-nums text-brand-700">
                   ETB{" "}
                   {new Intl.NumberFormat(locale === "am" ? "am-ET" : "en-ET", {
                     minimumFractionDigits: 2,
                     maximumFractionDigits: 2,
                   }).format(Number(shareholder.totalContribution))}
                 </td>
-                <td className="p-4 text-slate-600">
+                <td className="border-b border-slate-100 px-4 py-4 text-sm text-slate-600">
                   {shareholder.datePaid
                     ? new Intl.DateTimeFormat(
                         locale === "am" ? "am-ET" : "en-ET",
@@ -411,12 +423,12 @@ export default function ShareholderRecordsManager({
                     : "—"}
                 </td>
                 {canManage && (
-                  <td className="p-4">
+                  <td className="border-b border-slate-100 px-4 py-4">
                     <div className="flex gap-2">
                       <button
                         type="button"
                         onClick={() => openEditForm(shareholder)}
-                        className="rounded-md border border-slate-300 px-3 py-1.5 text-sm font-medium text-slate-700 hover:bg-slate-100"
+                        className="rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm font-semibold text-slate-700 shadow-sm transition hover:border-brand-300 hover:text-brand-700"
                       >
                         {t("edit")}
                       </button>
@@ -424,7 +436,7 @@ export default function ShareholderRecordsManager({
                         type="button"
                         disabled={busyProfileId !== null}
                         onClick={() => void deleteProfile(shareholder)}
-                        className="rounded-md border border-red-200 px-3 py-1.5 text-sm font-medium text-red-700 hover:bg-red-50 disabled:opacity-50"
+                        className="rounded-lg border border-red-100 bg-white px-3 py-2 text-sm font-semibold text-red-700 shadow-sm transition hover:bg-red-50 disabled:opacity-50"
                       >
                         {busyProfileId === shareholder.id
                           ? "Deleting…"
@@ -438,8 +450,8 @@ export default function ShareholderRecordsManager({
             {filteredShareholders.length === 0 && (
               <tr>
                 <td
-                  colSpan={canManage ? 7 : 6}
-                  className="p-8 text-center text-sm text-slate-500"
+                  colSpan={canManage ? 8 : 7}
+                  className="p-12 text-center text-sm text-slate-500"
                 >
                   {t("noShareholders")}
                 </td>

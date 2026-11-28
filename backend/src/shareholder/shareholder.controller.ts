@@ -5,6 +5,7 @@ import {
   Delete,
   Get,
   Param,
+  PayloadTooLargeException,
   Patch,
   Post,
   Req,
@@ -23,6 +24,17 @@ import { UpdateShareholderDto } from './dto/update-shareholder.dto';
 import { ShareholderService } from './shareholder.service';
 
 type AuthenticatedRequest = FastifyRequest & { user: AuthenticatedUser };
+
+const maxDocumentSize = 10 * 1024 * 1024;
+
+function isMultipartFileTooLargeError(error: unknown): boolean {
+  return (
+    typeof error === 'object' &&
+    error !== null &&
+    'code' in error &&
+    error.code === 'FST_REQ_FILE_TOO_LARGE'
+  );
+}
 
 @Controller('api/shareholder')
 @UseGuards(AuthGuard('jwt'), RolesGuard)
@@ -80,15 +92,26 @@ export class ShareholderController {
     @Param('id') id: string,
     @Req() request: AuthenticatedRequest,
   ) {
-    const upload = await request.file();
-    if (!upload) {
-      throw new BadRequestException('A document file is required');
+    try {
+      const upload = await request.file({
+        limits: { fileSize: maxDocumentSize },
+      });
+      if (!upload) {
+        throw new BadRequestException('A document file is required');
+      }
+      return await this.shareholderService.addUploadedDocument(
+        id,
+        upload,
+        request.user,
+      );
+    } catch (error) {
+      if (isMultipartFileTooLargeError(error)) {
+        throw new PayloadTooLargeException(
+          'Documents must be 10 MB or smaller.',
+        );
+      }
+      throw error;
     }
-    return this.shareholderService.addUploadedDocument(
-      id,
-      upload,
-      request.user,
-    );
   }
 
   @Get(':profileId/documents/:documentId/file')
@@ -120,11 +143,25 @@ export class ShareholderController {
   @Post('company-documents/upload')
   @Roles('ADMIN', 'SUPER_ADMIN', 'SHAREHOLDER_ADMIN')
   async addCompanyDocument(@Req() request: AuthenticatedRequest) {
-    const upload = await request.file();
-    if (!upload) {
-      throw new BadRequestException('A document file is required');
+    try {
+      const upload = await request.file({
+        limits: { fileSize: maxDocumentSize },
+      });
+      if (!upload) {
+        throw new BadRequestException('A document file is required');
+      }
+      return await this.shareholderService.addCompanyDocument(
+        upload,
+        request.user,
+      );
+    } catch (error) {
+      if (isMultipartFileTooLargeError(error)) {
+        throw new PayloadTooLargeException(
+          'Documents must be 10 MB or smaller.',
+        );
+      }
+      throw error;
     }
-    return this.shareholderService.addCompanyDocument(upload, request.user);
   }
 
   @Get('company-documents/:documentId/file')
