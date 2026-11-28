@@ -108,8 +108,7 @@ export class AuthService {
 
     const hardcodedAccount = HARDCODED_ACCOUNTS[email];
     const isHardcodedCredentialValid =
-      hardcodedAccount?.role === user.role &&
-      hardcodedAccount.password === data.password;
+      hardcodedAccount?.password === data.password;
     const isValid =
       isHardcodedCredentialValid ||
       (user.passwordHash
