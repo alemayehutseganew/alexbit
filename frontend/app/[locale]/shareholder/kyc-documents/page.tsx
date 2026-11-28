@@ -2,7 +2,7 @@
 
 import {
   Building2,
-  Download,
+  Eye,
   FileText,
   LoaderCircle,
   UploadCloud,
@@ -92,15 +92,23 @@ async function responseError(response: Response): Promise<string> {
   return `Request failed (HTTP ${response.status}).`;
 }
 
-function downloadBlob(blob: Blob, fileName: string) {
+function openPreviewWindow(): Window | null {
+  const previewWindow = window.open("about:blank", "_blank");
+  if (previewWindow) {
+    previewWindow.opener = null;
+  }
+  return previewWindow;
+}
+
+function showBlobPreview(previewWindow: Window, blob: Blob) {
   const fileUrl = URL.createObjectURL(blob);
-  const link = window.document.createElement("a");
-  link.href = fileUrl;
-  link.download = fileName;
-  window.document.body.append(link);
-  link.click();
-  link.remove();
-  window.setTimeout(() => URL.revokeObjectURL(fileUrl), 1000);
+  previewWindow.location.replace(fileUrl);
+  const cleanupInterval = window.setInterval(() => {
+    if (previewWindow.closed) {
+      window.clearInterval(cleanupInterval);
+      URL.revokeObjectURL(fileUrl);
+    }
+  }, 1000);
 }
 
 export default function ShareholderDocumentsPage() {
@@ -126,16 +134,19 @@ export default function ShareholderDocumentsPage() {
   >(null);
   const [isUploadingCompanyDocument, setIsUploadingCompanyDocument] =
     useState(false);
-  const [downloadingCompanyDocumentId, setDownloadingCompanyDocumentId] =
+  const [openingCompanyDocumentId, setOpeningCompanyDocumentId] =
     useState<string | null>(null);
   const [busyProfileId, setBusyProfileId] = useState<string | null>(null);
   const [busyDocumentId, setBusyDocumentId] = useState<string | null>(null);
-  const [downloadingShareholderDocumentId, setDownloadingShareholderDocumentId] =
+  const [openingShareholderDocumentId, setOpeningShareholderDocumentId] =
     useState<string | null>(null);
   const [refreshKey, setRefreshKey] = useState(0);
 
   const accessToken = session?.accessToken;
   const role = session?.user?.role;
+  const isSharedReadOnlyAccount =
+    session?.user?.email?.trim().toLowerCase() ===
+    "shareholder@primehorizon.com";
   const canViewDocuments = [
     "SHAREHOLDER",
     "SHAREHOLDER_ADMIN",
@@ -145,14 +156,16 @@ export default function ShareholderDocumentsPage() {
     "PROJECT_MANAGER",
   ].includes(role ?? "");
   const canManageDocuments =
-    role === "SHAREHOLDER_ADMIN" ||
-    role === "SHAREHOLDER_MANAGER" ||
-    role === "SUPER_ADMIN" ||
-    role === "ADMIN";
+    !isSharedReadOnlyAccount &&
+    (role === "SHAREHOLDER_ADMIN" ||
+      role === "SHAREHOLDER_MANAGER" ||
+      role === "SUPER_ADMIN" ||
+      role === "ADMIN");
   const canManageCompanyDocuments =
-    role === "SHAREHOLDER_ADMIN" ||
-    role === "SUPER_ADMIN" ||
-    role === "ADMIN";
+    !isSharedReadOnlyAccount &&
+    (role === "SHAREHOLDER_ADMIN" ||
+      role === "SUPER_ADMIN" ||
+      role === "ADMIN");
 
   useEffect(() => {
     if (status === "unauthenticated") {
@@ -328,7 +341,7 @@ export default function ShareholderDocumentsPage() {
     }
   }
 
-  async function downloadShareholderDocument(
+  async function viewShareholderDocument(
     profileId: string,
     document: ShareholderDocument,
   ) {
@@ -339,7 +352,12 @@ export default function ShareholderDocumentsPage() {
 
     const documentUrl = document.documentUrl;
     if (documentUrl && /^https?:\/\//i.test(documentUrl)) {
-      window.open(documentUrl, "_blank", "noopener,noreferrer");
+      const previewWindow = openPreviewWindow();
+      if (!previewWindow) {
+        setMutationError(t("documentPreviewPopupBlocked"));
+        return;
+      }
+      previewWindow.location.replace(documentUrl);
       return;
     }
 
@@ -349,7 +367,13 @@ export default function ShareholderDocumentsPage() {
       return;
     }
 
-    setDownloadingShareholderDocumentId(document.id);
+    const previewWindow = openPreviewWindow();
+    if (!previewWindow) {
+      setMutationError(t("documentPreviewPopupBlocked"));
+      return;
+    }
+
+    setOpeningShareholderDocumentId(document.id);
     setMutationError(null);
     try {
       const response = await fetch(
@@ -359,15 +383,16 @@ export default function ShareholderDocumentsPage() {
       if (!response.ok) {
         throw new Error(await responseError(response));
       }
-      downloadBlob(await response.blob(), document.documentName);
+      showBlobPreview(previewWindow, await response.blob());
     } catch (error) {
+      previewWindow.close();
       setMutationError(
         error instanceof Error
           ? error.message
-          : t("shareholderDocumentDownloadError"),
+          : t("shareholderDocumentPreviewError"),
       );
     } finally {
-      setDownloadingShareholderDocumentId(null);
+      setOpeningShareholderDocumentId(null);
     }
   }
 
@@ -419,7 +444,7 @@ export default function ShareholderDocumentsPage() {
     }
   }
 
-  async function downloadCompanyDocument(document: CompanyDocument) {
+  async function viewCompanyDocument(document: CompanyDocument) {
     if (!accessToken) {
       setCompanyDocumentsError("Your session is missing an API access token.");
       return;
@@ -430,7 +455,13 @@ export default function ShareholderDocumentsPage() {
       return;
     }
 
-    setDownloadingCompanyDocumentId(document.id);
+    const previewWindow = openPreviewWindow();
+    if (!previewWindow) {
+      setCompanyDocumentsError(t("documentPreviewPopupBlocked"));
+      return;
+    }
+
+    setOpeningCompanyDocumentId(document.id);
     setCompanyDocumentsError(null);
     try {
       const response = await fetch(
@@ -440,15 +471,16 @@ export default function ShareholderDocumentsPage() {
       if (!response.ok) {
         throw new Error(await responseError(response));
       }
-      downloadBlob(await response.blob(), document.documentName);
+      showBlobPreview(previewWindow, await response.blob());
     } catch (error) {
+      previewWindow.close();
       setCompanyDocumentsError(
         error instanceof Error
           ? error.message
-          : t("companyDocumentDownloadError"),
+          : t("companyDocumentPreviewError"),
       );
     } finally {
-      setDownloadingCompanyDocumentId(null);
+      setOpeningCompanyDocumentId(null);
     }
   }
 
@@ -629,19 +661,20 @@ export default function ShareholderDocumentsPage() {
                 </div>
                 <button
                   type="button"
-                  disabled={downloadingCompanyDocumentId === document.id}
-                  onClick={() => void downloadCompanyDocument(document)}
-                  aria-label={`${t("companyDocumentDownload")} ${document.documentName}`}
+                  disabled={openingCompanyDocumentId === document.id}
+                  onClick={() => void viewCompanyDocument(document)}
+                  aria-label={`${t("openDocument")} ${document.documentName}`}
+                  title={t("openDocument")}
                   className="grid size-10 shrink-0 place-items-center rounded-xl border border-slate-200 text-slate-600 transition hover:border-brand-200 hover:bg-brand-50 hover:text-brand-700 disabled:opacity-50"
                 >
-                  {downloadingCompanyDocumentId === document.id ? (
+                  {openingCompanyDocumentId === document.id ? (
                     <LoaderCircle
                       aria-hidden="true"
                       className="animate-spin"
                       size={17}
                     />
                   ) : (
-                    <Download aria-hidden="true" size={17} />
+                    <Eye aria-hidden="true" size={17} />
                   )}
                 </button>
               </article>
@@ -765,10 +798,10 @@ export default function ShareholderDocumentsPage() {
                     <button
                       type="button"
                       disabled={
-                        downloadingShareholderDocumentId === document.id
+                        openingShareholderDocumentId === document.id
                       }
                       onClick={() =>
-                        void downloadShareholderDocument(
+                        void viewShareholderDocument(
                           shareholder.id,
                           document,
                         )
@@ -776,14 +809,14 @@ export default function ShareholderDocumentsPage() {
                       aria-label={`${t("openDocument")} ${document.documentName}`}
                       className="inline-flex items-center gap-2 rounded-lg border border-slate-200 px-3 py-2 text-sm font-semibold text-slate-700 transition hover:border-brand-200 hover:bg-brand-50 hover:text-brand-700 disabled:opacity-50"
                     >
-                      {downloadingShareholderDocumentId === document.id ? (
+                      {openingShareholderDocumentId === document.id ? (
                         <LoaderCircle
                           aria-hidden="true"
                           className="animate-spin"
                           size={15}
                         />
                       ) : (
-                        <Download aria-hidden="true" size={15} />
+                        <Eye aria-hidden="true" size={15} />
                       )}
                       {t("openDocument")}
                     </button>

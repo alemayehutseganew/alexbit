@@ -64,7 +64,7 @@ async function main() {
         firstName: 'All',
         lastName: 'Shareholders',
         passwordHash,
-        role: 'SHAREHOLDER_MANAGER',
+        role: 'SHAREHOLDER',
         tenant: {
           create: {
             name: 'PrimeHorizon Shareholders',
@@ -78,10 +78,10 @@ async function main() {
         passwordHash,
         resetToken: null,
         resetTokenExpiry: null,
-        role: 'SHAREHOLDER_MANAGER',
+        role: 'SHAREHOLDER',
       },
     });
-    console.log('✅ Shared shareholder manager account provisioned');
+    console.log('✅ Shared read-only shareholder account provisioned');
   }
 
   if (shareholderAdminPassword) {

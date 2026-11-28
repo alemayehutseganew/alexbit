@@ -251,6 +251,7 @@ export default async function ShareholderOverview({
         initialShareholders={shareholders}
         accessToken={session.accessToken}
         role={session.user?.role ?? session.role ?? ""}
+        email={session.user?.email ?? ""}
         locale={locale}
         initialSearch={search}
       />

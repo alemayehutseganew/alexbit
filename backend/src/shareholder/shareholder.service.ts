@@ -106,9 +106,10 @@ export class ShareholderService {
     tenantType: string,
   ): boolean {
     return (
-      ['ADMIN', 'SUPER_ADMIN'].includes(user.role) ||
-      (['SHAREHOLDER_ADMIN', 'SHAREHOLDER_MANAGER'].includes(user.role) &&
-        tenantType === 'SHAREHOLDER')
+      user.email?.trim().toLowerCase() !== 'shareholder@primehorizon.com' &&
+      (['ADMIN', 'SUPER_ADMIN'].includes(user.role) ||
+        (['SHAREHOLDER_ADMIN', 'SHAREHOLDER_MANAGER'].includes(user.role) &&
+          tenantType === 'SHAREHOLDER'))
     );
   }
 

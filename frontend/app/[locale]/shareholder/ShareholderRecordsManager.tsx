@@ -39,6 +39,7 @@ type ShareholderRecordsManagerProps = {
   initialShareholders: ShareholderProfile[];
   accessToken: string;
   role: string;
+  email: string;
   locale: string;
   initialSearch: string;
 };
@@ -117,6 +118,7 @@ export default function ShareholderRecordsManager({
   initialShareholders,
   accessToken,
   role,
+  email,
   locale,
   initialSearch,
 }: ShareholderRecordsManagerProps) {
@@ -132,12 +134,14 @@ export default function ShareholderRecordsManager({
   const [busyProfileId, setBusyProfileId] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [message, setMessage] = useState<string | null>(null);
-  const canManage = [
-    "SHAREHOLDER_ADMIN",
-    "SHAREHOLDER_MANAGER",
-    "ADMIN",
-    "SUPER_ADMIN",
-  ].includes(role);
+  const canManage =
+    email.trim().toLowerCase() !== "shareholder@primehorizon.com" &&
+    [
+      "SHAREHOLDER_ADMIN",
+      "SHAREHOLDER_MANAGER",
+      "ADMIN",
+      "SUPER_ADMIN",
+    ].includes(role);
 
   const filteredShareholders = shareholders.filter((shareholder) => {
     const term = search

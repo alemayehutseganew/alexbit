@@ -189,8 +189,8 @@ async function main() {
     });
   }
 
-  // 2. Create the shared shareholder manager account
-  console.log('Creating shared shareholder manager...');
+  // 2. Create the shared read-only shareholder account
+  console.log('Creating shared read-only shareholder account...');
   const sharedShareholderTenant = await prisma.tenant.create({
     data: { name: 'PrimeHorizon Shareholders', type: 'SHAREHOLDER' },
   });
@@ -202,7 +202,7 @@ async function main() {
       firstName: 'All',
       lastName: 'Shareholders',
       passwordHash: shareholderPasswordHash,
-      role: 'SHAREHOLDER_MANAGER',
+      role: 'SHAREHOLDER',
     },
   });
 

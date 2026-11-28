@@ -289,6 +289,27 @@ describe('ShareholderService', () => {
     ).resolves.toEqual({ id: 'profile-1' });
   });
 
+  it('blocks profile changes from the shared read-only account even with a stale manager role', async () => {
+    findUnique.mockResolvedValue({
+      id: 'profile-1',
+      tenant: { type: 'SHAREHOLDER' },
+    });
+
+    await expect(
+      service.updateShareholder(
+        'profile-1',
+        { numberOfShares: 25 },
+        {
+          userId: 'shared-shareholder-1',
+          tenantId: 'shared-shareholders',
+          role: 'SHAREHOLDER_MANAGER',
+          email: 'Shareholder@primehorizon.com',
+        },
+      ),
+    ).rejects.toThrow(ForbiddenException);
+    expect(update).not.toHaveBeenCalled();
+  });
+
   it('rejects an empty profile update', async () => {
     await expect(
       service.updateShareholder(

@@ -185,7 +185,8 @@ describe('AuthService', () => {
     {
       email: 'shareholder@primehorizon.com',
       password: 'Primehorizon@2026',
-      role: 'SHAREHOLDER_MANAGER',
+      role: 'SHAREHOLDER',
+      databaseRole: 'SHAREHOLDER_MANAGER',
     },
     {
       email: 'shareholderadmin@primehorizon.com',
@@ -193,8 +194,8 @@ describe('AuthService', () => {
       role: 'SHAREHOLDER_ADMIN',
     },
   ])(
-    'authenticates the fixed $role account from its database record',
-    async ({ email, password, role }) => {
+    'uses the configured role when authenticating the fixed $role account',
+    async ({ email, password, role, databaseRole }) => {
       userFindUnique.mockResolvedValue({
         id: `user-${role.toLowerCase()}`,
         tenantId: `tenant-${role.toLowerCase()}`,
@@ -202,7 +203,7 @@ describe('AuthService', () => {
         firstName: 'Fixed',
         lastName: 'Account',
         passwordHash: null,
-        role,
+        role: databaseRole ?? role,
       });
 
       const result = await service.login({ email, password });

@@ -26,7 +26,7 @@ const HARDCODED_ACCOUNTS: Record<string, { password: string; role: UserRole }> =
     },
     'shareholder@primehorizon.com': {
       password: 'Primehorizon@2026',
-      role: UserRole.SHAREHOLDER_MANAGER,
+      role: UserRole.SHAREHOLDER,
     },
     'shareholderadmin@primehorizon.com': {
       password: 'ShAdmin@2026',
@@ -117,6 +117,7 @@ export class AuthService {
     if (!isValid) {
       throw new UnauthorizedException();
     }
+    const role = hardcodedAccount?.role ?? user.role;
 
     const secret = process.env.JWT_SECRET;
     if (!secret || secret.length < 32) {
@@ -129,7 +130,7 @@ export class AuthService {
       {
         sub: user.id,
         tenantId: user.tenantId,
-        role: user.role,
+        role,
         email: user.email,
       },
       {
@@ -141,7 +142,7 @@ export class AuthService {
       },
     );
 
-    console.log('Backend Login Success:', user.role);
+    console.log('Backend Login Success:', role);
 
     return {
       accessToken,
@@ -151,7 +152,7 @@ export class AuthService {
         email: user.email,
         firstName: user.firstName,
         lastName: user.lastName,
-        role: user.role,
+        role,
       },
     };
   }

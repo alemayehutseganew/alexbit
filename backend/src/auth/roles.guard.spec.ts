@@ -14,13 +14,16 @@ describe('RolesGuard', () => {
   const reflector = { getAllAndOverride } as unknown as Reflector;
   const guard = new RolesGuard(reflector);
 
-  function executionContext(role?: string): ExecutionContext {
+  function executionContext(
+    role?: string,
+    email?: string,
+  ): ExecutionContext {
     return {
       getHandler: jest.fn(),
       getClass: jest.fn(),
       switchToHttp: () => ({
         getRequest: () => ({
-          user: role ? { role } : undefined,
+          user: role ? { role, email } : undefined,
         }),
       }),
     } as unknown as ExecutionContext;
@@ -42,6 +45,21 @@ describe('RolesGuard', () => {
     expect(guard.canActivate(executionContext('ADMIN'))).toBe(true);
     expect(guard.canActivate(executionContext('SHAREHOLDER'))).toBe(false);
     expect(guard.canActivate(executionContext())).toBe(false);
+  });
+
+  it('blocks stale manager tokens for the shared read-only shareholder account', () => {
+    getAllAndOverride.mockReturnValue(['SHAREHOLDER_MANAGER']);
+
+    expect(
+      guard.canActivate(
+        executionContext('SHAREHOLDER_MANAGER', 'shareholder@primehorizon.com'),
+      ),
+    ).toBe(false);
+    expect(
+      guard.canActivate(
+        executionContext('SHAREHOLDER_MANAGER', 'manager@example.com'),
+      ),
+    ).toBe(true);
   });
 
   it('keeps public RFP creation open and restricts review routes', () => {
@@ -68,19 +86,45 @@ describe('RolesGuard', () => {
 
   it('grants shareholder admins access to shareholder write routes', () => {
     const shareholderWriteRoutes = [
-      [ShareholderController.prototype, 'updateShareholder'],
-      [ShareholderController.prototype, 'addDocument'],
-      [ShareholderController.prototype, 'addUploadedDocument'],
-      [ShareholderController.prototype, 'addCompanyDocument'],
-      [ShareholderController.prototype, 'deleteDocument'],
+      [
+        ShareholderController.prototype,
+        'createShareholder',
+        ['ADMIN', 'SUPER_ADMIN', 'SHAREHOLDER_ADMIN', 'SHAREHOLDER_MANAGER'],
+      ],
+      [
+        ShareholderController.prototype,
+        'updateShareholder',
+        ['ADMIN', 'SUPER_ADMIN', 'SHAREHOLDER_ADMIN', 'SHAREHOLDER_MANAGER'],
+      ],
+      [
+        ShareholderController.prototype,
+        'deleteShareholder',
+        ['ADMIN', 'SUPER_ADMIN', 'SHAREHOLDER_ADMIN', 'SHAREHOLDER_MANAGER'],
+      ],
+      [
+        ShareholderController.prototype,
+        'addDocument',
+        ['ADMIN', 'SUPER_ADMIN', 'SHAREHOLDER_ADMIN', 'SHAREHOLDER_MANAGER'],
+      ],
+      [
+        ShareholderController.prototype,
+        'addUploadedDocument',
+        ['ADMIN', 'SUPER_ADMIN', 'SHAREHOLDER_ADMIN', 'SHAREHOLDER_MANAGER'],
+      ],
+      [
+        ShareholderController.prototype,
+        'addCompanyDocument',
+        ['ADMIN', 'SUPER_ADMIN', 'SHAREHOLDER_ADMIN'],
+      ],
+      [
+        ShareholderController.prototype,
+        'deleteDocument',
+        ['ADMIN', 'SUPER_ADMIN', 'SHAREHOLDER_ADMIN', 'SHAREHOLDER_MANAGER'],
+      ],
     ] as const;
 
-    for (const [controller, method] of shareholderWriteRoutes) {
-      expect(Reflect.getMetadata(ROLES_KEY, controller[method])).toEqual([
-        'ADMIN',
-        'SUPER_ADMIN',
-        'SHAREHOLDER_ADMIN',
-      ]);
+    for (const [controller, method, roles] of shareholderWriteRoutes) {
+      expect(Reflect.getMetadata(ROLES_KEY, controller[method])).toEqual(roles);
     }
   });
 });

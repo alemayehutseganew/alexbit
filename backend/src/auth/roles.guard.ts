@@ -7,6 +7,8 @@ type RequestWithUser = {
   user?: AuthenticatedUser;
 };
 
+const readOnlyShareholderEmail = 'shareholder@primehorizon.com';
+
 @Injectable()
 export class RolesGuard implements CanActivate {
   constructor(private readonly reflector: Reflector) {}
@@ -21,6 +23,16 @@ export class RolesGuard implements CanActivate {
     }
 
     const request = context.switchToHttp().getRequest<RequestWithUser>();
-    return !!request.user && roles.includes(request.user.role);
+    if (!request.user) {
+      return false;
+    }
+
+    if (
+      request.user.email?.trim().toLowerCase() === readOnlyShareholderEmail
+    ) {
+      return false;
+    }
+
+    return roles.includes(request.user.role);
   }
 }
